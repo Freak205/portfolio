@@ -1,0 +1,46 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+#
+# In the Render dashboard: New → Blueprint → connect this repository.
+# Render reads this file, creates the service, and deploys on every push.
+#
+# Every secret below is marked `sync: false`, which means Render prompts you for
+# the value in the dashboard and never stores it in the repository.
+
+services:
+  - type: web
+    name: anirudh-portfolio
+    runtime: node
+    plan: free # bump to "starter" to remove cold starts
+    region: singapore # closest Render region to Hyderabad
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+
+      # Public origin. Canonical URLs, sitemap, robots and OG images read this.
+      # Must be set at BUILD time — pages are prerendered.
+      # Example: https://anirudh-portfolio.onrender.com
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+
+      # --- Contact form delivery (all optional) -----------------------------
+      # Configure at least one transport before going live, otherwise enquiries
+      # are only written to the service log.
+
+      # Transport 1 — email via Resend (free tier, no card required).
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_TO_EMAIL
+        sync: false
+      # Optional. Defaults to Resend's shared sender, which needs no domain
+      # verification. Set this once you verify your own domain.
+      - key: CONTACT_FROM_EMAIL
+        sync: false
+
+      # Transport 2 — POST each enquiry as JSON. Slack/Teams incoming webhooks
+      # accept this payload as-is.
+      - key: CONTACT_WEBHOOK_URL
+        sync: false

@@ -1,0 +1,383 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   DESIGN TOKENS
+   Deep blue-black base, white type, one indigo action colour and a cyan→indigo
+   progress gradient. Change --color-brand and the whole site re-tunes.
+   ========================================================================== */
+
+@theme {
+  /* Surfaces */
+  --color-void: #05060b;
+  --color-base: #080a12;
+  --color-panel: #0d1019;
+  --color-panel-2: #11151f;
+
+  /* Type */
+  --color-chalk: #ffffff;
+
+  /* Action */
+  --color-brand: #5b5bf0;
+  --color-brand-soft: #7b7bf5;
+  --color-cyan: #22d3ee;
+
+  /* Fonts */
+  --font-display: var(--font-display-src), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-src), ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swift: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --line: rgb(255 255 255 / 0.08);
+    --line-strong: rgb(255 255 255 / 0.16);
+    --dim: rgb(255 255 255 / 0.62);
+    --dimmer: rgb(255 255 255 / 0.4);
+    --dimmest: rgb(255 255 255 / 0.26);
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  /* Lenis drives scrolling; native smooth scroll would fight it. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-chalk);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: #fff;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand-soft);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  @supports (scrollbar-color: auto) {
+    html {
+      scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+      scrollbar-width: thin;
+    }
+  }
+}
+
+/* =============================================================================
+   PRIMITIVES
+   ========================================================================== */
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 48rem) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+  @media (min-width: 80rem) {
+    .shell {
+      padding-inline: 3.5rem;
+    }
+  }
+
+  /* Section label: small, tracked, uppercase, muted. */
+  .kicker {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dimmer);
+  }
+
+  /* The signature heading: light word, then bold word. */
+  .headline {
+    font-family: var(--font-display);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  .headline-xl {
+    font-size: clamp(2.5rem, 6.4vw, 5.5rem);
+  }
+  .headline-lg {
+    font-size: clamp(2.1rem, 4.6vw, 4rem);
+  }
+  .headline-md {
+    font-size: clamp(1.65rem, 2.8vw, 2.5rem);
+  }
+  .headline-light {
+    font-weight: 300;
+    color: rgb(255 255 255 / 0.82);
+  }
+  .headline-bold {
+    font-weight: 700;
+    color: var(--color-chalk);
+  }
+
+  .lede {
+    font-size: clamp(1rem, 1.15vw, 1.125rem);
+    line-height: 1.65;
+    color: var(--dim);
+  }
+
+  /* Elevated card used by services, work, experience, testimonials. */
+  .panel {
+    background-color: var(--color-panel);
+    border: 1px solid var(--line);
+    border-radius: 1.25rem;
+    transition:
+      border-color 0.5s var(--ease-expo),
+      background-color 0.5s var(--ease-expo),
+      transform 0.5s var(--ease-expo);
+  }
+  .panel-hover:hover {
+    border-color: var(--line-strong);
+    background-color: var(--color-panel-2);
+  }
+
+  /* Rounded chip used by the arsenal row and meta pills. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    border: 1px solid var(--line);
+    background-color: var(--color-panel);
+    border-radius: 9999px;
+    padding: 0.625rem 1.125rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition:
+      border-color 0.4s var(--ease-expo),
+      background-color 0.4s var(--ease-expo);
+  }
+  .chip:hover {
+    border-color: var(--line-strong);
+    background-color: var(--color-panel-2);
+  }
+}
+
+/* =============================================================================
+   ATMOSPHERE
+   ========================================================================== */
+
+/* Soft indigo bloom behind hero and contact. */
+.bloom {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.28;
+  background: radial-gradient(circle, var(--color-brand) 0%, transparent 70%);
+}
+
+/* Faint dot grid, used behind dark sections. */
+.dotgrid {
+  background-image: radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.055) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+/* Glow under the primary pill button. */
+.glow-brand {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.08),
+    0 12px 44px -12px rgb(91 91 240 / 0.85);
+}
+.glow-white {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.12),
+    0 14px 48px -14px rgb(255 255 255 / 0.45);
+}
+
+/* Set before paint by the inline script in app/layout.tsx. */
+html.intro-done .intro-curtain {
+  display: none !important;
+}
+
+/* =============================================================================
+   KEYFRAMES
+   ========================================================================== */
+
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-x-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes ring-out {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+@keyframes loading-sweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(410%);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+.animate-marquee {
+  animation: marquee-x 44s linear infinite;
+}
+.animate-marquee-fast {
+  animation: marquee-x 26s linear infinite;
+}
+.animate-marquee-reverse {
+  animation: marquee-x-reverse 52s linear infinite;
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2.4s var(--ease-swift) infinite;
+}
+.animate-ring-out {
+  animation: ring-out 2.4s var(--ease-expo) infinite;
+}
+.animate-loading-sweep {
+  animation: loading-sweep 1.3s var(--ease-swift) infinite;
+}
+.animate-bob {
+  animation: bob 2.2s var(--ease-swift) infinite;
+}
+
+/* Pause decorative loops on hover. */
+.marquee-track:hover [class*="animate-marquee"] {
+  animation-play-state: paused;
+}
+
+/* =============================================================================
+   REDUCED MOTION
+   One global switch. Every scroll reveal also checks this in JS, so content is
+   never left invisible.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [class*="animate-marquee"],
+  .animate-ring-out,
+  .animate-bob {
+    animation: none !important;
+  }
+}
+
+/* Skip link. */
+.sr-only-focusable {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.sr-only-focusable:focus {
+  left: 1rem;
+  top: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--color-chalk);
+  color: var(--color-void);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
