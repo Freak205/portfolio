@@ -7,7 +7,11 @@
    before you publish.
 
    Nothing here is invented. Every claim traces back to your resume, the CLINVARA
-   handover document, or the Southeast Media README.
+   handover document, the Southeast Media README, or the project case studies for
+   InsightFlow AI, Project Steer and ForgeLens.
+
+   The site speaks to two audiences at once — hiring teams and clients — so most
+   sections carry both. Search for "HIRING" to find the parts aimed at recruiters.
    ============================================================================= */
 
 /* -----------------------------------------------------------------------------
@@ -17,19 +21,28 @@
 export const profile = {
   fullName: "Ineedi Venkata Sai Anirudh",
   firstName: "Anirudh",
-  /** Rendered huge over the hero image. Keep it to one word if you can. */
+  /** Rendered huge across the hero. Keep it to one word if you can. */
   heroName: "Anirudh",
   /** Sits under the hero name, letter-spaced uppercase. */
   heroRole: "Full-Stack Developer",
   title: "Full-Stack Developer",
   positioning:
-    "Full-stack developer who ships complete e-commerce and business websites end-to-end — design, build, deploy, operate.",
+    "Full-stack developer who builds websites and web platforms of every kind — commerce, brand, product, SaaS, content, internal tooling — and takes each one from first sketch to live and maintained.",
   location: "Hyderabad, Telangana, India",
   locationShort: "Hyderabad, India",
-  available: true,
-  availabilityLine: "Available for freelance projects",
+
+  /* HIRING — both switches drive the status dots, the hero strip and the two
+     lanes in the Contact section. Flip either to false when it stops being true
+     and the copy updates everywhere. */
+  openToRoles: true,
+  openToFreelance: true,
+  rolesLine: "Open to full-time & internship roles",
+  freelanceLine: "Available for freelance projects",
   responseLine: "Typical response within 24 hours",
 } as const;
+
+/** Kept for the availability dot in Contact — true if either lane is open. */
+export const available = profile.openToRoles || profile.openToFreelance;
 
 export const contact = {
   // CONFIRM: from your resume.
@@ -38,7 +51,7 @@ export const contact = {
   phone: "+91 90596 88369",
   /** Digits only with country code, no "+" — this is what wa.me needs. */
   whatsappNumber: "919059688369",
-  whatsappMessage: "Hi Anirudh — I found your portfolio and I'd like to discuss a project.",
+  whatsappMessage: "Hi Anirudh — I found your portfolio and I'd like to talk.",
   // CONFIRM: from your resume (GitHub username: Freak205).
   github: "https://github.com/Freak205",
   // EDIT: your resume lists the display name only, not the URL slug.
@@ -79,16 +92,15 @@ export const siteUrl = resolvedSiteUrl.replace(/\/$/, "");
 export const nav = [
   { label: "Services", href: "/#services" },
   { label: "Work", href: "/#work" },
+  { label: "Lab", href: "/#lab" },
   { label: "About", href: "/#about" },
   { label: "Experience", href: "/#experience" },
-  { label: "Testimonials", href: "/#testimonials" },
   { label: "Contact", href: "/#contact" },
 ] as const;
 
 /* -----------------------------------------------------------------------------
    3. TICKER
    The scrolling strip in the top-right of the header.
-   Swap `items` for anything — a now-playing list, a status line, a manifesto.
    -------------------------------------------------------------------------- */
 
 export const ticker = {
@@ -96,55 +108,65 @@ export const ticker = {
   /** Tiny label before the strip. Set to null to hide it. */
   label: "Now" as string | null,
   items: [
+    "Open to roles",
     "Building CLINVARA",
     "Shipping Southeast Media",
-    "Open to freelance",
+    "Available for freelance",
     "Based in Hyderabad",
-    "Next.js · Firebase · Firestore",
   ],
 } as const;
 
 /* -----------------------------------------------------------------------------
    4. HERO
-   The portrait fills the viewport and scales as you scroll.
+   -----------------------------------------------------------------------------
+   No photograph. The centrepiece is a drawn artefact — three isometric planes
+   for interface, logic and data, with a pulse running between them — which says
+   "full stack" without a paragraph and without a headshot.
 
-   EDIT: drop a photo into /public (a tall portrait, ideally 1600×2000 or larger,
-   subject centred) and set `image.src` to "/your-file.jpg". Leave it null and a
-   designed placeholder renders instead — the layout is identical either way.
+   Everything about it is data-driven from `sigil` below, so changing the layer
+   names or colours re-draws it.
    -------------------------------------------------------------------------- */
 
 export const hero = {
-  image: {
-    /**
-     * 4:5 crop of the source photograph (800×800), extracted at left=40 so the
-     * subject — in profile, facing left — keeps looking room in front of his
-     * face rather than behind his head. Used by both the hero plate and About.
-     *
-     * /portrait-blur.webp is the matching out-of-focus field behind the hero
-     * plate: the same photo at 160px, blurred at build time. Blur discards
-     * detail, so shipping the full-size image twice would buy nothing. Replace
-     * one and you must replace the other.
-     */
-    src: "/portrait.webp" as string | null,
-    alt: "Portrait of Ineedi Venkata Sai Anirudh",
+  /** HIRING — the status strip above the artefact. */
+  status: {
+    roles: "Open to roles",
+    freelance: "Freelance available",
   },
-  /** Revealed over the image as it scales away. Two lines. */
-  scrollHeadline: ["I build complete platforms —", "idea to deployment."],
-  scrollTag: "Two live production platforms, shipped independently.",
+  sigil: {
+    /** Top to bottom. Three is the number the composition is drawn for. */
+    layers: [
+      { label: "Interface", color: "#22D3EE" },
+      { label: "Logic", color: "#7B7BF5" },
+      { label: "Data", color: "#5B5BF0" },
+    ],
+    /** Set in mono across the top of the plate. */
+    heading: "Full-stack",
+    /** Machine-output line under the layers. */
+    readout: "One owner · idea → production",
+  },
+  /** Revealed over the artefact as it scales away. Two lines. */
+  scrollHeadline: ["I build every layer —", "idea to deployment."],
+  scrollTag: "Client platforms in production, plus AI, vision and research projects of my own.",
   scrollHint: "Scroll",
 } as const;
 
 /* -----------------------------------------------------------------------------
    5. SERVICES — "What I Do"
+   -----------------------------------------------------------------------------
+   Deliberately broad. The first card is the umbrella — any kind of site — and
+   the rest are the specialisms underneath it. These four titles also scroll
+   through the band directly under the hero.
    -------------------------------------------------------------------------- */
 
-export type ServiceIcon = "commerce" | "browser" | "spark" | "gauge";
+export type ServiceIcon = "browser" | "commerce" | "spark" | "gauge";
 
 export const servicesSection = {
   label: "What I Offer",
   headingLight: "What I",
   headingBold: "Do",
-  intro: "One person, first conversation to live site. Nothing changes hands.",
+  intro:
+    "Any kind of website or web platform, and every layer of it. One person, first conversation to live site — nothing changes hands.",
 } as const;
 
 export const services: {
@@ -157,25 +179,25 @@ export const services: {
   points: string[];
 }[] = [
   {
+    icon: "browser",
+    color: "#4ADE80",
+    title: "Websites & Web Platforms",
+    body: "Whatever the site needs to be — brand, studio, product, SaaS, content, internal tool.",
+    points: ["Art direction", "Responsive build", "Dashboards & tools"],
+  },
+  {
     icon: "commerce",
     color: "#FF8A3D",
-    title: "E-commerce Development",
+    title: "E-commerce & D2C",
     body: "Storefronts built to be run by the people who own them.",
     points: ["Catalogue & search", "Cart to checkout", "Admin & orders"],
   },
   {
-    icon: "browser",
-    color: "#4ADE80",
-    title: "Business & Brand Websites",
-    body: "Sites that build trust, explain the work and bring in enquiries.",
-    points: ["Art direction", "Responsive build", "Enquiry flows"],
-  },
-  {
     icon: "spark",
     color: "#A78BFA",
-    title: "AI Feature Integration",
-    body: "AI that earns its place in the product, not a bolted-on demo.",
-    points: ["Product-aware chat", "Grounded answers", "Content tooling"],
+    title: "AI & Data Features",
+    body: "AI and analytics that earn their place in the product, not a bolted-on demo.",
+    points: ["Grounded answers", "Analytics & reporting", "Computer vision"],
   },
   {
     icon: "gauge",
@@ -190,14 +212,15 @@ export const services: {
    6. ARSENAL — "Technologies & Tools"
    Each entry names a simple-icons slug. The logo and its brand colour are pulled
    automatically. If a slug does not exist, the chip falls back to a lettermark —
-   nothing breaks. Browse slugs at https://simpleicons.org.
+   nothing breaks. Browse slugs at https://simpleicons.org, then register the
+   import in lib/brand-icons.ts.
    -------------------------------------------------------------------------- */
 
 export const arsenalSection = {
   label: "Technologies & Tools",
   headingLight: "My",
   headingBold: "Arsenal",
-  intro: "All of it in production on a live platform.",
+  intro: "All of it in production or in a shipped project — nothing on this list is theory.",
 } as const;
 
 /** Two rows that scroll in opposite directions. */
@@ -212,23 +235,35 @@ export const arsenal: { slug: string; label: string }[][] = [
     { slug: "siJavascript", label: "JavaScript" },
     { slug: "siHtml5", label: "HTML5" },
     { slug: "siCss", label: "CSS" },
+    { slug: "siVercel", label: "Vercel" },
   ],
   [
     { slug: "siNodedotjs", label: "Node.js" },
     { slug: "siExpress", label: "Express" },
     { slug: "siFirebase", label: "Firebase" },
     { slug: "siGooglecloud", label: "Cloud Firestore" },
-    { slug: "siZod", label: "Zod" },
-    { slug: "siResend", label: "Resend" },
     { slug: "siPython", label: "Python" },
+    { slug: "siFlask", label: "Flask" },
+    { slug: "siPandas", label: "Pandas" },
+    { slug: "siNumpy", label: "NumPy" },
     { slug: "siPytorch", label: "PyTorch" },
+    { slug: "siOpencv", label: "OpenCV" },
+    { slug: "siMediapipe", label: "MediaPipe" },
     { slug: "siHuggingface", label: "Hugging Face" },
+    { slug: "siZod", label: "Zod" },
+    { slug: "siPytest", label: "Pytest" },
+    { slug: "siGithubactions", label: "GitHub Actions" },
     { slug: "siGit", label: "Git" },
   ],
 ];
 
 /* -----------------------------------------------------------------------------
-   7. SELECTED WORK
+   7. SELECTED WORK — the two flagships
+   -----------------------------------------------------------------------------
+   These are the headline builds and they get the whole top of the page plus a
+   full case study each at /work/[slug]. Personal projects live in section 8 and
+   are deliberately presented below these, not beside them.
+
    IMAGES: leave `src: null` to render the labelled placeholder frame. To use a
    real screenshot, drop the file into /public/work/ and set src + width + height.
    -------------------------------------------------------------------------- */
@@ -273,10 +308,11 @@ export type Project = {
 };
 
 export const workSection = {
-  label: "Portfolio",
+  label: "Flagship Projects",
   headingLight: "Selected",
   headingBold: "Work",
-  intro: "Both are live. Open them and click around — that's the point.",
+  intro:
+    "Two production platforms, each built and operated end to end. Both are live — open them and click around, that's the point.",
 } as const;
 
 export const projects: Project[] = [
@@ -528,21 +564,313 @@ export const projects: Project[] = [
 ];
 
 /* -----------------------------------------------------------------------------
-   8. SIDE PROJECT
-   Set `show: false` to remove the strip under Selected Work.
+   8. THE LAB — personal projects
+   -----------------------------------------------------------------------------
+   Built for their own sake, not for a client. They carry the range the two
+   flagships can't: Python, data, generative AI, computer vision, real-time
+   systems, test suites and CI.
+
+   `caseStudy: true` gives a project its own page at /lab/[slug] and needs every
+   optional field below filled in. `caseStudy: false` renders the card only and
+   sends visitors straight to the repository — use it when there isn't enough
+   verified detail to fill a page honestly.
    -------------------------------------------------------------------------- */
 
-export const sideProject = {
-  show: true,
-  label: "Also building",
-  name: "ForgeLens",
-  tagline: "Calibrated multimodal document forensics",
-  body: "Independent deep-learning research into document forgery detection and pixel-level tamper localization — PyTorch training, a leakage-safe pipeline, and LoRA fine-tuning of an open-weight VLM.",
-  // CONFIRM: repository URL from your resume.
-  href: "https://github.com/Freak205/FORGELENS",
-  hrefLabel: "github.com/Freak205/FORGELENS",
-  tags: ["PyTorch", "Computer vision", "VLM fine-tuning", "Research engineering"],
+export type LabProject = {
+  slug: string;
+  index: string;
+  name: string;
+  /** Uppercase strapline under the card title. */
+  subtitle: string;
+  /** One line, used on the card and as the case-study lede. */
+  tagline: string;
+  accent: string;
+  /** Discipline line — what kind of engineering this is. */
+  discipline: string;
+  /** Version / platform / release state. */
+  release: string;
+  role: string;
+  status: string;
+  liveUrl?: string;
+  liveLabel?: string;
+  repoUrl?: string;
+  repoLabel?: string;
+  /** Shown when there is no public link — say why, honestly. */
+  linkNote?: string;
+  /** Two or three sentences. The card body. */
+  summary: string;
+  tags: string[];
+  metrics: { label: string; value: string }[];
+  caseStudy: boolean;
+
+  /* Everything below is required when caseStudy is true. */
+  overview?: string;
+  problem?: string;
+  approach?: string;
+  highlights?: { title: string; body: string }[];
+  engineering?: { title: string; body: string }[];
+  stack?: { group: string; items: string[] }[];
+  /** Stated plainly. Knowing where a thing stops is part of the work. */
+  limitations?: string[];
+  next?: string[];
+};
+
+export const labSection = {
+  label: "Personal Projects & Research",
+  headingLight: "The",
+  headingBold: "Lab",
+  intro:
+    "Built because I wanted them to exist — and finished to the same standard as the client work: tested, typed, documented, deployed.",
 } as const;
+
+export const lab: LabProject[] = [
+  {
+    slug: "insightflow-ai",
+    index: "01",
+    name: "InsightFlow AI",
+    subtitle: "AI Sales Analytics Platform",
+    tagline:
+      "Upload a sales CSV, get a full analytics dashboard — no account, no database, no file ever stored.",
+    accent: "#4ADE80",
+    discipline: "Full-stack · Data analytics · Generative AI",
+    release: "v2.0.0 · Production-ready",
+    role: "Sole developer",
+    status: "Live",
+    liveUrl: "https://insightflow-ai-clean.vercel.app",
+    liveLabel: "insightflow-ai-clean.vercel.app",
+    repoUrl: "https://github.com/Freak205/insightflow-ai-clean",
+    repoLabel: "Freak205/insightflow-ai-clean",
+    summary:
+      "A Flask and Pandas analytics app that turns raw sales CSVs into revenue KPIs, product rankings, time-series charts, seasonal analysis and downloadable reports — detecting the revenue, product and date columns on its own. It runs stateless on serverless: the uploaded file is never persisted, only a compressed, signed analytics digest that fits inside a cookie.",
+    tags: ["Python", "Flask", "Pandas", "OpenAI API", "SVG", "Vercel", "Serverless"],
+    metrics: [
+      { label: "Automated tests", value: "146" },
+      { label: "Branch coverage", value: "92.55%" },
+      { label: "Session digest", value: "3.2 KB" },
+      { label: "Frontend JS deps", value: "0" },
+    ],
+    caseStudy: true,
+    overview:
+      "InsightFlow AI is a privacy-conscious sales analytics platform built with Python and Flask. A visitor uploads a CSV and immediately gets revenue KPIs, product rankings, a revenue trend, seasonal performance, plain-language findings, demand observations and downloadable reports — with no account, no manual column mapping, no database and no persistent file storage. It also answers questions about the uploaded data in plain language, grounded in the computed summary rather than in the model's own guesses.",
+    problem:
+      "Small retailers keep sales records in CSVs but rarely have the time or tooling to configure a BI platform, map columns by hand, build a dashboard per dataset, and maintain a database behind it. For a one-off look at a file — what sold, what didn't, which way the trend is going — a traditional BI product is far more setup than the question is worth.",
+    approach:
+      "Upload, normalise, analyse, reduce, render. Pandas does the whole analysis inside the upload request; the DataFrame is then reduced to a compact aggregate digest, and that digest — not the file — is what survives. Compressed, encoded and signed into the session cookie, it lets any serverless instance render the dashboard, answer a question or build an export without shared storage of any kind.",
+    highlights: [
+      {
+        title: "Column detection that doesn't guess badly",
+        body: "Headers are normalised to snake_case, then revenue is found by exact name, partial match and numeric fallback. Text columns are scored to find the product label, and ID-, code- and SKU-like fields are penalised so a chart never keys off a meaningless identifier.",
+      },
+      {
+        title: "A dashboard, not a chart dump",
+        body: "Total revenue, record count, growth across visible periods, top product, average per record, revenue trend, product rankings and revenue share, best and worst performers, strongest period, and a preview of the data itself.",
+      },
+      {
+        title: "Charts written by hand in SVG",
+        body: "No Chart.js, no D3, no charting dependency at all. A responsive line-and-area chart, a horizontal ranking chart and a stacked share chart, all native SVG with keyboard-accessible data points, focus tooltips, ResizeObserver redraws and a table view of every value.",
+      },
+      {
+        title: "Grounded AI question answering",
+        body: "Only a compact factual summary of the analysis is sent to the model, with instructions to answer from that data alone. If the API is missing, slow or empty, deterministic logic answers the common questions — top product, weakest product, total revenue, trend direction, best and worst period — from the same digest.",
+      },
+      {
+        title: "Seasonal retail analysis",
+        body: "The year is split into summer, monsoon and winter for Indian retail patterns. For the current season it surfaces top products, the best month and its revenue, inventory and promotion suggestions, and local weather proxied through the backend so the API key never reaches the browser.",
+      },
+      {
+        title: "Reports without a spreadsheet library",
+        body: "CSV and JSON exports covering dataset summary, top products, revenue over time, seasonal rankings, generated insights and demand observations. Filenames are sanitised so a hostile dataset name can't malform the Content-Disposition header, and responses are marked private, no-store.",
+      },
+    ],
+    engineering: [
+      {
+        title: "Keeping state without a database",
+        body: "The obvious design — save the upload to disk, put its ID in the session — fails on serverless: the filesystem may be read-only, temp storage is per-instance, and consecutive requests can land on different instances. Instead the DataFrame is reduced during the upload request itself and only the resulting aggregate digest is carried forward, so any instance can serve the next request.",
+      },
+      {
+        title: "Fitting an analysis inside a cookie",
+        body: "Browsers cap cookies near 4 KB, so the encoded digest targets a 3,200-byte budget. When it doesn't fit, detail is dropped in a fixed least-important-first order: the data preview, then older trend points, then the longer product rankings, then extra insight text, then additional seasonal entries. The dashboard degrades in a predictable way instead of failing.",
+      },
+      {
+        title: "Staying useful when the APIs aren't",
+        body: "Both external services can be missing, slow or down. Requests are bounded by timeouts, errors are mapped rather than surfaced raw, and every AI answer has a deterministic fallback. With no OpenAI key the chat still answers; with no weather key only the weather lookup is disabled. The dashboard and exports never depend on either.",
+      },
+      {
+        title: "A strict CSP the frontend can actually live under",
+        body: "No CDN scripts, no external fonts, no inline handlers, no charting library — which is what makes a default-src 'self' policy possible while still shipping responsive charts and a theme switch. CI enforces it: the pipeline fails if a third-party frontend dependency or a CSP-breaking inline style or handler is introduced.",
+      },
+      {
+        title: "Protecting paid APIs from anonymous traffic",
+        body: "Anonymous visitors can burn model and weather quota, so the AI and lookup routes get separate per-IP sliding-window limits with bounded limiter memory. CSRF protection with constant-time token comparison, signed HTTP-only SameSite cookies, HSTS and a production startup check on SECRET_KEY sit alongside it.",
+      },
+      {
+        title: "Two dependency manifests that can't drift",
+        body: "Vercel reads dependencies from pyproject.toml while other deployment paths use requirements.txt. Automated tests assert the two lists stay synchronised and fully pinned, so a deploy target can't silently install a different set of packages than the one the suite ran against.",
+      },
+    ],
+    stack: [
+      {
+        group: "Backend",
+        items: ["Python 3.12+", "Flask 3.1", "Pandas 2.3", "NumPy 2.5", "Gunicorn"],
+      },
+      {
+        group: "Frontend",
+        items: ["Jinja templates", "Vanilla JavaScript", "Hand-authored CSS", "Native SVG charts", "Light & dark themes"],
+      },
+      {
+        group: "AI & APIs",
+        items: ["OpenAI Responses API", "gpt-4.1-mini", "OpenWeatherMap weather", "OpenWeatherMap geocoding"],
+      },
+      {
+        group: "Security",
+        items: ["CSRF tokens", "Signed sessions", "Strict CSP", "HSTS", "Per-IP rate limiting"],
+      },
+      {
+        group: "Delivery",
+        items: ["Vercel serverless", "WSGI app factory", "GitHub Actions", "Python 3.12 & 3.13 matrix"],
+      },
+      {
+        group: "Quality",
+        items: ["Pytest", "Coverage.py", "Ruff", "Strict MyPy", "pip-audit", "Pre-commit hooks"],
+      },
+    ],
+    limitations: [
+      "Uploads are capped at roughly 4 MB by default.",
+      "Results last for the current browser session only, and dashboards can't be shared with another user.",
+      "The session digest is signed against tampering but not encrypted.",
+      "Rate limits are per serverless instance rather than global.",
+      "Demand observations are interpretable heuristics, not a trained forecasting model — I don't describe them as ML forecasting.",
+    ],
+    next: [
+      "Authentication and saved dashboards",
+      "Object storage for persistent datasets",
+      "Redis-backed global rate limiting",
+      "Multi-file and period-over-period comparison",
+      "Backtested forecasting and anomaly detection",
+    ],
+  },
+  {
+    slug: "project-steer",
+    index: "02",
+    name: "Project Steer",
+    subtitle: "Webcam Gesture Driving Controller",
+    tagline: "Drive Windows racing games with your hands and a webcam — no controller, no keyboard, no wheel.",
+    accent: "#F472B6",
+    discipline: "Computer vision · Real-time systems · HCI",
+    release: "v0.4.1 · Windows",
+    role: "Sole developer",
+    status: "Open source",
+    // EDIT: add the public repository URL here and the card links to it
+    // automatically. Until then the card shows `linkNote` instead.
+    repoUrl: undefined,
+    repoLabel: undefined,
+    linkNote: "Repository link and demo capture available on request.",
+    summary:
+      "A real-time computer-vision controller that turns hand gestures into Xbox 360 controller input. MediaPipe reads 21 landmarks per hand; a geometry and interaction layer converts wheel rotation, hand height, palm pose and fist motion into analog steering, throttle, brake, nitro and full menu navigation — including calibration and exit, so a session never needs a keyboard.",
+    tags: ["Python", "MediaPipe", "OpenCV", "vgamepad", "XInput", "State machines", "Pytest"],
+    metrics: [
+      { label: "Automated tests", value: "30" },
+      { label: "Production modules", value: "16" },
+      { label: "Landmarks per hand", value: "21" },
+      { label: "Gesture commands", value: "10" },
+    ],
+    caseStudy: true,
+    overview:
+      "Project Steer explores how an ordinary webcam becomes an accessible, contactless game controller. It detects up to two hands, extracts 21 landmarks from each, and analyses palm position, wheel angle, vertical movement, finger extension and fist rotation to recognise driving and menu gestures — which it emits as analog axes and button pulses on an emulated Xbox 360 controller. What separates it from a gesture demo is everything around the recognition: calibration, adaptive smoothing, conflict resolution, camera recovery, fail-safe neutralisation, per-game profiles and a test suite.",
+    problem:
+      "Racing games expect a keyboard, gamepad or dedicated wheel — devices that may be unavailable, expensive, or difficult to use with certain mobility limitations. A webcam prototype can demonstrate steering in an afternoon; making it playable is the hard part. Tracking drops out. Landmarks jitter. Everyone holds their hands at a different angle and height. Similar poses trigger conflicting actions. A disconnected camera can leave a button held down mid-race. And menus need discrete presses while driving needs continuous analog input.",
+    approach:
+      "The player holds two closed hands up like a wheel. A short neutral-pose calibration captures their natural angle and hand height, then the app continuously computes the angle and midpoint of the virtual wheel and maps it to the left stick and triggers. Driving and menu interaction are separated by an explicit state machine, smoothing adapts to how fast the input is changing, and every failure path resets the controller to neutral before anything else happens.",
+    highlights: [
+      {
+        title: "Webcam-only from launch to exit",
+        body: "Steering, throttle, braking, nitro, pause, menu navigation, confirm, back, resume, recalibration and a safe shutdown are all gestures. No keyboard command is required during normal operation.",
+      },
+      {
+        title: "Analog, not binary",
+        body: "Wheel angle becomes a continuous −1 to 1 stick value past a configurable dead zone, with wrapped-angle arithmetic so crossing ±180° never flips the steering. Hand height above the calibrated midpoint becomes analog throttle; opening both palms is an immediate full brake that still allows steering.",
+      },
+      {
+        title: "Calibration that is verified, not trusted",
+        body: "Neutral pose is captured from median samples, rejecting frames with excessive angular or vertical movement. It is persisted per Windows user, game profile, camera index and mirroring mode — but never trusted on launch: every start validates it against a fresh live sample and fully recalibrates if the pose has drifted.",
+      },
+      {
+        title: "A gesture-driven menu mode",
+        body: "An open palm plus a V sign enters menu mode, where analog axes go neutral and open-palm movement becomes D-pad pulses, the screen-left fist confirms, the screen-right fist goes back, and holding both fists resumes driving. Buttons are emitted as short pulses so games register them without leaving anything held.",
+      },
+      {
+        title: "Per-game JSON profiles",
+        body: "Button mappings, steering, throttle and brake scaling, dead zones, full-scale ranges, smoothing coefficients and adaptive response boosts all live in a profile. The Asphalt Legends profile, for example, uses a 4° dead zone and reaches full steering at 22°.",
+      },
+      {
+        title: "Diagnostics and a privacy-safe analyser",
+        body: "A live OpenCV HUD shows landmarks, the virtual wheel line, steering and throttle meters, active buttons, mode, FPS, tracking confidence and camera reconnections. Recorded video can be replayed through the production control pipeline offline, producing a JSON timeline that deliberately excludes frames and raw landmark coordinates.",
+      },
+    ],
+    engineering: [
+      {
+        title: "Mirrored-hand ambiguity",
+        body: "Mirrored webcam footage and an occasionally wrong handedness prediction can reverse the steering — the worst possible failure in a driving game. Hands are therefore ordered by visible horizontal screen position rather than by the model's Left/Right label, which is kept only for diagnostics.",
+      },
+      {
+        title: "Responsiveness against stability",
+        body: "A fixed exponential moving average either lets jitter through or adds lag; there is no setting that does both. The smoothing coefficient adapts instead: near the current output it stays heavy so a resting hand doesn't twitch the wheel, and it rises automatically as the input change grows, so sharp turns and hard acceleration land quickly.",
+      },
+      {
+        title: "Gestures that don't collide",
+        body: "Open palms, menu entry, braking, steering and nitro all overlap in landmark space. They are separated by explicit interaction modes, temporal hold requirements, a priority order, and mutual exclusivity between throttle and brake with brake winning. Finger counting ignores the thumb, whose apparent direction changes too much as the hand rotates.",
+      },
+      {
+        title: "Nitro that normal steering can't trigger",
+        body: "Nitro is a rotating fist — a motion, not a pose — which ordinary wheel rotation resembles closely. It requires one rotating fist and one stable anchor fist, a wheel angle that stays roughly still, physically plausible per-frame rotation steps, a minimum net rotation, and all of it inside a bounded time window.",
+      },
+      {
+        title: "Failing safe on hardware faults",
+        body: "A camera disconnect could otherwise leave the virtual controller holding its last input — full throttle into a wall. Output is neutralised whenever the expected two hands are missing, a pose is unrecognised, frames stop arriving, the preview closes, tracking throws, or the app exits. Recovery neutralises first, scans other camera indexes, prefers DirectShow on Windows, retries a bounded number of times, and then demands fresh calibration.",
+      },
+    ],
+    stack: [
+      { group: "Vision", items: ["MediaPipe Hand Landmarker", "OpenCV", "NumPy geometry"] },
+      { group: "Control output", items: ["vgamepad", "ViGEmBus", "Xbox 360 / XInput"] },
+      { group: "Language & config", items: ["Python", "JSON game profiles", "setuptools + pyproject.toml"] },
+      { group: "Interface", items: ["OpenCV-rendered HUD", "Preview-only safety mode", "Doctor diagnostics command"] },
+      { group: "Quality", items: ["Pytest", "Ruff", "PowerShell automation", "GitHub Actions on Windows"] },
+    ],
+    limitations: [
+      "Windows-first — virtual controller output depends on XInput and ViGEmBus.",
+      "Requires a game that accepts Xbox controller input.",
+      "Performance depends on webcam quality, lighting and hand visibility.",
+      "Recognition uses landmark geometry and temporal rules, not a custom-trained gesture model.",
+      "Some online games restrict synthetic or virtual-controller input.",
+    ],
+    next: [
+      "Gesture-controlled in-app settings",
+      "Additional game profiles",
+      "A custom-trained gesture model and automatic sensitivity personalisation",
+      "Signed Windows installer and standalone executable",
+      "Cross-platform virtual-controller output",
+    ],
+  },
+  {
+    slug: "forgelens",
+    index: "03",
+    name: "ForgeLens",
+    subtitle: "Document Forensics Research",
+    tagline: "Calibrated multimodal detection and pixel-level localization of document forgery.",
+    accent: "#A78BFA",
+    discipline: "Deep learning · Computer vision · Research",
+    release: "Ongoing research",
+    role: "Independent research",
+    status: "In progress",
+    repoUrl: "https://github.com/Freak205/FORGELENS",
+    repoLabel: "Freak205/FORGELENS",
+    summary:
+      "Independent deep-learning research into document forgery detection and pixel-level tamper localization — PyTorch training, a leakage-safe data pipeline, and LoRA fine-tuning of an open-weight vision-language model.",
+    tags: ["PyTorch", "Computer vision", "VLM fine-tuning", "LoRA", "Research engineering"],
+    metrics: [],
+    caseStudy: false,
+  },
+];
 
 /* -----------------------------------------------------------------------------
    9. AWARDS & RECOGNITION
@@ -551,7 +879,7 @@ export const sideProject = {
    certifications, so there was nothing true to put in.
 
    To switch it on: add real entries below and set `show: true`. The section is
-   fully built and will slot straight into the page between Work and About.
+   fully built and will slot straight into the page.
    -------------------------------------------------------------------------- */
 
 export type AwardIcon = "trophy" | "medal" | "shield" | "star";
@@ -571,37 +899,54 @@ export const awards: { icon: AwardIcon; color: string; title: string; issuer: st
 
 /* -----------------------------------------------------------------------------
    10. ABOUT
-   EDIT: image.src — drop a photo into /public and set the path. Leave it null
-   for the designed placeholder.
+   -----------------------------------------------------------------------------
+   No photograph here either. The left column is a drawn profile plate carrying
+   the range of work — which is the thing a visitor actually needs from this
+   section.
    -------------------------------------------------------------------------- */
 
 export const about = {
   label: "Who I Am",
   headingLight: "About",
   headingBold: "Me",
-  image: {
-    src: "/portrait.webp" as string | null,
-    alt: "Ineedi Venkata Sai Anirudh",
+  /** The drawn plate that replaces the portrait. */
+  plate: {
+    label: "Working profile",
+    monogram: "A",
+    /** The kinds of site I build. This is the "any kind of site" claim, itemised. */
+    disciplines: [
+      "Commerce & D2C",
+      "Brand & studio",
+      "Product & SaaS",
+      "Content & editorial",
+      "Internal tools",
+      "AI & data apps",
+    ],
+    note: "Interface, logic and data — same pair of hands.",
   },
   paragraphs: [
-    "Full-stack developer in Hyderabad. I build e-commerce platforms and business websites and take them all the way — architecture, interface, data, backend, deployment, and the unglamorous work of keeping them running.",
-    "Two live platforms came out of that. Different problems, same habit: I don't hand off at the halfway mark.",
-    "A storefront the owner can't update isn't finished. Neither is a beautiful site nobody can find.",
+    "Full-stack developer in Hyderabad. I build websites and web platforms of every kind — storefronts, studio sites, product and SaaS front ends, content platforms, internal tools — and I take each one the whole way: architecture, interface, data, backend, deployment, and the unglamorous work of keeping it running.",
+    "Two of those are live client platforms I still operate. Three more are mine: an AI analytics app, a computer-vision game controller, and deep-learning research into document forensics.",
+    "Different problems, one habit — I don't hand off at the halfway mark. A storefront the owner can't update isn't finished. Neither is a beautiful site nobody can find.",
   ],
-  /** Three counters. Every number here is verifiable from the two platforms. */
+  /** Three counters. Every number here is verifiable from the projects listed. */
   stats: [
-    { value: "02", label: "Live platforms in production" },
-    { value: "12", label: "Admin modules built for CLINVARA" },
-    { value: "07", label: "Art-directed verticals shipped" },
+    { value: "02", label: "Live client platforms in production" },
+    { value: "03", label: "Personal engineering projects" },
+    { value: "176", label: "Automated tests across my own projects" },
   ],
   /** Compact supporting facts. Education sits here, not at the centre. */
   credentials: [
     { label: "Based in", value: "Hyderabad, Telangana, India" },
     {
       label: "Education",
-      value: "B.Tech, Computer Science & Engineering — GITAM (Deemed to be University), Hyderabad · 2023 intake",
+      value: "B.Tech, Computer Science & Engineering — GITAM (Deemed to be University), Hyderabad · 2023 – 2027",
     },
-    { label: "Open to", value: "Freelance e-commerce, D2C, business and AI-integrated website projects" },
+    {
+      label: "Open to",
+      value:
+        "Full-time and internship roles in full-stack, frontend or product engineering — and freelance work of any kind",
+    },
   ],
 } as const;
 
@@ -698,6 +1043,8 @@ export const testimonials: Testimonial[] = [
 
 /* -----------------------------------------------------------------------------
    13. CONTACT — "Let's Work Together"
+   -----------------------------------------------------------------------------
+   Two lanes, because the site has two audiences. HIRING is the first one.
    -------------------------------------------------------------------------- */
 
 export const contactSection = {
@@ -705,21 +1052,41 @@ export const contactSection = {
   headingLight: "Let's Work",
   headingBold: "Together",
   intro:
-    "Open to freelance e-commerce, D2C and business website work. Tell me what you're building.",
+    "Two ways in — hire me for a role, or bring me a project. Either way, tell me what you're building and I'll give you an honest read.",
+  lanes: [
+    {
+      kind: "hiring" as const,
+      label: "For hiring teams",
+      title: "Full-time & internship roles",
+      body: "Full-stack, frontend or product engineering. Everything on this site is running in production or public on GitHub — the résumé, the live platforms and the source all check out against each other.",
+      cta: "Download CV",
+    },
+    {
+      kind: "clients" as const,
+      label: "For clients & founders",
+      title: "Freelance projects",
+      body: "Any kind of site — storefront, brand, studio, product, SaaS, content or internal tool. One person from the first conversation to live, indexed and maintained.",
+      cta: "Start a project",
+    },
+  ],
   primaryCta: "Send a message",
   secondaryCta: "Download CV",
   form: {
-    title: "Start a project",
-    subtitle: "Tell me what you're building and where it's stuck. I'll reply with an honest read on scope, approach and timeline.",
+    title: "Start a conversation",
+    subtitle:
+      "A role or a project — both go to the same inbox. Tell me what you need and I'll reply with an honest read on fit, scope and timeline.",
     projectTypes: [
+      "Full-time or internship role",
       "E-commerce platform",
-      "Business or brand website",
-      "AI feature integration",
+      "Business, brand or studio website",
+      "Product, SaaS or web app",
+      "AI or data feature",
       "SEO, deployment & operations",
       "Something else",
     ],
     /** No prices are quoted anywhere else on the site. */
     budgetRanges: [
+      "Not applicable — hiring enquiry",
       "Not sure yet",
       "Under ₹50,000",
       "₹50,000 – ₹1,50,000",
@@ -754,15 +1121,27 @@ export const seo = {
   title: `${profile.fullName} — ${profile.title}`,
   titleSuffix: `${profile.firstName} · ${profile.title}`,
   description:
-    "Full-stack developer in Hyderabad building complete e-commerce platforms and business websites — from design and development through deployment and ongoing operation. Two live production platforms shipped independently.",
+    "Full-stack developer in Hyderabad building websites and web platforms of every kind — commerce, brand, product, SaaS, content and internal tools — from design through deployment and operation. Two live client platforms, plus AI, computer-vision and deep-learning projects of my own. Open to roles and freelance work.",
   keywords: [
     "full-stack developer",
-    "e-commerce developer",
+    "hire full-stack developer",
     "Next.js developer",
-    "freelance web developer Hyderabad",
-    "D2C website developer",
+    "React developer Hyderabad",
+    "web developer Hyderabad",
+    "freelance web developer India",
+    "e-commerce developer",
+    "Python developer",
+    "computer vision engineer",
     "Firebase developer",
   ],
   /** Twitter/X handle including "@". Leave null to omit the tag. */
   twitterHandle: null as string | null,
+  /**
+   * The social sharing card. Kept short deliberately — it is read at thumbnail
+   * size in a chat window, not on a page.
+   */
+  og: {
+    headline: "I build websites and web platforms of every kind.",
+    sub: "Live client platforms, plus AI, computer-vision and deep-learning projects of my own.",
+  },
 } as const;

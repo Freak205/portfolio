@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { about, profile } from "@/content/site";
 import { Reveal } from "@/components/motion/Reveal";
 import Parallax from "@/components/motion/Parallax";
@@ -13,7 +12,7 @@ export default function About() {
       <div className="shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <Reveal className="lg:sticky lg:top-28 lg:self-start">
           <Parallax distance={26} reverse>
-            <Portrait />
+            <ProfilePlate />
           </Parallax>
         </Reveal>
 
@@ -89,44 +88,102 @@ export default function About() {
 }
 
 /**
- * Portrait slot. Set `about.image.src` in content/site.ts to a file in /public
- * (for example "/anirudh-desk.jpg") and this renders the real photo.
+ * What used to be a portrait.
+ *
+ * A photograph in this slot told a visitor what I look like, which is the one
+ * question nobody arrives with. The plate answers the real one instead — what
+ * kinds of site do you actually build — as a spec panel: monogram watermark,
+ * ruled index of disciplines, availability strip.
+ *
+ * It is drawn entirely in markup, so it stays a server component, ships no
+ * image bytes, and reflows to the plate's real width rather than a fixed crop.
  */
-function Portrait() {
+function ProfilePlate() {
   return (
-    // Capped on small screens: the source crop is 640px wide, and letting it
-    // run the full width of a high-DPR phone would ask it to upscale.
     <figure className="group relative mx-auto max-w-[22rem] lg:max-w-none">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-[var(--line)] bg-panel">
-        {about.image.src ? (
-          <Image
-            src={about.image.src}
-            alt={about.image.alt}
-            fill
-            sizes="(max-width: 1024px) 22rem, 460px"
-            // The photograph is already black and white, so the usual
-            // grayscale-off-on-hover would be a transition to nothing. A slow
-            // push-in is the honest version of the same gesture.
-            className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-          />
-        ) : (
-          <>
-            <div aria-hidden="true" className="dotgrid absolute inset-0" />
-            <div aria-hidden="true" className="bloom left-1/2 top-1/2 size-[22rem] -translate-x-1/2 -translate-y-1/2 opacity-25" />
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-10 bottom-0 top-[20%] rounded-t-full border border-[var(--line-strong)]"
+        <div aria-hidden="true" className="dotgrid absolute inset-0 opacity-80" />
+        <div
+          aria-hidden="true"
+          className="bloom left-1/2 top-[38%] size-[20rem] -translate-x-1/2 opacity-30 transition-opacity duration-700 group-hover:opacity-45"
+        />
+
+        {/* Corner ticks — an engineering drawing's frame, not a photo's. */}
+        <div aria-hidden="true" className="absolute inset-4">
+          {[
+            "left-0 top-0 border-l border-t",
+            "right-0 top-0 border-r border-t",
+            "right-0 bottom-0 border-r border-b",
+            "left-0 bottom-0 border-l border-b",
+          ].map((position) => (
+            <span
+              key={position}
+              className={`absolute size-4 border-[var(--line-strong)] ${position}`}
             />
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
-              <span className="rounded-full border border-[var(--line-strong)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-soft">
-                Photo placeholder
+          ))}
+        </div>
+
+        <div className="relative flex h-full flex-col p-6 md:p-7">
+          <div className="flex items-center justify-between gap-3">
+            <p className="kicker">{about.plate.label}</p>
+            <span className="mono text-[9px] uppercase tracking-[0.14em] text-white/25">
+              {String(about.plate.disciplines.length).padStart(2, "0")}
+            </span>
+          </div>
+
+          {/* The plate's subject, where a face used to be: a monogram in a
+              lit tile, with the role under it. Without this the upper half of
+              the panel was empty and the whole thing read as a list floating in
+              a box. */}
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-6">
+            <span
+              aria-hidden="true"
+              className="grid size-20 place-items-center rounded-2xl border border-brand/30 bg-brand/[0.08] text-[2.5rem] font-bold leading-none text-brand-soft shadow-[0_0_60px_-18px_var(--color-brand)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 md:size-24 md:text-[3rem]"
+            >
+              {about.plate.monogram}
+            </span>
+            <span className="mono text-[10px] uppercase tracking-[0.22em] text-white/45">
+              {profile.heroRole}
+            </span>
+          </div>
+
+          <ul className="divide-y divide-[var(--line)] border-y border-[var(--line)]">
+            {about.plate.disciplines.map((item, i) => (
+              <li
+                key={item}
+                className="flex items-baseline gap-3 py-2.5 text-[0.8125rem] text-white/70 md:text-sm"
+              >
+                <span className="mono shrink-0 text-[9px] tabular-nums text-brand-soft/70">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <p className="accent mt-5 text-[11px] leading-relaxed text-white/40">
+            {about.plate.note}
+          </p>
+
+          {/* HIRING — the availability line, repeated where the eye already is. */}
+          {(profile.openToRoles || profile.openToFreelance) && (
+            <p className="mt-4 flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-white/45">
+              <span aria-hidden="true" className="relative flex size-1.5 items-center justify-center">
+                <span className="absolute inset-0 animate-ring-out rounded-full bg-brand" />
+                <span className="relative size-1.5 animate-pulse-dot rounded-full bg-brand" />
               </span>
-              <span className="max-w-[15rem] text-[11px] leading-relaxed text-white/30">
-                Drop a file in /public and set about.image.src in content/site.ts
-              </span>
-            </div>
-          </>
-        )}
+              {profile.openToRoles ? "Open to roles" : "Available"}
+              {profile.openToRoles && profile.openToFreelance && (
+                <>
+                  <span aria-hidden="true" className="text-white/20">
+                    ·
+                  </span>
+                  Freelance
+                </>
+              )}
+            </p>
+          )}
+        </div>
       </div>
 
       <figcaption className="mt-4 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.14em] text-white/30">

@@ -100,11 +100,35 @@ const personSchema = {
   sameAs: [contact.github, contact.linkedin],
   knowsAbout: [
     "Full-stack web development",
+    "Web application development",
     "E-commerce platforms",
     "Next.js",
+    "React",
+    "TypeScript",
+    "Node.js",
     "Firebase",
     "Cloud Firestore",
+    "Python",
+    "Flask",
+    "Data analytics",
+    "Computer vision",
+    "Generative AI integration",
     "Search engine optimization",
+  ],
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "GITAM (Deemed to be University)",
+  },
+  /* HIRING — `seeks` is how a Person advertises what they are looking for.
+     Both entries are dropped automatically when the matching switch in
+     content/site.ts is turned off. */
+  seeks: [
+    ...(profile.openToRoles
+      ? [{ "@type": "Demand", name: "Full-time and internship software engineering roles" }]
+      : []),
+    ...(profile.openToFreelance
+      ? [{ "@type": "Demand", name: "Freelance web development projects" }]
+      : []),
   ],
 };
 

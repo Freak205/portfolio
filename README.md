@@ -1,8 +1,13 @@
 # Portfolio — Ineedi Venkata Sai Anirudh
 
-A personal portfolio for freelance and recruiter enquiries: a full-bleed hero
-that scales on scroll, services, a technology marquee, two case studies for the
-live production platforms, an experience timeline, and a working contact form.
+A personal portfolio written for two audiences at once — **hiring teams and
+clients**. A drawn hero that scales on scroll, services, a technology marquee,
+two full case studies for the live client platforms, a Lab section for personal
+engineering projects (with case studies of their own), an experience timeline,
+and a working contact form with a lane for each audience.
+
+There are **no photographs of the subject anywhere on the site.** The hero and
+the About panel are both drawn in markup — see *How the hero works* below.
 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 ·
 Framer Motion · Lenis · Zod. No paid services required to run or deploy.
@@ -41,13 +46,13 @@ No copy is hard-coded in components. Open it and search for:
 
 | Where                    | What                                                                                                                                        |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `hero.image.src`         | **`null`.** The hero is designed around a tall portrait of you. Drop one in `/public` and set this — everything else about the layout is identical. |
+| `lab[1].repoUrl`         | **`undefined`.** Project Steer has no public repository URL yet, so its card shows `linkNote` instead of a link. Set `repoUrl` + `repoLabel` and the buttons appear on the card *and* the case study automatically. |
 | `contact.linkedin`       | **Placeholder URL.** Copy your real profile URL from the address bar. Everything else in `contact` came from your resume.                      |
 | `siteUrl`                | Your production domain. Override with `NEXT_PUBLIC_SITE_URL` on Vercel rather than editing the file. Unset, it falls back to your `.vercel.app` domain. |
 | `projects[0].context` + `experience[1].company` | Both say **RADIENT AI PVT LTD**. Your resume lists **Boltzmann Labs** for the CLINVARA engagement. Pick the one that is correct for public use. |
+| `profile.openToRoles` / `openToFreelance` | Both **`true`.** These two switches drive the hero status chips, the About plate, the two Contact lanes, the `seeks` JSON-LD and the OG card badge. Flip either off and every one of those updates. |
 | `awardsSection.show`     | **`false`.** Your resume lists no awards, so nothing was invented. The section is fully built — add real entries to `awards` and flip this to `true`. |
-| `testimonials`           | Three empty slots. They render as clearly-reserved cards until you add a real quote.                                                           |
-| `about.image.src`        | `null` → labelled placeholder. Point it at a photo in `/public`.                                                                              |
+| `testimonials`           | Three empty slots. They render as clearly-reserved cards until you add a real quote. It is no longer in the header nav — six items was the ceiling and Lab earned the slot. |
 | `projects[*].cover`      | **Done.** Real captures of both live sites are in `/public/work/`. See below to re-shoot them.                                                 |
 | `/public/resume.pdf`     | A copy of `Anirudh_Resume_PL.pdf`, behind the **Resume** and **Download CV** buttons. Note it currently leads with ML/research positioning while the site leads with full-stack — replace the file if you want them aligned. Set `contact.resumeUrl = null` to hide both buttons. |
 
@@ -66,6 +71,27 @@ Fill in one slot and the card becomes a real quote automatically:
 ```
 
 Set `testimonialsSection.show = false` to hide the section entirely.
+
+### Adding a personal project
+
+`lab` in [`content/site.ts`](content/site.ts) drives the **Lab** section and the
+`/lab/[slug]` pages. One flag decides how much page a project gets:
+
+```ts
+caseStudy: true   // → its own page at /lab/<slug>, listed in sitemap.xml
+caseStudy: false  // → card only; the card links straight to `repoUrl`
+```
+
+`caseStudy: true` requires `overview`, `problem`, `approach`, `highlights`,
+`engineering` and `stack`; `limitations` and `next` are optional but both
+sections render if present, and they are the reason the pages read as
+engineering rather than marketing. `caseStudy: false` exists so a project with
+no verified detail (ForgeLens, currently) can still appear without a page padded
+out to fill the template.
+
+The section order is deliberate: **Selected Work** carries the two client
+platforms and stays the strongest claim on the page; **Lab** sits below it. Add
+a personal project to `lab`, never to `projects`.
 
 ### Screenshots
 
@@ -223,8 +249,9 @@ it does not take effect until the next build.
 ```
 app/
   layout.tsx            Fonts, metadata, Person JSON-LD, shell
-  page.tsx              Home — composes the eight sections
-  work/[slug]/page.tsx  Case studies (statically generated per project)
+  page.tsx              Home — composes the nine sections
+  work/[slug]/page.tsx  Client case studies (static per project)
+  lab/[slug]/page.tsx   Personal project case studies (static per project)
   api/contact/route.ts  Form endpoint
   not-found.tsx         Custom 404
   error.tsx             Runtime error boundary
@@ -233,12 +260,12 @@ app/
   icon.svg              Favicon
   sitemap.ts robots.ts  Generated from content/site.ts
 components/
-  sections/             Hero, Services, Arsenal, Work, Awards, About,
+  sections/             Hero, Services, Arsenal, Work, Lab, Awards, About,
                         Experience, Testimonials, Contact (+ ContactForm)
   layout/               Header (+ mobile nav), Footer, back-to-top
-  motion/               Kinetic, ScrubText, Tilt, Assemble, Spine, Aurora,
-                        Reveal, Parallax, Magnetic, Marquee, Counter, Cursor,
-                        ScrollProgress, Intro, SmoothScroll
+  motion/               StackSigil, Kinetic, ScrubText, Tilt, Assemble, Spine,
+                        Aurora, Reveal, Parallax, Magnetic, Marquee, Counter,
+                        Cursor, ScrollProgress, Intro, SmoothScroll
   ui/                   Headline, Pill, Preview, Field, Modal, Glyph
 content/site.ts         ← all copy and data
 lib/                    motion tokens, brand icons, scroll, rate limit,
@@ -247,10 +274,27 @@ lib/                    motion tokens, brand icons, scroll, rate limit,
 
 ### How the hero works
 
-The section is `200svh` tall with a sticky visual inside it, so the portrait
-scale, the name fade and the positioning line are all driven by scroll position
-rather than a timer. Under `prefers-reduced-motion` the section collapses to a
-single static screen with the positioning line already visible.
+The section is `200svh` tall with a sticky visual inside it, so the plate scale,
+the name fade and the positioning line are all driven by scroll position rather
+than a timer. Under `prefers-reduced-motion` the section collapses to a single
+static screen with the positioning line already visible.
+
+Inside the plate is
+[`StackSigil`](components/motion/StackSigil.tsx) — one inline SVG on a 400×500
+field drawing three isometric planes (interface, logic, data) with a pulse
+running the spine between them. It replaced a portrait photograph on purpose: it
+makes the site's actual claim in the first second, ships no image bytes, is
+correct before any font or asset has loaded, and leans toward the pointer.
+
+Two numbers in it are load-bearing. The planes sit at `y = 126 / 204 / 282`
+because the plate's lower **30%** is under the gradient the name is set across —
+move the layers down or lengthen that gradient and the bottom plane draws into a
+fade. And the labels are anchored at `x = 392` with `HALF_W = 88`, which leaves
+just enough room for the longest of them (`INTERFACE`) at 8.5px mono; widen the
+planes and it clips.
+
+The About panel is the same idea at a different job — a drawn spec plate listing
+the kinds of site I build, rather than a face.
 
 ### The motion layer
 

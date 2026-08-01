@@ -1,13 +1,17 @@
 import Link from "next/link";
-import { projects, sideProject, workSection } from "@/content/site";
+import { projects, workSection } from "@/content/site";
 import { rgbChannels } from "@/lib/color";
-import { Reveal } from "@/components/motion/Reveal";
 import Tilt from "@/components/motion/Tilt";
 import Spotlight from "@/components/motion/Spotlight";
 import Headline from "@/components/ui/Headline";
 import Preview from "@/components/ui/Preview";
 import { IconArrowUpRight } from "@/components/ui/Glyph";
 
+/**
+ * The two flagships, and only the two. Personal projects live in <Lab /> below
+ * so that this section stays the strongest claim on the page rather than a list
+ * everything gets added to.
+ */
 export default function Work() {
   return (
     <section id="work" className="relative scroll-mt-24 py-20 md:py-32">
@@ -96,50 +100,6 @@ export default function Work() {
             );
           })}
         </div>
-
-        {sideProject.show && (
-          <Reveal delay={0.1}>
-            <a
-              href={sideProject.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="panel panel-hover group mt-4 block p-6 md:mt-5 md:p-9"
-            >
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-                <div className="max-w-2xl">
-                  <p className="kicker">{sideProject.label}</p>
-                  <h3 className="mt-3 flex flex-wrap items-baseline gap-x-3 text-2xl font-semibold tracking-tight">
-                    {sideProject.name}
-                    <span className="accent text-sm text-white/45 md:text-[1rem]">
-                      {sideProject.tagline}
-                    </span>
-                  </h3>
-                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-white/55">
-                    {sideProject.body}
-                  </p>
-                  <ul className="mt-5 flex flex-wrap gap-2">
-                    {sideProject.tags.map((tag) => (
-                      <li
-                        key={tag}
-                        className="rounded-full border border-[var(--line)] px-3 py-1 text-[11px] text-white/45"
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <span className="inline-flex shrink-0 items-center gap-2.5 text-[12px] text-white/50 transition-colors duration-400 group-hover:text-white">
-                  <span className="hidden sm:inline">{sideProject.hrefLabel}</span>
-                  <span className="sm:hidden">View on GitHub</span>
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full border border-[var(--line-strong)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-brand group-hover:bg-brand group-hover:text-white">
-                    <IconArrowUpRight className="size-4" />
-                  </span>
-                </span>
-              </div>
-            </a>
-          </Reveal>
-        )}
       </div>
     </section>
   );

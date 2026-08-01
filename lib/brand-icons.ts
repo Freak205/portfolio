@@ -15,19 +15,26 @@ import {
   siCss,
   siExpress,
   siFirebase,
+  siFlask,
   siFramer,
   siGit,
   siGithub,
+  siGithubactions,
   siGooglecloud,
   siGraphql,
   siGreensock,
   siHtml5,
   siHuggingface,
   siJavascript,
+  siMediapipe,
   siMongodb,
   siNextdotjs,
   siNodedotjs,
+  siNumpy,
+  siOpencv,
+  siPandas,
   siPostgresql,
+  siPytest,
   siPython,
   siPytorch,
   siReact,
@@ -46,19 +53,26 @@ export const ICONS: Record<string, BrandIcon> = {
   siCss,
   siExpress,
   siFirebase,
+  siFlask,
   siFramer,
   siGit,
   siGithub,
+  siGithubactions,
   siGooglecloud,
   siGraphql,
   siGreensock,
   siHtml5,
   siHuggingface,
   siJavascript,
+  siMediapipe,
   siMongodb,
   siNextdotjs,
   siNodedotjs,
+  siNumpy,
+  siOpencv,
+  siPandas,
   siPostgresql,
+  siPytest,
   siPython,
   siPytorch,
   siReact,
@@ -72,11 +86,23 @@ export const ICONS: Record<string, BrandIcon> = {
 };
 
 /**
- * Brand colours that are pure black read as invisible on a dark background.
- * Those get a light override so the mark stays legible.
+ * Some brand colours are near-black (GitHub, Vercel, pandas, NumPy) and vanish
+ * against this background. Rather than maintaining a list of them by hand, any
+ * mark whose relative luminance falls below the threshold is swapped for a
+ * near-white — the logo stays recognisable by shape, which is what carries it at
+ * 18px anyway.
  */
-const DARK_HEXES = new Set(["000000", "0A0A0A", "181717", "0C2451"]);
+const MIN_LUMINANCE = 0.06;
+
+function luminance(hex: string) {
+  const n = parseInt(hex, 16);
+  const channels = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((value) => {
+    const c = value / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
 
 export function iconColor(hex: string) {
-  return DARK_HEXES.has(hex.toUpperCase()) ? "#E7E9EE" : `#${hex}`;
+  return luminance(hex) < MIN_LUMINANCE ? "#E7E9EE" : `#${hex}`;
 }

@@ -3,6 +3,7 @@ import Band from "@/components/sections/Band";
 import Services from "@/components/sections/Services";
 import Arsenal from "@/components/sections/Arsenal";
 import Work from "@/components/sections/Work";
+import Lab from "@/components/sections/Lab";
 import Awards from "@/components/sections/Awards";
 import About from "@/components/sections/About";
 import Experience from "@/components/sections/Experience";
@@ -20,6 +21,7 @@ export default function HomePage() {
         <Services />
         <Arsenal />
         <Work />
+        <Lab />
         <Awards />
         <About />
         <Experience />

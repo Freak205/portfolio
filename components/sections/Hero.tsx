@@ -1,28 +1,32 @@
 "use client";
 
-import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
-import { useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { useRef, type PointerEvent } from "react";
 import { hero, profile } from "@/content/site";
 import { EASE_EXPO } from "@/lib/motion";
+import StackSigil from "@/components/motion/StackSigil";
 import { IconArrowDown } from "@/components/ui/Glyph";
 
 /**
- * A portrait plate over an out-of-focus field of the same photograph, with the
- * name set across the plate's faded lower edge. Scrolling pushes the whole
- * composition in and fades it out while the positioning line resolves over it.
+ * A drawn plate over an atmospheric field, with the name set across the plate's
+ * faded lower edge. Scrolling pushes the whole composition in and fades it out
+ * while the positioning line resolves over it.
  *
- * Why a plate rather than a full-bleed photograph:
+ * There is deliberately no photograph. The plate holds <StackSigil /> — three
+ * isometric planes for interface, logic and data with a pulse running between
+ * them — which makes the site's actual claim in the first second, and gives the
+ * pointer something to move. A headshot occupied the same space and said less.
  *
- * - The source is 800px square. Full-bleed at 100vw means a ~2.5× upscale on a
- *   desktop display, which is exactly the softness a portrait cannot afford.
- *   At plate size the same file renders with resolution to spare.
- * - The subject is in profile, centred. A full-bleed treatment puts the name
- *   straight across his face.
- *
- * The backdrop is a separate 160px copy, blurred at build time. Blur discards
- * detail anyway, so there is nothing to gain from upscaling the full-size image
- * behind it — and a great deal of bandwidth to lose.
+ * The plate leans toward the pointer on a spring. That lean lives on the same
+ * element as the scroll scale, so both feed one transform rather than fighting
+ * over it.
  *
  * The section is 165–200svh and the visual is sticky inside it, so the whole
  * transition is driven by scroll position rather than a timer. Under
@@ -30,6 +34,7 @@ import { IconArrowDown } from "@/components/ui/Glyph";
  */
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const plate = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
@@ -48,7 +53,28 @@ export default function Hero() {
   const lineScale = useTransform(progress, [0.24, 0.6], [0.88, 1]);
   const hintOpacity = useTransform(progress, [0, 0.12], [1, 0]);
 
-  const hasPhoto = Boolean(hero.image.src);
+  const leanSpring = { stiffness: 130, damping: 20, mass: 0.6 };
+  const rotateX = useSpring(useMotionValue(0), leanSpring);
+  const rotateY = useSpring(useMotionValue(0), leanSpring);
+
+  function handleMove(event: PointerEvent<HTMLDivElement>) {
+    // Mouse only. On touch a drag across the plate is the visitor scrolling, and
+    // tilting under their finger reads as the page fighting back.
+    if (reduced || event.pointerType !== "mouse") return;
+    const node = plate.current;
+    if (!node) return;
+
+    const rect = node.getBoundingClientRect();
+    const relX = (event.clientX - rect.left) / rect.width;
+    const relY = (event.clientY - rect.top) / rect.height;
+    rotateY.set((relX - 0.5) * 14);
+    rotateX.set((0.5 - relY) * 14);
+  }
+
+  function handleLeave() {
+    rotateX.set(0);
+    rotateY.set(0);
+  }
 
   return (
     <section
@@ -57,29 +83,18 @@ export default function Hero() {
       className={`relative ${reduced ? "" : "h-[165svh] md:h-[200svh]"}`}
     >
       <div className="sticky top-0 flex h-svh w-full items-center justify-center overflow-hidden">
-        {/* ---------- Out-of-focus field ---------- */}
+        {/* ---------- Field ---------- */}
         <motion.div
           aria-hidden="true"
           className="absolute inset-0"
           style={reduced ? undefined : { scale: fieldScale, opacity: fieldOpacity }}
         >
-          {hasPhoto ? (
-            <Image
-              src="/portrait-blur.webp"
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              className="scale-110 object-cover object-center opacity-45"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-base">
-              <div className="dotgrid absolute inset-0" />
-            </div>
-          )}
-
+          <div className="absolute inset-0 bg-base">
+            <div className="dotgrid absolute inset-0 opacity-70" />
+          </div>
           <div className="absolute inset-0 bg-gradient-to-b from-void/90 via-void/55 to-void" />
-          <div className="bloom left-1/2 top-1/3 size-[34rem] -translate-x-1/2 opacity-40 md:size-[46rem]" />
+          <div className="bloom left-1/2 top-1/3 size-[34rem] -translate-x-1/2 opacity-50 md:size-[46rem]" />
+          <div className="bloom left-[18%] top-[58%] size-[18rem] opacity-25 md:size-[24rem]" />
         </motion.div>
 
         {/* ---------- Plate + name ---------- */}
@@ -87,41 +102,51 @@ export default function Hero() {
           className="relative z-10 flex w-full flex-col items-center px-5 text-center"
           style={reduced ? undefined : { opacity: stageOpacity, y: stageY }}
         >
+          {/* HIRING — the first thing a recruiter sees, above the fold. */}
+          <motion.div
+            className="mb-6 flex flex-wrap items-center justify-center gap-2 md:mb-8"
+            initial={reduced ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: EASE_EXPO, delay: 0.1 }}
+          >
+            {profile.openToRoles && <StatusChip label={hero.status.roles} live />}
+            {profile.openToFreelance && <StatusChip label={hero.status.freelance} />}
+          </motion.div>
+
           <motion.figure
-            className="relative"
+            className="relative [perspective:1200px]"
             style={reduced ? undefined : { scale: plateScale }}
             initial={reduced ? false : { opacity: 0, y: 32, filter: "blur(14px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 1.1, ease: EASE_EXPO }}
           >
-            <div className="relative aspect-[4/5] h-[clamp(15rem,46svh,30rem)] overflow-hidden rounded-2xl border border-[var(--line-strong)] bg-panel">
-              {hasPhoto ? (
-                <Image
-                  src={hero.image.src as string}
-                  alt={hero.image.alt}
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 60vw, 22rem"
-                  className="object-cover object-center"
-                />
-              ) : (
-                <PortraitPlaceholder />
-              )}
+            <motion.div
+              ref={plate}
+              onPointerMove={handleMove}
+              onPointerLeave={handleLeave}
+              style={reduced ? undefined : { rotateX, rotateY }}
+              className="relative aspect-[4/5] h-[clamp(15rem,46svh,30rem)] overflow-hidden rounded-2xl border border-[var(--line-strong)] bg-panel will-change-transform"
+            >
+              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-panel-2 to-void" />
+              <StackSigil />
 
               {/* The plate's lower edge dissolves into the page, which is what
                   lets the name sit across it and still be readable. */}
               <div
                 aria-hidden="true"
-                className="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-void via-void/75 to-transparent"
+                className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-void via-void/75 to-transparent"
               />
-            </div>
+            </motion.div>
           </motion.figure>
 
           <motion.h1
             id="hero-heading"
             // Pulled up so the type crosses the plate's faded edge rather than
-            // sitting under it as a caption.
-            className="headline -mt-[0.34em] text-[clamp(3rem,13vw,9rem)] font-semibold leading-[0.9] tracking-[-0.045em]"
+            // sitting under it as a caption. It is set in em, so the overlap
+            // stays proportional from 390px to 1440px. At 0.34em the caps only
+            // kissed the edge; 0.46em puts them properly into the fade, still
+            // well clear of the sigil's readout line above it.
+            className="headline -mt-[0.46em] text-[clamp(3rem,13vw,9rem)] font-semibold leading-[0.9] tracking-[-0.045em]"
             initial={reduced ? false : { opacity: 0, y: 40, filter: "blur(12px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 1.2, ease: EASE_EXPO, delay: 0.25 }}
@@ -184,22 +209,17 @@ export default function Hero() {
   );
 }
 
-/**
- * Stand-in for the portrait, used only when `hero.image.src` is null.
- */
-function PortraitPlaceholder() {
+/** Availability chip. `live` gets the pulsing dot; the second one stays calm. */
+function StatusChip({ label, live = false }: { label: string; live?: boolean }) {
   return (
-    <div className="absolute inset-0 bg-base">
-      <div aria-hidden="true" className="dotgrid absolute inset-0" />
-      <div aria-hidden="true" className="bloom left-1/2 top-1/3 size-[20rem] -translate-x-1/2 opacity-40" />
-      <div className="absolute inset-x-0 top-[22%] flex flex-col items-center gap-3 px-5 text-center">
-        <span className="rounded-full border border-[var(--line-strong)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-soft">
-          Photo placeholder
-        </span>
-        <span className="max-w-[14rem] text-[11px] leading-relaxed text-white/35">
-          Set hero.image.src in content/site.ts
-        </span>
-      </div>
-    </div>
+    <span className="mono inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-void/50 px-3.5 py-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/70 backdrop-blur-sm">
+      <span aria-hidden="true" className="relative flex size-1.5 items-center justify-center">
+        {live && <span className="absolute inset-0 animate-ring-out rounded-full bg-brand" />}
+        <span
+          className={`relative size-1.5 rounded-full ${live ? "animate-pulse-dot bg-brand" : "bg-white/35"}`}
+        />
+      </span>
+      {label}
+    </span>
   );
 }
