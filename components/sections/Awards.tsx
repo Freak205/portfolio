@@ -44,7 +44,7 @@ export default function Awards() {
                     <Icon className="size-6" />
                   </span>
 
-                  <h3 className="text-base font-semibold leading-snug">{award.title}</h3>
+                  <h3 className="text-[1rem] font-semibold leading-snug">{award.title}</h3>
 
                   <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-white/35">
                     {award.issuer}

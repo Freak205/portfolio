@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { projects, sideProject, workSection } from "@/content/site";
+import { rgbChannels } from "@/lib/color";
 import { Reveal } from "@/components/motion/Reveal";
 import Tilt from "@/components/motion/Tilt";
+import Spotlight from "@/components/motion/Spotlight";
 import Headline from "@/components/ui/Headline";
 import Preview from "@/components/ui/Preview";
 import { IconArrowUpRight } from "@/components/ui/Glyph";
 
 export default function Work() {
   return (
-    <section id="work" className="relative scroll-mt-24 py-24 md:py-32">
+    <section id="work" className="relative scroll-mt-24 py-20 md:py-32">
       <div className="shell">
         <Headline
           kicker={workSection.label}
@@ -17,41 +19,82 @@ export default function Work() {
           intro={workSection.intro}
         />
 
-        <div className="mt-14 grid gap-5 md:mt-18 lg:grid-cols-2">
-          {projects.map((project, i) => (
-            <Tilt key={project.slug} index={i % 2} strength={5}>
-              <Link
-                href={`/work/${project.slug}`}
-                className="panel panel-hover group block h-full overflow-hidden p-4 md:p-5"
-                data-cursor="Case study"
-              >
-                <Preview
-                  image={project.cover}
-                  urlLabel={project.liveLabel}
-                  seed={Number(project.index)}
-                  sizes="(max-width: 1024px) 92vw, 620px"
-                />
+        <div className="mt-12 grid gap-4 md:mt-18 md:gap-5 lg:grid-cols-2">
+          {projects.map((project, i) => {
+            const channels = rgbChannels(project.accent);
 
-                <div className="flex items-end justify-between gap-6 px-1.5 pb-1 pt-6">
-                  <div>
-                    <h3 className="text-2xl font-semibold tracking-tight transition-colors duration-400 group-hover:text-white md:text-[1.75rem]">
-                      {project.name}
-                    </h3>
-                    <p className="mono mt-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/40">
-                      {project.subtitle}
-                    </p>
-                  </div>
-
-                  <span
-                    aria-hidden="true"
-                    className="grid size-11 shrink-0 place-items-center rounded-full border border-[var(--line-strong)] text-white/70 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-brand group-hover:bg-brand group-hover:text-white"
+            return (
+              <Tilt key={project.slug} index={i % 2} strength={4} sheen={false}>
+                <Link
+                  href={`/work/${project.slug}`}
+                  data-cursor="Case study"
+                  className="group block h-full"
+                >
+                  <Spotlight
+                    color={channels}
+                    size="26rem"
+                    className="panel panel-hover h-full overflow-hidden rounded-[1.25rem] p-4 md:p-5"
                   >
-                    <IconArrowUpRight className="size-[18px]" />
-                  </span>
-                </div>
-              </Link>
-            </Tilt>
-          ))}
+                    {/* Index and live status, set as machine output. */}
+                    <div className="mb-4 flex items-center justify-between gap-4 px-1.5">
+                      <span className="mono text-[11px] font-semibold tabular-nums text-white/25">
+                        {project.index}
+                      </span>
+                      <span
+                        className="mono inline-flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.14em]"
+                        style={{ color: project.accent }}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="animate-pulse-dot size-1.5 rounded-full"
+                          style={{ backgroundColor: project.accent }}
+                        />
+                        Live
+                      </span>
+                    </div>
+
+                    <Preview
+                      image={project.cover}
+                      urlLabel={project.liveLabel}
+                      seed={Number(project.index)}
+                      sizes="(max-width: 1024px) 92vw, 620px"
+                    />
+
+                    <div className="flex items-end justify-between gap-5 px-1.5 pb-1 pt-6">
+                      <div className="min-w-0">
+                        <h3 className="truncate text-2xl font-semibold tracking-tight transition-colors duration-400 group-hover:text-white md:text-[1.75rem]">
+                          {project.name}
+                        </h3>
+                        <p className="mono mt-1.5 truncate text-[11px] font-medium uppercase tracking-[0.14em] text-white/40">
+                          {project.subtitle}
+                        </p>
+                      </div>
+
+                      {/* The accent fills the disc from nothing on hover, so the
+                          arrow flips to dark type against it. */}
+                      <span
+                        aria-hidden="true"
+                        className="relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-full border border-[var(--line-strong)] text-white/70 transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-transparent group-hover:text-void"
+                      >
+                        <span
+                          className="absolute inset-0 scale-0 rounded-full transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100"
+                          style={{ backgroundColor: project.accent }}
+                        />
+                        <IconArrowUpRight className="relative size-[18px] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45" />
+                      </span>
+                    </div>
+
+                    {/* Accent rule that runs the width of the card on hover. */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100"
+                      style={{ backgroundColor: project.accent, opacity: 0.6 }}
+                    />
+                  </Spotlight>
+                </Link>
+              </Tilt>
+            );
+          })}
         </div>
 
         {sideProject.show && (
@@ -60,14 +103,16 @@ export default function Work() {
               href={sideProject.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="panel panel-hover group mt-5 block p-7 md:p-9"
+              className="panel panel-hover group mt-4 block p-6 md:mt-5 md:p-9"
             >
               <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
                 <div className="max-w-2xl">
                   <p className="kicker">{sideProject.label}</p>
                   <h3 className="mt-3 flex flex-wrap items-baseline gap-x-3 text-2xl font-semibold tracking-tight">
                     {sideProject.name}
-                    <span className="accent text-base text-white/45">{sideProject.tagline}</span>
+                    <span className="accent text-sm text-white/45 md:text-[1rem]">
+                      {sideProject.tagline}
+                    </span>
                   </h3>
                   <p className="mt-3 text-[0.9375rem] leading-relaxed text-white/55">
                     {sideProject.body}
@@ -85,8 +130,9 @@ export default function Work() {
                 </div>
 
                 <span className="inline-flex shrink-0 items-center gap-2.5 text-[12px] text-white/50 transition-colors duration-400 group-hover:text-white">
-                  {sideProject.hrefLabel}
-                  <span className="grid size-9 place-items-center rounded-full border border-[var(--line-strong)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-brand group-hover:bg-brand group-hover:text-white">
+                  <span className="hidden sm:inline">{sideProject.hrefLabel}</span>
+                  <span className="sm:hidden">View on GitHub</span>
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full border border-[var(--line-strong)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-brand group-hover:bg-brand group-hover:text-white">
                     <IconArrowUpRight className="size-4" />
                   </span>
                 </span>

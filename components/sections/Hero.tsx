@@ -38,7 +38,9 @@ export default function Hero() {
     <section
       ref={ref}
       aria-labelledby="hero-heading"
-      className={`relative ${reduced ? "" : "h-[200svh]"}`}
+      // Shorter on phones: 200svh of scroll to clear one screen is a long way
+      // to drag on a small viewport before the page proper starts.
+      className={`relative ${reduced ? "" : "h-[165svh] md:h-[200svh]"}`}
     >
       <div className="sticky top-0 flex h-svh w-full items-center justify-center overflow-hidden">
         {/* ---------- Portrait ---------- */}

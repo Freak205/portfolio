@@ -36,10 +36,15 @@ export default function Assemble({
   const centre = (columns - 1) / 2;
   const fromCentre = index - centre;
 
+  // The offsets are deliberately modest. The same numbers have to work for a
+  // three-up desktop grid, where they fan, and a single mobile column, where
+  // anything larger throws a full-width card most of the way off-screen — and
+  // they cannot be branched on viewport without the server and client
+  // disagreeing about the element's initial transform.
   const scatter = {
-    x: fromCentre * 90,
-    y: 70 + (index % 2) * 46,
-    r: fromCentre * 5,
+    x: fromCentre * 46,
+    y: 56 + (index % 2) * 34,
+    r: fromCentre * 3,
   };
 
   return (

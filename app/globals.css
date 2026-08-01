@@ -7,7 +7,14 @@
    ========================================================================== */
 
 @theme {
-  /* Surfaces */
+  /*
+     Surfaces.
+
+     ⚠ `--color-base` makes `text-base` a COLOUR utility, not the 1rem font
+     size — Tailwind builds `text-*` colours from these tokens and the colour
+     wins. `text-base` therefore paints type in #080a12, which is invisible on
+     this background. Use `text-[1rem]` for that size anywhere on the site.
+  */
   --color-void: #05060b;
   --color-base: #080a12;
   --color-panel: #0d1019;
@@ -85,6 +92,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    /* Entrance animations start off-screen; without this a phone can scroll
+       sideways to the gap they came from before they land. */
+    overscroll-behavior-x: none;
+    /* iOS paints a grey flash over every tap target otherwise, which fights the
+       transitions the elements already have. */
+    -webkit-tap-highlight-color: transparent;
   }
 
   ::selection {
@@ -217,9 +230,16 @@
       background-color 0.5s var(--ease-expo),
       transform 0.5s var(--ease-expo);
   }
-  .panel-hover:hover {
-    border-color: var(--line-strong);
-    background-color: var(--color-panel-2);
+  /*
+     Hover states are gated on a device that actually has hover. On touch,
+     :hover latches after a tap and stays latched until you tap elsewhere, so an
+     ungated rule leaves cards looking permanently focused.
+  */
+  @media (hover: hover) {
+    .panel-hover:hover {
+      border-color: var(--line-strong);
+      background-color: var(--color-panel-2);
+    }
   }
 
   /* Rounded chip used by the arsenal row and meta pills. */
@@ -238,9 +258,29 @@
       border-color 0.4s var(--ease-expo),
       background-color 0.4s var(--ease-expo);
   }
-  .chip:hover {
-    border-color: var(--line-strong);
-    background-color: var(--color-panel-2);
+  @media (hover: hover) {
+    .chip:hover {
+      border-color: var(--line-strong);
+      background-color: var(--color-panel-2);
+    }
+  }
+
+  /*
+     Horizontal rails (the feature deck) use the scroll position itself as the
+     progress indicator, so the native bar would be a second, uglier copy of it.
+     Scrolling is still fully native — only the bar is hidden.
+  */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Keeps content clear of the home indicator and notch on phones. */
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
 

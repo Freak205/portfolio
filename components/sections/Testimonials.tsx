@@ -16,7 +16,7 @@ export default function Testimonials() {
   const allEmpty = filled.length === 0;
 
   return (
-    <section id="testimonials" className="relative scroll-mt-24 py-24 md:py-32">
+    <section id="testimonials" className="relative scroll-mt-24 overflow-x-clip py-20 md:py-32">
       <div className="shell">
         <Headline
           kicker={testimonialsSection.label}

@@ -4,12 +4,13 @@ import { Reveal } from "@/components/motion/Reveal";
 import Parallax from "@/components/motion/Parallax";
 import Counter from "@/components/motion/Counter";
 import ScrubText from "@/components/motion/ScrubText";
+import Spotlight from "@/components/motion/Spotlight";
 import Headline from "@/components/ui/Headline";
 
 export default function About() {
   return (
-    <section id="about" className="relative scroll-mt-24 py-24 md:py-32">
-      <div className="shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+    <section id="about" className="relative scroll-mt-24 py-20 md:py-32">
+      <div className="shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <Reveal className="lg:sticky lg:top-28 lg:self-start">
           <Parallax distance={26} reverse>
             <Portrait />
@@ -23,11 +24,21 @@ export default function About() {
             bold={about.headingBold}
           />
 
-          <div className="mt-7 space-y-5">
-            {about.paragraphs.map((paragraph, i) => (
+          {/* The opening line carries the weight; the two after it are asides,
+              set smaller so the block reads as one statement, not three. */}
+          <ScrubText className="mt-7 text-[1.125rem] leading-[1.65] text-white/85 md:text-[1.375rem] md:leading-[1.55]">
+            {about.paragraphs[0]}
+          </ScrubText>
+
+          <div className="mt-5 space-y-4">
+            {about.paragraphs.slice(1).map((paragraph, i) => (
               <ScrubText
                 key={i}
-                className="text-[1.0625rem] leading-[1.75] text-white/85"
+                // These are already set at 55% white, so the default 0.2 resting
+                // opacity would compound to ~11% — legible as a shape, not as
+                // words. Start them higher and let the scrub do less work.
+                from={0.45}
+                className="text-[0.9375rem] leading-[1.75] text-white/55"
               >
                 {paragraph}
               </ScrubText>
@@ -35,19 +46,23 @@ export default function About() {
           </div>
 
           <Reveal delay={0.1}>
-            <dl className="mt-10 grid grid-cols-3 gap-4">
+            <dl className="mt-10 grid grid-cols-3 gap-3 md:gap-4">
               {about.stats.map((stat) => (
-                <div key={stat.label} className="panel px-4 py-5 md:px-5">
+                <Spotlight
+                  key={stat.label}
+                  size="12rem"
+                  className="panel rounded-[1.25rem] px-3 py-4 md:px-5 md:py-5"
+                >
                   <dt className="sr-only">{stat.label}</dt>
                   <dd>
-                    <span className="mono block text-[clamp(1.75rem,3.4vw,2.5rem)] font-bold leading-none">
+                    <span className="mono block text-[clamp(1.5rem,3.4vw,2.5rem)] font-bold leading-none">
                       <Counter value={stat.value} />
                     </span>
-                    <span className="mt-2.5 block text-[11px] leading-snug text-white/40">
+                    <span className="mt-2.5 block text-[10px] leading-snug text-white/40 md:text-[11px]">
                       {stat.label}
                     </span>
                   </dd>
-                </div>
+                </Spotlight>
               ))}
             </dl>
           </Reveal>
@@ -55,8 +70,11 @@ export default function About() {
           <Reveal delay={0.14}>
             <dl className="mt-10 divide-y divide-[var(--line)] border-y border-[var(--line)]">
               {about.credentials.map((row) => (
-                <div key={row.label} className="grid gap-1.5 py-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
-                  <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/30">
+                <div
+                  key={row.label}
+                  className="group grid gap-1.5 py-4 transition-colors duration-500 sm:grid-cols-[8rem_1fr] sm:gap-6"
+                >
+                  <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/30 transition-colors duration-500 group-hover:text-brand-soft">
                     {row.label}
                   </dt>
                   <dd className="text-sm leading-relaxed text-white/70">{row.value}</dd>

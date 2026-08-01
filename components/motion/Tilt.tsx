@@ -59,6 +59,10 @@ export default function Tilt({
   }
 
   function handleMove(event: PointerEvent<HTMLDivElement>) {
+    // Mouse only. A touch drag across a card is the visitor scrolling the page,
+    // and tilting the card under their finger reads as the page fighting back.
+    if (event.pointerType !== "mouse") return;
+
     const node = ref.current;
     if (!node) return;
 

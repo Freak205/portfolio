@@ -7,7 +7,7 @@ import { IconArrowUpRight, IconCalendar, IconPin } from "@/components/ui/Glyph";
 
 export default function Experience() {
   return (
-    <section id="experience" className="relative scroll-mt-24 py-24 md:py-32">
+    <section id="experience" className="relative scroll-mt-24 py-20 md:py-32">
       <div className="shell">
         <Headline
           kicker={experienceSection.label}

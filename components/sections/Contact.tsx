@@ -50,7 +50,7 @@ export default function Contact() {
   const [open, setOpen] = useState(false);
 
   return (
-    <section id="contact" className="relative scroll-mt-24 overflow-hidden py-24 md:py-32">
+    <section id="contact" className="relative scroll-mt-24 overflow-hidden py-20 md:py-32">
       <div aria-hidden="true" className="bloom left-1/2 top-1/4 size-[40rem] -translate-x-1/2" />
 
       <div className="shell relative flex flex-col items-center text-center">

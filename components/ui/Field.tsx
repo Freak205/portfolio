@@ -2,8 +2,13 @@
 
 import type { ReactNode } from "react";
 
+/**
+ * The 16px floor on small screens is not a style choice: iOS Safari zooms the
+ * whole page in when a focused input's text is under 16px, and it does not zoom
+ * back out afterwards. Above `sm` the intended 15px applies.
+ */
 const inputBase =
-  "w-full rounded-xl border border-[var(--line-strong)] bg-white/[0.03] px-4 py-3 text-[0.9375rem] text-white placeholder:text-white/25 transition-colors duration-300 focus:border-brand focus:bg-white/[0.05] focus:outline-none disabled:opacity-50";
+  "w-full rounded-xl border border-[var(--line-strong)] bg-white/[0.03] px-4 py-3 text-[16px] sm:text-[0.9375rem] text-white placeholder:text-white/25 transition-colors duration-300 focus:border-brand focus:bg-white/[0.05] focus:outline-none disabled:opacity-50";
 
 export function FieldWrap({
   id,

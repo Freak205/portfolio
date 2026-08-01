@@ -8,9 +8,9 @@ export default function BackToTop() {
     <button
       type="button"
       onClick={scrollToTop}
-      className="group inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--dim)] transition-colors duration-300 hover:text-accent"
+      className="group inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--dim)] transition-colors duration-300 hover:text-white"
     >
-      <span className="flex size-8 items-center justify-center rounded-full border border-[var(--line-strong)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:border-accent group-hover:-translate-y-0.5">
+      <span className="flex size-10 items-center justify-center rounded-full border border-[var(--line-strong)] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5 group-hover:border-brand group-hover:bg-brand group-hover:text-white">
         <svg
           aria-hidden="true"
           viewBox="0 0 16 16"

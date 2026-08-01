@@ -10,7 +10,7 @@ import Marquee from "@/components/motion/Marquee";
  */
 export default function Arsenal() {
   return (
-    <section id="arsenal" className="relative scroll-mt-24 py-24 md:py-32">
+    <section id="arsenal" className="relative scroll-mt-24 py-20 md:py-32">
       <div className="shell">
         <Headline
           kicker={arsenalSection.label}

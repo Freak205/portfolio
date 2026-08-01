@@ -134,39 +134,45 @@ export const servicesSection = {
   label: "What I Offer",
   headingLight: "What I",
   headingBold: "Do",
-  intro:
-    "I work end-to-end. A project can go from a first conversation to a live, indexed, maintained website without changing hands.",
+  intro: "One person, first conversation to live site. Nothing changes hands.",
 } as const;
 
 export const services: {
   icon: ServiceIcon;
   color: string;
   title: string;
+  /** One line. The `points` below carry the detail — keep this short. */
   body: string;
+  /** Three short chips. They replace a paragraph, so keep each to 1–3 words. */
+  points: string[];
 }[] = [
   {
     icon: "commerce",
     color: "#FF8A3D",
     title: "E-commerce Development",
-    body: "Complete storefronts, catalogues, carts, checkout experiences, admin tools and order-management functionality — built to be run by the people who own them.",
+    body: "Storefronts built to be run by the people who own them.",
+    points: ["Catalogue & search", "Cart to checkout", "Admin & orders"],
   },
   {
     icon: "browser",
     color: "#4ADE80",
     title: "Business & Brand Websites",
-    body: "Professional websites designed to build trust, explain services and generate inquiries, with art direction that holds together across every page.",
+    body: "Sites that build trust, explain the work and bring in enquiries.",
+    points: ["Art direction", "Responsive build", "Enquiry flows"],
   },
   {
     icon: "spark",
     color: "#A78BFA",
     title: "AI Feature Integration",
-    body: "Useful AI-powered functionality — product-aware chat assistants, context-grounded responses, workflow automation and content tooling.",
+    body: "AI that earns its place in the product, not a bolted-on demo.",
+    points: ["Product-aware chat", "Grounded answers", "Content tooling"],
   },
   {
     icon: "gauge",
     color: "#F472B6",
     title: "SEO, Deployment & Operations",
-    body: "Search setup, structured data, production deployment, performance and media optimization, and the ongoing technical support that keeps it all live.",
+    body: "Getting it found, getting it shipped, keeping it alive.",
+    points: ["Structured data", "Deploy pipeline", "Ongoing support"],
   },
 ];
 
@@ -181,7 +187,7 @@ export const arsenalSection = {
   label: "Technologies & Tools",
   headingLight: "My",
   headingBold: "Arsenal",
-  intro: "Everything here is in production on at least one of the platforms below.",
+  intro: "All of it in production on a live platform.",
 } as const;
 
 /** Two rows that scroll in opposite directions. */
@@ -232,6 +238,12 @@ export type Project = {
   /** Uppercase strapline under the card title. */
   subtitle: string;
   tagline: string;
+  /**
+   * Hex colour that art-directs this case study — rules, glows, active states
+   * and the running title all pick it up, so the two projects don't feel like
+   * the same page with the words swapped.
+   */
+  accent: string;
   sector: string;
   timeframe: string;
   role: string;
@@ -254,8 +266,7 @@ export const workSection = {
   label: "Portfolio",
   headingLight: "Selected",
   headingBold: "Work",
-  intro:
-    "Both projects are real and publicly accessible. Open them in a new tab and click around — that is the point.",
+  intro: "Both are live. Open them and click around — that's the point.",
 } as const;
 
 export const projects: Project[] = [
@@ -265,6 +276,7 @@ export const projects: Project[] = [
     name: "CLINVARA",
     subtitle: "Clinical Skincare E-commerce",
     tagline: "A clinical luxury skincare e-commerce platform, built and operated end-to-end.",
+    accent: "#FF8A3D",
     sector: "D2C · Skincare · E-commerce",
     // CONFIRM: your resume dates this engagement "May 2026 – Present".
     timeframe: "2026 — ongoing",
@@ -273,41 +285,43 @@ export const projects: Project[] = [
     liveUrl: "https://www.clinvara.global",
     liveLabel: "clinvara.global",
     overview:
-      "CLINVARA is a live clinical skincare e-commerce platform built for the Indian market, focused on pigmentation-correction products formulated for Indian skin tones. I built the storefront, the customer account system, and the internal operations console, then deployed and now run the platform.",
-    need: "A clinical skincare brand needed a storefront that reads as premium and medical at the same time — plus the internal tooling to actually run it. Catalogue, orders, returns, reviews, coupons and content all had to be manageable by the business without a developer in the loop.",
+      "A live skincare store for the Indian market, built around pigmentation correction for Indian skin tones. Storefront, customer accounts, operations console — I built all three, deployed them, and still run them.",
+    need: "Premium and clinical at the same time, with the tooling to actually run it. Catalogue, orders, returns, reviews and coupons all had to be manageable without a developer in the loop.",
     // CONFIRM: your brief says RADIENT AI PVT LTD; your resume lists Boltzmann Labs
     // for this engagement. Set whichever is correct for public use.
     context: "Built during a Full Stack Developer internship at RADIENT AI PVT LTD, Hyderabad.",
     responsibilities: [
-      "Frontend architecture and the full customer-facing storefront",
-      "Firestore data modelling for catalogue, orders, customers and returns",
-      "Authentication across Google, Facebook, email/password and mobile OTP",
-      "Internal admin console covering products, orders, inventory and content",
-      "Serverless backend API and transactional email automation",
-      "SEO, structured data, sitemap and robots",
-      "Cloud deployment, environment handling and ongoing operation",
-      "Developer handover documentation",
+      "Frontend architecture",
+      "Customer-facing storefront",
+      "Firestore data modelling",
+      "Auth — social, email, OTP",
+      "Admin operations console",
+      "Serverless API",
+      "Transactional email",
+      "SEO & structured data",
+      "Deployment & operation",
+      "Handover documentation",
     ],
     features: [
       {
-        title: "Storefront and product discovery",
-        body: "Homepage, shop listing, search overlay, category / concern / routine filtering, and product detail pages with galleries, ingredient accordions, delivery estimates and reviews.",
+        title: "Storefront and discovery",
+        body: "Shop listing, search overlay, filtering by category, concern and routine, and product pages with galleries, ingredients and reviews.",
       },
       {
-        title: "Cart, wishlist and checkout",
-        body: "Persistent cart and wishlist that sync to Firestore for signed-in users and to local storage for guests, with quantity controls, live price refresh, address validation and order creation.",
+        title: "Cart, wishlist, checkout",
+        body: "Cart and wishlist persist to Firestore when signed in and to local storage when not — with live price refresh and address validation.",
       },
       {
-        title: "Accounts, orders and returns",
-        body: "Customer dashboard with order history, order detail timelines, tracking, self-service cancellation for eligible orders, and a return-request flow.",
+        title: "Accounts and returns",
+        body: "Order history and timelines, tracking, self-service cancellation where eligible, and a full return-request flow.",
       },
       {
-        title: "Admin operations console",
-        body: "Twelve modules — dashboard, products, inventory, orders, customers, coupons, reviews, analytics, returns, settings, maintenance and channel foundations — behind a role-guarded shell.",
+        title: "Operations console",
+        body: "Twelve modules from products to analytics, behind a role-guarded shell the business runs without me.",
       },
       {
-        title: "Transactional email automation",
-        body: "Ten lifecycle emails wired to order and return events: placed, confirmed, shipped, delivered, cancelled, return requested, return approved, refund processed, plus admin notifications.",
+        title: "Email automation",
+        body: "Ten lifecycle emails wired to order and return events, from placed through refund processed.",
       },
       {
         title: "AI assistant",
@@ -317,19 +331,19 @@ export const projects: Project[] = [
     implementation: [
       {
         title: "Firestore-first catalogue with a static fallback",
-        body: "Products load from Firestore and merge over a local catalogue, so the storefront stays up if seeding is incomplete. Slugs act as document IDs to keep URLs, orders, reviews and internal links stable, and a dedupe pass prevents duplicate entries.",
+        body: "Products load from Firestore and merge over a local catalogue, so the storefront stays up if seeding is incomplete. Slugs double as document IDs, which keeps URLs, orders and reviews pointing at the same thing forever.",
       },
       {
         title: "Security rules as the access boundary",
-        body: "Firestore rules — not just UI guards — separate customer and admin surfaces. Customers read their own orders and write their own cart, wishlist and return requests; products, settings, coupons and order status are admin-write only.",
+        body: "Firestore rules, not UI guards, separate customer and admin surfaces. Customers touch only their own orders, cart and returns; products, coupons and order status are admin-write only.",
       },
       {
         title: "Graceful degradation everywhere",
-        body: "A SafeImage component renders styled placeholders for products without artwork, metadata filters empty image fields so nothing ships a broken URL, and the social feed falls back cleanly when a platform token expires.",
+        body: "Products without artwork get styled placeholders, metadata filters empty image fields so nothing ships a broken URL, and the social feed falls back cleanly when a token expires.",
       },
       {
         title: "SEO built in, not bolted on",
-        body: "Route-level metadata, canonical URLs, Open Graph and Twitter cards, a dynamic sitemap and robots, and JSON-LD for organization, website, product, FAQ, breadcrumb and review schemas.",
+        body: "Route-level metadata, canonicals, OG and Twitter cards, dynamic sitemap and robots, and JSON-LD for product, FAQ, breadcrumb and review.",
       },
     ],
     stack: [
@@ -396,6 +410,7 @@ export const projects: Project[] = [
     name: "Southeast Media",
     subtitle: "CGI & VFX Studio Site",
     tagline: "The public site for a CGI and VFX studio — seven art-directed verticals, one motion system.",
+    accent: "#22D3EE",
     sector: "Media · Studio · Brand site",
     // CONFIRM: your resume dates this engagement "June 2026 – Present".
     timeframe: "2026 — ongoing",
@@ -404,55 +419,56 @@ export const projects: Project[] = [
     liveUrl: "https://www.southeastmedia.in",
     liveLabel: "southeastmedia.in",
     overview:
-      "Southeast Media is a CGI and VFX studio. Their public site presents seven distinct business verticals — pharma, real estate, films, VFX, animation, SaaS and enterprise — each art-directed on its own terms, and each carrying a large volume of in-house film and stills. I built the whole thing, from the scroll choreography to the deployment pipeline.",
-    need: "A studio that sells visual craft cannot ship an ordinary website. The site had to hold roughly 127 MB of in-house film and stills without feeling slow, give seven very different verticals their own identity without fragmenting the brand, and turn attention into enquiries.",
+      "Seven business verticals — pharma, real estate, films, VFX, animation, SaaS, enterprise — each art-directed on its own terms and each carrying a lot of in-house film. I built all of it, scroll choreography through deployment.",
+    need: "A studio that sells visual craft can't ship an ordinary website. Roughly 127 MB of film and stills that never feels slow, seven verticals with their own identity, one brand holding it together.",
     responsibilities: [
-      "Translating brand direction into a production-ready, responsive web experience",
-      "Page-level compositions for all seven verticals plus about and enquiry",
-      "A shared motion and media system used across every scene",
-      "Media pipeline — AVIF/WebP delivery, lazy video playback, caching strategy",
-      "Enquiry form with validation, rate limiting and pluggable delivery",
-      "SEO, canonical routing, sitemap, robots and Open Graph",
-      "Deployment, DNS cutover and post-launch checklist",
+      "Brand direction to build",
+      "Seven vertical compositions",
+      "Shared motion system",
+      "Media pipeline",
+      "AVIF/WebP delivery",
+      "Enquiry form & validation",
+      "SEO & canonical routing",
+      "Deployment & DNS cutover",
     ],
     features: [
       {
         title: "Seven art-directed verticals",
-        body: "Pharma, real estate, films, VFX, animation, SaaS and enterprise each get their own page-level composition, built from a shared component vocabulary so the brand holds together.",
+        body: "Pharma, real estate, films, VFX, animation, SaaS and enterprise each get their own composition, built from one shared vocabulary so the brand holds.",
       },
       {
         title: "Scroll choreography",
-        body: "GSAP ScrollTrigger driving scene transitions over Lenis smooth scrolling, with Framer Motion, CSS 3D, canvas noise and matter.js used where each is the right tool.",
+        body: "GSAP ScrollTrigger over Lenis smooth scrolling, with Framer Motion, CSS 3D, canvas noise and matter.js each used where it's actually the right tool.",
       },
       {
-        title: "A media system, not a media folder",
-        body: "Roughly 127 MB of in-house film and stills, served from a manifest with stable filenames, AVIF/WebP delivery, lazy video playback and a one-day cache with a week of stale-while-revalidate.",
+        title: "A media system, not a folder",
+        body: "~127 MB of in-house film served from a manifest — stable filenames, AVIF/WebP, lazy video and a deliberate cache policy.",
       },
       {
         title: "Enquiry pipeline",
-        body: "React Hook Form and Zod on the client, a route handler with rate limiting and honeypot protection on the server, and delivery over Resend or a webhook — configured per environment.",
+        body: "Zod on both sides, rate limiting and honeypot on the server, delivery over Resend or a webhook depending on the environment.",
       },
       {
-        title: "Reduced motion respected throughout",
+        title: "Reduced motion respected",
         body: "Every scroll-driven scene has a static equivalent. The site is fully usable with prefers-reduced-motion set.",
       },
     ],
     implementation: [
       {
         title: "Motion as a shared system",
-        body: "Rather than animating each page by hand, scroll behaviour lives in a small set of primitives that every scene composes. It keeps timing consistent across seven very different pages and keeps the reduced-motion path in one place.",
+        body: "Scroll behaviour lives in a handful of primitives every scene composes, instead of being hand-animated per page. Timing stays consistent across seven very different pages and the reduced-motion path lives in one place.",
       },
       {
         title: "Deliberate cache headers",
-        body: "Media filenames are stable and get overwritten in place, so the cache header is deliberately not immutable — a one-day cache with a week of stale-while-revalidate lets the studio swap assets without a cache-busting rename.",
+        body: "Media filenames are stable and overwritten in place, so the cache header is deliberately not immutable — one day of cache with a week of stale-while-revalidate lets the studio swap assets without renaming anything.",
       },
       {
         title: "App Hosting over static hosting",
-        body: "Classic static hosting would have forced an export build, dropping the enquiry route handler and image optimization. App Hosting keeps both, and pushes to main build and roll out automatically.",
+        body: "Static hosting would have forced an export build and dropped both the enquiry route handler and image optimization. App Hosting keeps them, and pushes to main roll out on their own.",
       },
       {
         title: "Hardened by default",
-        body: "Zod validation, rate limiting, honeypot fields, security headers, environment-aware SEO and dynamic imports for heavy scenes.",
+        body: "Zod validation, rate limiting, honeypot fields, security headers, environment-aware SEO and dynamic imports for the heavy scenes.",
       },
     ],
     stack: [
@@ -511,7 +527,7 @@ export const sideProject = {
   label: "Also building",
   name: "ForgeLens",
   tagline: "Calibrated multimodal document forensics",
-  body: "An independent deep-learning research platform for document-image forgery detection and pixel-level tamper localization — PyTorch training, a leakage-safe data pipeline, a calibrated evaluation harness, and LoRA fine-tuning of an open-weight vision-language model.",
+  body: "Independent deep-learning research into document forgery detection and pixel-level tamper localization — PyTorch training, a leakage-safe pipeline, and LoRA fine-tuning of an open-weight VLM.",
   // CONFIRM: repository URL from your resume.
   href: "https://github.com/Freak205/FORGELENS",
   hrefLabel: "github.com/Freak205/FORGELENS",
@@ -558,9 +574,9 @@ export const about = {
     alt: "Ineedi Venkata Sai Anirudh at work",
   },
   paragraphs: [
-    "I'm a full-stack developer in Hyderabad. I build e-commerce platforms and business websites, and I take them all the way — architecture, interface, data model, backend, deployment, search visibility, and the unglamorous work of keeping them running afterwards.",
-    "Two live platforms came out of that approach. CLINVARA is a clinical skincare store with a full operations console behind it. Southeast Media is a CGI studio site carrying a serious amount of in-house film. Different problems, same habit: I don't hand off at the halfway mark.",
-    "I care about the business side too. A storefront that looks premium but can't be updated by the people who own it isn't finished. Neither is a beautiful site that no one can find.",
+    "Full-stack developer in Hyderabad. I build e-commerce platforms and business websites and take them all the way — architecture, interface, data, backend, deployment, and the unglamorous work of keeping them running.",
+    "Two live platforms came out of that. Different problems, same habit: I don't hand off at the halfway mark.",
+    "A storefront the owner can't update isn't finished. Neither is a beautiful site nobody can find.",
   ],
   /** Three counters. Every number here is verifiable from the two platforms. */
   stats: [
@@ -679,7 +695,7 @@ export const contactSection = {
   headingLight: "Let's Work",
   headingBold: "Together",
   intro:
-    "Currently open to freelance e-commerce, D2C and business website projects. Whether you have a storefront to build or a creative vision to bring to life, I'd love to hear from you.",
+    "Open to freelance e-commerce, D2C and business website work. Tell me what you're building.",
   primaryCta: "Send a message",
   secondaryCta: "Download CV",
   form: {

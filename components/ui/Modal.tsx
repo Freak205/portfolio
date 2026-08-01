@@ -130,7 +130,9 @@ export default function Modal({
               </button>
             </div>
 
-            <div className="overflow-y-auto px-6 py-6 md:px-8 md:py-7">{children}</div>
+            <div className="safe-bottom overflow-y-auto px-5 py-6 sm:px-6 md:px-8 md:py-7">
+              {children}
+            </div>
           </motion.div>
         </div>
       )}
