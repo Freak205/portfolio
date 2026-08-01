@@ -115,7 +115,17 @@ export const ticker = {
 
 export const hero = {
   image: {
-    src: null as string | null,
+    /**
+     * 4:5 crop of the source photograph (800×800), extracted at left=40 so the
+     * subject — in profile, facing left — keeps looking room in front of his
+     * face rather than behind his head. Used by both the hero plate and About.
+     *
+     * /portrait-blur.webp is the matching out-of-focus field behind the hero
+     * plate: the same photo at 160px, blurred at build time. Blur discards
+     * detail, so shipping the full-size image twice would buy nothing. Replace
+     * one and you must replace the other.
+     */
+    src: "/portrait.webp" as string | null,
     alt: "Portrait of Ineedi Venkata Sai Anirudh",
   },
   /** Revealed over the image as it scales away. Two lines. */
@@ -570,8 +580,8 @@ export const about = {
   headingLight: "About",
   headingBold: "Me",
   image: {
-    src: null as string | null,
-    alt: "Ineedi Venkata Sai Anirudh at work",
+    src: "/portrait.webp" as string | null,
+    alt: "Ineedi Venkata Sai Anirudh",
   },
   paragraphs: [
     "Full-stack developer in Hyderabad. I build e-commerce platforms and business websites and take them all the way — architecture, interface, data, backend, deployment, and the unglamorous work of keeping them running.",

@@ -94,15 +94,20 @@ export default function About() {
  */
 function Portrait() {
   return (
-    <figure className="relative">
+    // Capped on small screens: the source crop is 640px wide, and letting it
+    // run the full width of a high-DPR phone would ask it to upscale.
+    <figure className="group relative mx-auto max-w-[22rem] lg:max-w-none">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-[var(--line)] bg-panel">
         {about.image.src ? (
           <Image
             src={about.image.src}
             alt={about.image.alt}
             fill
-            sizes="(max-width: 1024px) 100vw, 460px"
-            className="object-cover grayscale transition-all duration-700 hover:grayscale-0"
+            sizes="(max-width: 1024px) 22rem, 460px"
+            // The photograph is already black and white, so the usual
+            // grayscale-off-on-hover would be a transition to nothing. A slow
+            // push-in is the honest version of the same gesture.
+            className="object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
           />
         ) : (
           <>
