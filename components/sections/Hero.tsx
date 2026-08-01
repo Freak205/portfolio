@@ -109,7 +109,9 @@ export default function Hero() {
               <br />
               <span className="font-bold">{hero.scrollHeadline[1]}</span>
             </p>
-            <p className="lede mt-6 max-w-md">{hero.scrollTag}</p>
+            <p className="accent mt-6 max-w-md text-[clamp(1.05rem,1.6vw,1.4rem)] text-white/70">
+              {hero.scrollTag}
+            </p>
           </motion.div>
         )}
 

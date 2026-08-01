@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Instrument_Serif, Outfit } from "next/font/google";
 import "./globals.css";
 
 import { contact, profile, seo, siteUrl } from "@/content/site";
@@ -9,6 +9,7 @@ import SmoothScroll from "@/components/motion/SmoothScroll";
 import Cursor from "@/components/motion/Cursor";
 import ScrollProgress from "@/components/motion/ScrollProgress";
 import Intro from "@/components/motion/Intro";
+import Aurora from "@/components/motion/Aurora";
 
 const display = Outfit({
   subsets: ["latin"],
@@ -20,6 +21,18 @@ const sans = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-sans-src",
+});
+
+/**
+ * Accent face, italic only. Used on short phrases as a counterpoint to the sans
+ * display type — one weight, one style, so it costs almost nothing.
+ */
+const accent = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  display: "swap",
+  variable: "--font-accent-src",
 });
 
 export const metadata: Metadata = {
@@ -99,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable}`}
+      className={`${display.variable} ${sans.variable} ${accent.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -118,10 +131,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SmoothScroll />
         <ScrollProgress />
         <Cursor />
+        <Aurora />
 
+        {/* Aurora is fixed at z-0, so everything real has to be lifted above it. */}
         <Header />
-        <main id="main">{children}</main>
-        <Footer />
+        <main id="main" className="relative z-10">
+          {children}
+        </main>
+        <div className="relative z-10">
+          <Footer />
+        </div>
       </body>
     </html>
   );

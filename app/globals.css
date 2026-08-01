@@ -24,10 +24,12 @@
   /* Fonts */
   --font-display: var(--font-display-src), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-sans-src), ui-sans-serif, system-ui, sans-serif;
+  --font-accent: var(--font-accent-src), ui-serif, Georgia, serif;
 
   /* Motion */
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-swift: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-kinetic: cubic-bezier(0.22, 1.4, 0.36, 1);
 }
 
 /* =============================================================================
@@ -169,6 +171,18 @@
     font-size: clamp(1rem, 1.15vw, 1.125rem);
     line-height: 1.65;
     color: var(--dim);
+  }
+
+  /*
+     Serif-italic counterpoint to the sans display type. Use it on a short
+     phrase — a tagline, one emphasised clause — never on a whole paragraph.
+     It carries no weight axis, so don't pair it with a bold utility.
+  */
+  .accent {
+    font-family: var(--font-accent);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.005em;
   }
 
   /* Elevated card used by services, work, experience, testimonials. */

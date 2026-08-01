@@ -1,5 +1,5 @@
 import type { ElementType } from "react";
-import TextReveal from "@/components/motion/TextReveal";
+import Kinetic from "@/components/motion/Kinetic";
 import { Reveal } from "@/components/motion/Reveal";
 
 type Props = {
@@ -19,8 +19,10 @@ type Props = {
 };
 
 /**
- * The site's signature heading: a light word followed by a bold one, revealed
- * from behind a mask. Every section uses it so the rhythm stays consistent.
+ * The site's signature heading: a light phrase followed by a bold one, revealed
+ * word by word out of focus. Every section uses it so the rhythm stays
+ * consistent — the two halves share one stagger, so "Selected Work" reads as a
+ * single sweep rather than two runs colliding.
  */
 export default function Headline({
   kicker,
@@ -44,14 +46,13 @@ export default function Headline({
       )}
 
       <Tag className={`headline headline-${size}`}>
-        <TextReveal
+        <Kinetic text={light} wordClassName="headline-light" immediate={immediate} />{" "}
+        <Kinetic
+          text={bold}
+          wordClassName="headline-bold"
           immediate={immediate}
-          lines={[
-            <>
-              <span className="headline-light">{light}</span>{" "}
-              <span className="headline-bold">{bold}</span>
-            </>,
-          ]}
+          // Continue the light half's stagger instead of restarting it.
+          offset={light.split(" ").filter(Boolean).length}
         />
       </Tag>
 

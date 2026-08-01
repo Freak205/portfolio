@@ -1,5 +1,6 @@
 import { testimonials, testimonialsSection } from "@/content/site";
 import { Reveal } from "@/components/motion/Reveal";
+import Assemble from "@/components/motion/Assemble";
 import Headline from "@/components/ui/Headline";
 import { IconLinkedin, IconQuote } from "@/components/ui/Glyph";
 
@@ -35,7 +36,7 @@ export default function Testimonials() {
         <ul className="mt-14 grid gap-5 md:mt-18 md:grid-cols-2 xl:grid-cols-3">
           {testimonials.map((item, i) => (
             <li key={i}>
-              <Reveal index={i % 3} className="h-full">
+              <Assemble index={i % 3} columns={3} className="h-full">
                 <figure className="panel panel-hover relative flex h-full flex-col justify-between gap-6 p-6 md:p-7">
                   <IconQuote
                     className="pointer-events-none absolute right-5 top-5 size-9 text-white/[0.05]"
@@ -88,7 +89,7 @@ export default function Testimonials() {
                     </>
                   )}
                 </figure>
-              </Reveal>
+              </Assemble>
             </li>
           ))}
         </ul>

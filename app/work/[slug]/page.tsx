@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { profile, projects, siteUrl } from "@/content/site";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
-import TextReveal from "@/components/motion/TextReveal";
+import Kinetic from "@/components/motion/Kinetic";
 import Counter from "@/components/motion/Counter";
 import Headline from "@/components/ui/Headline";
 import Preview from "@/components/ui/Preview";
@@ -119,7 +119,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           </div>
 
           <h1 className="headline headline-xl mt-6 font-bold">
-            <TextReveal immediate lines={[project.name]} />
+            <Kinetic text={project.name} immediate />
           </h1>
           <p className="mt-3 text-[11px] font-medium uppercase tracking-[0.2em] text-white/35">
             {project.subtitle}

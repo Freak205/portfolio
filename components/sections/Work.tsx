@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { projects, sideProject, workSection } from "@/content/site";
 import { Reveal } from "@/components/motion/Reveal";
+import Tilt from "@/components/motion/Tilt";
 import Headline from "@/components/ui/Headline";
 import Preview from "@/components/ui/Preview";
 import { IconArrowUpRight } from "@/components/ui/Glyph";
@@ -18,7 +19,7 @@ export default function Work() {
 
         <div className="mt-14 grid gap-5 md:mt-18 lg:grid-cols-2">
           {projects.map((project, i) => (
-            <Reveal key={project.slug} index={i % 2}>
+            <Tilt key={project.slug} index={i % 2} strength={5}>
               <Link
                 href={`/work/${project.slug}`}
                 className="panel panel-hover group block h-full overflow-hidden p-4 md:p-5"
@@ -49,7 +50,7 @@ export default function Work() {
                   </span>
                 </div>
               </Link>
-            </Reveal>
+            </Tilt>
           ))}
         </div>
 
@@ -66,7 +67,7 @@ export default function Work() {
                   <p className="kicker">{sideProject.label}</p>
                   <h3 className="mt-3 flex flex-wrap items-baseline gap-x-3 text-2xl font-semibold tracking-tight">
                     {sideProject.name}
-                    <span className="text-sm font-normal text-white/40">{sideProject.tagline}</span>
+                    <span className="accent text-base text-white/45">{sideProject.tagline}</span>
                   </h3>
                   <p className="mt-3 text-[0.9375rem] leading-relaxed text-white/55">
                     {sideProject.body}

@@ -1,5 +1,5 @@
 import { services, servicesSection, type ServiceIcon } from "@/content/site";
-import { Reveal } from "@/components/motion/Reveal";
+import Tilt from "@/components/motion/Tilt";
 import Headline from "@/components/ui/Headline";
 import { IconBrowser, IconCommerce, IconGauge, IconSpark } from "@/components/ui/Glyph";
 
@@ -25,7 +25,7 @@ export default function Services() {
           {services.map((service, i) => {
             const Icon = ICONS[service.icon];
             return (
-              <Reveal key={service.title} index={i % 2}>
+              <Tilt key={service.title} index={i % 2} strength={6}>
                 <article className="panel panel-hover group h-full p-7 md:p-9">
                   <span
                     className="mb-6 inline-flex size-12 items-center justify-center rounded-2xl transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5"
@@ -45,7 +45,7 @@ export default function Services() {
                     {service.body}
                   </p>
                 </article>
-              </Reveal>
+              </Tilt>
             );
           })}
         </div>

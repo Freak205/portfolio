@@ -46,3 +46,77 @@ export const drawLine: Variants = {
   hidden: { scaleX: 0 },
   show: { scaleX: 1, transition: { duration: 1.1, ease: EASE_EXPO } },
 };
+
+/* -----------------------------------------------------------------------------
+   KINETIC LAYER
+   The motion language of a title sequence rather than a web page: type arrives
+   out of focus and resolves, cards tumble in on a perspective, surfaces catch a
+   light sweep. Every variant here animates `filter`, so keep them on short-lived
+   entrances — a permanently blurred element is a permanent compositing cost.
+   -------------------------------------------------------------------------- */
+
+/** Overshoot curve. Used where something should feel thrown rather than eased. */
+export const EASE_KINETIC = [0.22, 1.4, 0.36, 1] as const;
+
+/**
+ * One word of a kinetic headline: arrives low, out of focus and slightly
+ * skewed, then snaps into register. The blur is what reads as motion blur.
+ */
+export const kineticWord: Variants = {
+  hidden: { opacity: 0, y: "90%", skewY: 6, filter: "blur(14px)" },
+  show: ({ i, delay }: { i: number; delay: number }) => ({
+    opacity: 1,
+    y: "0%",
+    skewY: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.95, ease: EASE_EXPO, delay: delay + i * 0.075 },
+  }),
+};
+
+/** Card entrance on a perspective — the tumble, not the fade. */
+export const tumbleIn: Variants = {
+  hidden: { opacity: 0, y: 64, rotateX: 22, scale: 0.94, filter: "blur(10px)" },
+  show: (i: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 1.05, ease: EASE_EXPO, delay: i * 0.09 },
+  }),
+};
+
+/** Chips and pills: scale up out of focus, like a title card resolving. */
+export const popIn: Variants = {
+  hidden: { opacity: 0, scale: 0.72, filter: "blur(8px)" },
+  show: (i: number = 0) => ({
+    opacity: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 0.7, ease: EASE_KINETIC, delay: i * 0.045 },
+  }),
+};
+
+/**
+ * Cards that fly in from wherever they were scattered and lock to the grid.
+ * `custom` carries the scatter offset so each card takes a different path.
+ */
+export const assemble: Variants = {
+  hidden: (c: { x: number; y: number; r: number }) => ({
+    opacity: 0,
+    x: c.x,
+    y: c.y,
+    rotate: c.r,
+    scale: 0.86,
+    filter: "blur(12px)",
+  }),
+  show: (c: { i: number }) => ({
+    opacity: 1,
+    x: 0,
+    y: 0,
+    rotate: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: { duration: 1.15, ease: EASE_EXPO, delay: 0.05 + c.i * 0.1 },
+  }),
+};

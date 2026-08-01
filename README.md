@@ -214,8 +214,9 @@ components/
   sections/             Hero, Services, Arsenal, Work, Awards, About,
                         Experience, Testimonials, Contact (+ ContactForm)
   layout/               Header (+ mobile nav), Footer, back-to-top
-  motion/               Reveal, TextReveal, Parallax, Magnetic, Marquee,
-                        Counter, Cursor, ScrollProgress, Intro, SmoothScroll
+  motion/               Kinetic, Tilt, Assemble, Aurora, Reveal, Parallax,
+                        Magnetic, Marquee, Counter, Cursor, ScrollProgress,
+                        Intro, SmoothScroll
   ui/                   Headline, Pill, Preview, Field, Modal, Glyph
 content/site.ts         ← all copy and data
 lib/                    motion tokens, brand icons, scroll, rate limit,
@@ -228,6 +229,32 @@ The section is `200svh` tall with a sticky visual inside it, so the portrait
 scale, the name fade and the positioning line are all driven by scroll position
 rather than a timer. Under `prefers-reduced-motion` the section collapses to a
 single static screen with the positioning line already visible.
+
+### The motion layer
+
+The site moves like a title sequence rather than a document. Four primitives do
+most of that work, and every one of them is a plain element under
+`prefers-reduced-motion`:
+
+| Primitive  | What it does                                                                |
+| ---------- | --------------------------------------------------------------------------- |
+| `Kinetic`  | Headline type arrives word by word, out of focus and skewed, then resolves. The blur is what reads as motion blur. |
+| `Tilt`     | Cards tumble in on a perspective, then lean toward the pointer on a spring, with a light sweep tracking the cursor. |
+| `Assemble` | Grid cards fly in from a scatter and lock into their slots.                  |
+| `Aurora`   | Two blooms fixed behind the page that drift with scroll and flare when you scroll fast. |
+
+Two constraints worth knowing before you extend this:
+
+- **`Aurora` is fixed at z-0**, so anything real has to sit above it. `<main>`
+  and the footer are lifted to `z-10` in [`app/layout.tsx`](app/layout.tsx). A
+  new top-level element with no z-index will render *behind* the bloom.
+- **Scatter offsets are derived from the index, never randomised.** Random
+  values differ between the server and client render, which React reports as a
+  hydration mismatch.
+
+The variants live in [`lib/motion.ts`](lib/motion.ts). They animate `filter`,
+which is expensive to composite — keep them on short entrances and never leave
+an element in a blurred resting state.
 
 ### Accessibility and motion
 
