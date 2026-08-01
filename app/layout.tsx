@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Instrument_Serif, Outfit } from "next/font/google";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
 import { contact, profile, seo, siteUrl } from "@/content/site";
@@ -11,12 +11,19 @@ import ScrollProgress from "@/components/motion/ScrollProgress";
 import Intro from "@/components/motion/Intro";
 import Aurora from "@/components/motion/Aurora";
 
-const display = Outfit({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-display-src",
-});
-
+/**
+ * Type is San Francisco wherever San Francisco exists.
+ *
+ * Apple's licence does not permit serving SF Pro as a webfont, but
+ * `-apple-system` resolves to the system SF on Apple hardware at no cost and no
+ * download — see the stack in globals.css. Inter is loaded as the fallback for
+ * everyone else because it is the closest widely-available face to SF; without
+ * it, Windows would drop to Segoe UI and the page would read noticeably
+ * differently.
+ *
+ * Headings and body share one family, differentiated by weight and tracking.
+ * That is how Apple does it, and it is why there is no separate display face.
+ */
 const sans = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -112,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} ${accent.variable}`}
+      className={`${sans.variable} ${accent.variable}`}
       suppressHydrationWarning
     >
       <head>

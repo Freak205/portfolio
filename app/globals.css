@@ -21,9 +21,26 @@
   --color-brand-soft: #7b7bf5;
   --color-cyan: #22d3ee;
 
-  /* Fonts */
-  --font-display: var(--font-display-src), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-sans-src), ui-sans-serif, system-ui, sans-serif;
+  /*
+     Fonts — San Francisco first.
+
+     `-apple-system` and `BlinkMacSystemFont` resolve to the real SF on Apple
+     hardware, which is the only way to use it legally on the web: Apple's
+     licence does not allow serving SF Pro as a webfont. Everyone else lands on
+     Inter (loaded in app/layout.tsx), the closest widely-available face to SF —
+     it sits ahead of Segoe UI deliberately, so Windows matches rather than
+     drifting into a different voice.
+
+     Headings and body are the same stack. Apple separates hierarchy with weight
+     and tracking, not with a second family, so --font-display exists only to
+     keep call sites expressive.
+  */
+  --font-sf:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    var(--font-sans-src), "Segoe UI Variable Display", "Segoe UI", Roboto,
+    system-ui, sans-serif;
+  --font-display: var(--font-sf);
+  --font-sans: var(--font-sf);
   --font-accent: var(--font-accent-src), ui-serif, Georgia, serif;
 
   /* Motion */

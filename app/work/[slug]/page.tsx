@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { profile, projects, siteUrl } from "@/content/site";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import Kinetic from "@/components/motion/Kinetic";
+import ScrubText from "@/components/motion/ScrubText";
+import Tilt from "@/components/motion/Tilt";
+import Assemble from "@/components/motion/Assemble";
 import Counter from "@/components/motion/Counter";
 import Headline from "@/components/ui/Headline";
 import Preview from "@/components/ui/Preview";
@@ -179,11 +182,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             <Reveal>
               <p className="kicker">Overview</p>
             </Reveal>
-            <Reveal delay={0.06}>
-              <p className="mt-5 text-[1.0625rem] leading-[1.75] text-white/60">
-                {project.overview}
-              </p>
-            </Reveal>
+            <ScrubText className="mt-5 text-[1.0625rem] leading-[1.75] text-white/85">
+              {project.overview}
+            </ScrubText>
             {project.context && (
               <Reveal delay={0.1}>
                 <p className="mt-5 border-l-2 border-brand pl-4 text-sm leading-relaxed text-white/40">
@@ -197,9 +198,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             <Reveal>
               <p className="kicker">The business need</p>
             </Reveal>
-            <Reveal delay={0.06}>
-              <p className="mt-5 text-[1.0625rem] leading-[1.75] text-white/60">{project.need}</p>
-            </Reveal>
+            <ScrubText className="mt-5 text-[1.0625rem] leading-[1.75] text-white/85">
+              {project.need}
+            </ScrubText>
           </div>
         </div>
 
@@ -228,7 +229,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
         <div className="mt-12 grid gap-4 md:grid-cols-2">
           {project.features.map((feature, i) => (
-            <Reveal key={feature.title} index={i % 2}>
+            <Tilt key={feature.title} index={i % 2} strength={5}>
               <article className="panel panel-hover group h-full p-6 md:p-7">
                 <span className="text-[10px] font-medium text-white/25 transition-colors duration-500 group-hover:text-brand-soft">
                   {String(i + 1).padStart(2, "0")}
@@ -238,7 +239,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                   {feature.body}
                 </p>
               </article>
-            </Reveal>
+            </Tilt>
           ))}
         </div>
       </section>
@@ -252,7 +253,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             <Reveal key={item.title} index={i}>
               <div className="grid gap-4 border-b border-[var(--line)] py-8 md:grid-cols-[1fr_1.4fr] md:gap-14">
                 <h3 className="text-xl font-semibold tracking-tight md:text-2xl">{item.title}</h3>
-                <p className="text-[0.9375rem] leading-[1.75] text-white/55">{item.body}</p>
+                <ScrubText className="text-[0.9375rem] leading-[1.75] text-white/80">
+                  {item.body}
+                </ScrubText>
               </div>
             </Reveal>
           ))}
@@ -265,7 +268,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           <Headline kicker="Screens" light="Inside the" bold="build" />
           <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {project.gallery.map((image, i) => (
-              <Reveal key={image.caption} index={i % 3}>
+              <Assemble key={image.caption} index={i % 3} columns={3}>
                 <Preview
                   image={image}
                   chrome={false}
@@ -273,7 +276,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
                   showCaption
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                 />
-              </Reveal>
+              </Assemble>
             ))}
           </div>
         </section>

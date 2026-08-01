@@ -3,6 +3,7 @@ import { about, profile } from "@/content/site";
 import { Reveal } from "@/components/motion/Reveal";
 import Parallax from "@/components/motion/Parallax";
 import Counter from "@/components/motion/Counter";
+import ScrubText from "@/components/motion/ScrubText";
 import Headline from "@/components/ui/Headline";
 
 export default function About() {
@@ -24,9 +25,12 @@ export default function About() {
 
           <div className="mt-7 space-y-5">
             {about.paragraphs.map((paragraph, i) => (
-              <Reveal key={i} index={i}>
-                <p className="text-[1.0625rem] leading-[1.75] text-white/60">{paragraph}</p>
-              </Reveal>
+              <ScrubText
+                key={i}
+                className="text-[1.0625rem] leading-[1.75] text-white/85"
+              >
+                {paragraph}
+              </ScrubText>
             ))}
           </div>
 

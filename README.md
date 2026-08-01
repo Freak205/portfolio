@@ -120,6 +120,27 @@ The palette is a handful of custom properties at the top of
 [`app/globals.css`](app/globals.css). Change `--color-brand` and the whole site
 re-tunes — buttons, the progress bar, hovers, focus rings, icon accents.
 
+### Type
+
+The site is set in **San Francisco wherever San Francisco exists**. Apple's
+licence does not permit serving SF Pro as a webfont, but `-apple-system` and
+`BlinkMacSystemFont` resolve to the system SF on Apple hardware — no download,
+no licence problem. That is the first entry in `--font-sf`.
+
+Everywhere else the stack falls to **Inter**, loaded in
+[`app/layout.tsx`](app/layout.tsx), because it is the closest widely-available
+face to SF. It deliberately sits *ahead* of Segoe UI, so Windows matches the
+Apple rendering closely instead of drifting into a different voice.
+
+Headings and body share that one stack. Apple separates hierarchy with weight
+and tracking rather than a second family, which is why there is no display face
+— `--font-display` is an alias kept only so call sites stay readable.
+
+The one exception is **Instrument Serif**, italic, one weight: an accent for
+short phrases via the `.accent` class. Use it on a tagline or a single
+emphasised clause, never a paragraph, and never pair it with a bold utility —
+it has no weight axis.
+
 ---
 
 ## 3. The contact form
@@ -214,9 +235,9 @@ components/
   sections/             Hero, Services, Arsenal, Work, Awards, About,
                         Experience, Testimonials, Contact (+ ContactForm)
   layout/               Header (+ mobile nav), Footer, back-to-top
-  motion/               Kinetic, Tilt, Assemble, Aurora, Reveal, Parallax,
-                        Magnetic, Marquee, Counter, Cursor, ScrollProgress,
-                        Intro, SmoothScroll
+  motion/               Kinetic, ScrubText, Tilt, Assemble, Spine, Aurora,
+                        Reveal, Parallax, Magnetic, Marquee, Counter, Cursor,
+                        ScrollProgress, Intro, SmoothScroll
   ui/                   Headline, Pill, Preview, Field, Modal, Glyph
 content/site.ts         ← all copy and data
 lib/                    motion tokens, brand icons, scroll, rate limit,
@@ -238,10 +259,12 @@ most of that work, and every one of them is a plain element under
 
 | Primitive  | What it does                                                                |
 | ---------- | --------------------------------------------------------------------------- |
-| `Kinetic`  | Headline type arrives word by word, out of focus and skewed, then resolves. The blur is what reads as motion blur. |
-| `Tilt`     | Cards tumble in on a perspective, then lean toward the pointer on a spring, with a light sweep tracking the cursor. |
-| `Assemble` | Grid cards fly in from a scatter and lock into their slots.                  |
-| `Aurora`   | Two blooms fixed behind the page that drift with scroll and flare when you scroll fast. |
+| `Kinetic`   | Headline type arrives word by word, out of focus and skewed, then resolves. The blur is what reads as motion blur. |
+| `ScrubText` | Body copy writes itself in word by word as you scroll past it. Use it on prose — a fade-up animates a paragraph as one lump and reads as nothing. |
+| `Tilt`      | Cards tumble in on a perspective, then lean toward the pointer on a spring, with a light sweep tracking the cursor. |
+| `Assemble`  | Grid cards fly in from a scatter and lock into their slots.                 |
+| `Spine`     | Timeline rail that draws as you scroll, with a travelling head at the leading edge. |
+| `Aurora`    | Two blooms fixed behind the page that drift with scroll and flare when you scroll fast. |
 
 Two constraints worth knowing before you extend this:
 

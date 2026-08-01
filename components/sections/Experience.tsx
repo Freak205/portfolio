@@ -1,5 +1,7 @@
 import { experience, experienceSection } from "@/content/site";
-import { Reveal } from "@/components/motion/Reveal";
+import Spine from "@/components/motion/Spine";
+import Tilt from "@/components/motion/Tilt";
+import { Stagger, StaggerItem } from "@/components/motion/Reveal";
 import Headline from "@/components/ui/Headline";
 import { IconArrowUpRight, IconCalendar, IconPin } from "@/components/ui/Glyph";
 
@@ -14,14 +16,10 @@ export default function Experience() {
           align="center"
         />
 
-        {/* Vertical spine with a node per entry. */}
-        <ol className="relative mt-14 md:mt-18 md:pl-10">
-          <span
-            aria-hidden="true"
-            className="absolute left-[7px] top-2 hidden h-[calc(100%-1rem)] w-px bg-gradient-to-b from-brand via-[var(--line-strong)] to-transparent md:block"
-          />
-
-          {experience.map((entry, i) => (
+        {/* Vertical spine that draws as you scroll, with a node per entry. */}
+        <Spine>
+          <ol className="relative md:pl-10">
+            {experience.map((entry, i) => (
             <li key={`${entry.company}-${entry.role}`} className="relative pb-5 last:pb-0">
               <span
                 aria-hidden="true"
@@ -32,9 +30,9 @@ export default function Experience() {
                 }`}
               />
 
-              <Reveal index={i}>
+              <Tilt index={i} strength={4}>
                 <article
-                  className={`panel panel-hover p-6 md:p-8 ${
+                  className={`panel panel-hover group p-6 md:p-8 ${
                     entry.kind === "education" ? "bg-transparent" : ""
                   }`}
                 >
@@ -81,26 +79,33 @@ export default function Experience() {
                   </div>
 
                   {entry.bullets.length > 0 && (
-                    <ul className="mt-5 space-y-2.5 border-t border-[var(--line)] pt-5">
+                    <Stagger
+                      as="ul"
+                      gap={0.09}
+                      className="mt-5 space-y-2.5 border-t border-[var(--line)] pt-5"
+                    >
                       {entry.bullets.map((bullet) => (
-                        <li
+                        <StaggerItem
+                          as="li"
                           key={bullet}
-                          className="flex gap-3 text-[0.9375rem] leading-relaxed text-white/55"
+                          y={14}
+                          className="flex gap-3 text-[0.9375rem] leading-relaxed text-white/60"
                         >
                           <span
                             aria-hidden="true"
                             className="mt-[0.55em] size-1 shrink-0 rounded-full bg-brand"
                           />
                           {bullet}
-                        </li>
+                        </StaggerItem>
                       ))}
-                    </ul>
+                    </Stagger>
                   )}
                 </article>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
+              </Tilt>
+              </li>
+            ))}
+          </ol>
+        </Spine>
       </div>
     </section>
   );
