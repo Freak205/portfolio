@@ -22,26 +22,22 @@
   --color-cyan: #22d3ee;
 
   /*
-     Fonts — San Francisco first.
+     Fonts — engineered, not neutral.
 
-     `-apple-system` and `BlinkMacSystemFont` resolve to the real SF on Apple
-     hardware, which is the only way to use it legally on the web: Apple's
-     licence does not allow serving SF Pro as a webfont. Everyone else lands on
-     Inter (loaded in app/layout.tsx), the closest widely-available face to SF —
-     it sits ahead of Segoe UI deliberately, so Windows matches rather than
-     drifting into a different voice.
+     Space Grotesk sets headings and body: a grotesque with technical
+     letterforms (flat-sided S, squared curves, angular g) that reads as
+     developer rather than corporate.
 
-     Headings and body are the same stack. Apple separates hierarchy with weight
-     and tracking, not with a second family, so --font-display exists only to
-     keep call sites expressive.
+     JetBrains Mono is reserved for strings that should look like machine
+     output — section labels, dates, counters, URLs, indices. Keep it there.
+     Monospace is slower to read, so it earns short strings and costs real
+     comprehension in paragraphs.
   */
-  --font-sf:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    var(--font-sans-src), "Segoe UI Variable Display", "Segoe UI", Roboto,
-    system-ui, sans-serif;
-  --font-display: var(--font-sf);
-  --font-sans: var(--font-sf);
-  --font-accent: var(--font-accent-src), ui-serif, Georgia, serif;
+  --font-display: var(--font-sans-src), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-src), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    var(--font-mono-src), ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
 
   /* Motion */
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -151,13 +147,23 @@
     }
   }
 
-  /* Section label: small, tracked, uppercase, muted. */
+  /* Section label: small, tracked, uppercase, muted — and machine-set. */
   .kicker {
+    font-family: var(--font-mono);
     font-size: 0.6875rem;
     font-weight: 500;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--dimmer);
+  }
+
+  /*
+     Machine-output type: dates, counters, indices, URLs, status strings.
+     Short strings only — see the note on --font-mono above.
+  */
+  .mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum" 1;
   }
 
   /* The signature heading: light word, then bold word. */
@@ -191,15 +197,14 @@
   }
 
   /*
-     Serif-italic counterpoint to the sans display type. Use it on a short
-     phrase — a tagline, one emphasised clause — never on a whole paragraph.
-     It carries no weight axis, so don't pair it with a bold utility.
+     Accent for a short phrase — a tagline, one emphasised clause. Monospace
+     at a slight negative tracking so it reads as a considered aside rather
+     than a code sample. Never on a whole paragraph.
   */
   .accent {
-    font-family: var(--font-accent);
-    font-style: italic;
+    font-family: var(--font-mono);
     font-weight: 400;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.02em;
   }
 
   /* Elevated card used by services, work, experience, testimonials. */
@@ -226,7 +231,8 @@
     background-color: var(--color-panel);
     border-radius: 9999px;
     padding: 0.625rem 1.125rem;
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
     white-space: nowrap;
     transition:
       border-color 0.4s var(--ease-expo),

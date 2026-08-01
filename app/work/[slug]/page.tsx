@@ -94,7 +94,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
         <div className="shell relative">
           <nav aria-label="Breadcrumb" className="mb-9">
-            <ol className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-white/30">
+            <ol className="mono flex items-center gap-2 text-[11px] uppercase tracking-[0.12em] text-white/30">
               <li>
                 <Link href="/" className="transition-colors hover:text-white">
                   Home
@@ -112,10 +112,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           </nav>
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[11px] font-medium tracking-[0.16em] text-white/25">
+            <span className="mono text-[11px] font-medium tracking-[0.16em] text-white/25">
               {project.index}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-soft">
+            <span className="mono inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-soft">
               <span aria-hidden="true" className="animate-pulse-dot size-1.5 rounded-full bg-brand-soft" />
               {project.status}
             </span>
@@ -124,7 +124,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           <h1 className="headline headline-xl mt-6 font-bold">
             <Kinetic text={project.name} immediate />
           </h1>
-          <p className="mt-3 text-[11px] font-medium uppercase tracking-[0.2em] text-white/35">
+          <p className="mono mt-3 text-[11px] font-medium uppercase tracking-[0.16em] text-white/35">
             {project.subtitle}
           </p>
 
@@ -163,10 +163,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           {project.facts.map((fact, i) => (
             <Reveal key={fact.label} index={i}>
               <div className="panel h-full px-5 py-5">
-                <dt className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/30">
+                <dt className="mono text-[10px] font-medium uppercase tracking-[0.14em] text-white/30">
                   {fact.label}
                 </dt>
-                <dd className="headline mt-2 text-xl font-bold leading-tight">
+                <dd className="mono mt-2 text-xl font-bold leading-tight">
                   <Counter value={fact.value} />
                 </dd>
               </div>
@@ -212,7 +212,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
             {project.responsibilities.map((item, i) => (
               <StaggerItem key={item} y={12}>
                 <div className="flex gap-4 rounded-xl border border-[var(--line)] bg-panel px-4 py-3">
-                  <span className="mt-0.5 text-[10px] font-medium text-white/25">
+                  <span className="mono mt-0.5 text-[10px] font-medium text-white/25">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="text-sm leading-relaxed text-white/65">{item}</span>
@@ -231,7 +231,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           {project.features.map((feature, i) => (
             <Tilt key={feature.title} index={i % 2} strength={5}>
               <article className="panel panel-hover group h-full p-6 md:p-7">
-                <span className="text-[10px] font-medium text-white/25 transition-colors duration-500 group-hover:text-brand-soft">
+                <span className="mono text-[10px] font-medium text-white/25 transition-colors duration-500 group-hover:text-brand-soft">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="mt-3 text-lg font-semibold tracking-tight">{feature.title}</h3>
@@ -289,7 +289,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           {project.stack.map((group, i) => (
             <Reveal key={group.group} index={i % 3}>
               <div className="panel h-full p-6">
-                <h3 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-soft">
+                <h3 className="mono text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-soft">
                   {group.group}
                 </h3>
                 <ul className="mt-4 flex flex-wrap gap-2">

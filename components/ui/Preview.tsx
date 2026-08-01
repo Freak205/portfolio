@@ -43,7 +43,7 @@ export default function Preview({
               <span className="size-2 rounded-full bg-white/12" />
             </span>
             {urlLabel && (
-              <span className="truncate rounded-full bg-white/[0.06] px-3 py-1 text-[10px] text-white/45">
+              <span className="mono truncate rounded-full bg-white/[0.06] px-3 py-1 text-[10px] text-white/45">
                 {urlLabel}
               </span>
             )}

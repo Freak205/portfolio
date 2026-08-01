@@ -88,7 +88,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p
-            className="mt-3 pl-[0.28em] text-[clamp(0.62rem,1.5vw,1rem)] font-light uppercase tracking-[0.28em] text-white/70 sm:tracking-[0.42em]"
+            className="mono mt-3 pl-[0.28em] text-[clamp(0.62rem,1.5vw,1rem)] font-light uppercase tracking-[0.24em] text-white/70 sm:tracking-[0.34em]"
             initial={reduced ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: EASE_EXPO, delay: 0.42 }}

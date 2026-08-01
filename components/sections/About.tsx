@@ -40,7 +40,7 @@ export default function About() {
                 <div key={stat.label} className="panel px-4 py-5 md:px-5">
                   <dt className="sr-only">{stat.label}</dt>
                   <dd>
-                    <span className="headline block text-[clamp(1.75rem,3.4vw,2.5rem)] font-bold leading-none">
+                    <span className="mono block text-[clamp(1.75rem,3.4vw,2.5rem)] font-bold leading-none">
                       <Counter value={stat.value} />
                     </span>
                     <span className="mt-2.5 block text-[11px] leading-snug text-white/40">

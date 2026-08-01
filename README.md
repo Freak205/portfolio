@@ -122,24 +122,25 @@ re-tunes — buttons, the progress bar, hovers, focus rings, icon accents.
 
 ### Type
 
-The site is set in **San Francisco wherever San Francisco exists**. Apple's
-licence does not permit serving SF Pro as a webfont, but `-apple-system` and
-`BlinkMacSystemFont` resolve to the system SF on Apple hardware — no download,
-no licence problem. That is the first entry in `--font-sf`.
+Two faces, both engineering-flavoured, loaded in
+[`app/layout.tsx`](app/layout.tsx).
 
-Everywhere else the stack falls to **Inter**, loaded in
-[`app/layout.tsx`](app/layout.tsx), because it is the closest widely-available
-face to SF. It deliberately sits *ahead* of Segoe UI, so Windows matches the
-Apple rendering closely instead of drifting into a different voice.
+**Space Grotesk** sets headings *and* body. Its flat-sided `S`, squared curves
+and angular `g` give the page a technical voice at display sizes without making
+body copy hard to read.
 
-Headings and body share that one stack. Apple separates hierarchy with weight
-and tracking rather than a second family, which is why there is no display face
-— `--font-display` is an alias kept only so call sites stay readable.
+**JetBrains Mono** is reserved for strings that should look like machine
+output — section labels (`.kicker`), dates, counters, indices, URLs, status
+chips, technology chips. Apply it with the `.mono` utility, which also turns on
+tabular figures so columns of numbers line up.
 
-The one exception is **Instrument Serif**, italic, one weight: an accent for
-short phrases via the `.accent` class. Use it on a tagline or a single
-emphasised clause, never a paragraph, and never pair it with a bold utility —
-it has no weight axis.
+**Keep the mono on short strings.** Monospace is measurably slower to read, so
+it earns a label or a date and costs real comprehension in a paragraph. If you
+find yourself reaching for `.mono` on something longer than a few words, that
+is the signal to stop.
+
+`.accent` is the one soft spot in the system: mono at slight negative tracking,
+for a tagline or a single emphasised clause. Never a whole paragraph.
 
 ---
 

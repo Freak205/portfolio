@@ -67,11 +67,11 @@ export default function Experience() {
                     </div>
 
                     <div className="flex shrink-0 flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] px-3 py-1.5 text-[11px] font-medium text-white/60">
+                      <span className="mono inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] px-3 py-1.5 text-[11px] font-medium text-white/60">
                         <IconCalendar className="size-3.5" />
                         {entry.period}
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] px-3 py-1.5 text-[11px] font-medium text-white/45">
+                      <span className="mono inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] px-3 py-1.5 text-[11px] font-medium text-white/45">
                         <IconPin className="size-3.5" />
                         {entry.location}
                       </span>

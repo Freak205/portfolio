@@ -37,7 +37,7 @@ export default function Work() {
                     <h3 className="text-2xl font-semibold tracking-tight transition-colors duration-400 group-hover:text-white md:text-[1.75rem]">
                       {project.name}
                     </h3>
-                    <p className="mt-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/40">
+                    <p className="mono mt-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/40">
                       {project.subtitle}
                     </p>
                   </div>

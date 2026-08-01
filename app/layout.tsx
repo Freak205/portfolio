@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Instrument_Serif } from "next/font/google";
+import { JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 import { contact, profile, seo, siteUrl } from "@/content/site";
@@ -12,34 +12,27 @@ import Intro from "@/components/motion/Intro";
 import Aurora from "@/components/motion/Aurora";
 
 /**
- * Type is San Francisco wherever San Francisco exists.
+ * Two faces, both engineering-flavoured.
  *
- * Apple's licence does not permit serving SF Pro as a webfont, but
- * `-apple-system` resolves to the system SF on Apple hardware at no cost and no
- * download — see the stack in globals.css. Inter is loaded as the fallback for
- * everyone else because it is the closest widely-available face to SF; without
- * it, Windows would drop to Segoe UI and the page would read noticeably
- * differently.
+ * Space Grotesk carries headings *and* body. Its flat-sided S, squared curves
+ * and angular g give the page a technical voice at display sizes without
+ * turning body copy into something you have to decode.
  *
- * Headings and body share one family, differentiated by weight and tracking.
- * That is how Apple does it, and it is why there is no separate display face.
+ * JetBrains Mono handles the parts that should read as machine output —
+ * section labels, dates, counters, URLs, indices. Restricting the mono to
+ * those is deliberate: monospace is measurably slower to read, so it earns its
+ * place on short strings and would cost real comprehension in paragraphs.
  */
-const sans = Inter({
+const display = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-sans-src",
 });
 
-/**
- * Accent face, italic only. Used on short phrases as a counterpoint to the sans
- * display type — one weight, one style, so it costs almost nothing.
- */
-const accent = Instrument_Serif({
+const mono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: "400",
-  style: "italic",
   display: "swap",
-  variable: "--font-accent-src",
+  variable: "--font-mono-src",
 });
 
 export const metadata: Metadata = {
@@ -119,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${accent.variable}`}
+      className={`${display.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <head>
