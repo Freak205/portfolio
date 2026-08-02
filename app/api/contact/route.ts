@@ -1,10 +1,34 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { contactSection } from "@/content/site";
 import { deliver } from "@/lib/contact-delivery";
-import { check, clientKey } from "@/lib/rate-limit";
+import { GLOBAL_KEY, check, clientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+/** Well past the largest legitimate enquiry, well under anything worth parsing. */
+const MAX_BODY_BYTES = 16 * 1024;
+
+/** The dropdowns are closed sets — anything else was not typed by a person. */
+const PROJECT_TYPES = new Set<string>(contactSection.form.projectTypes);
+const BUDGET_RANGES = new Set<string>(contactSection.form.budgetRanges);
+
+/**
+ * This endpoint sends mail, so a cross-site page must not be able to fire it
+ * using a visitor's browser. Browsers always attach `Origin` to a cross-origin
+ * POST, so a mismatch is decisive. A missing `Origin` is not a browser request
+ * and is left to the rate limiter rather than blocked outright.
+ */
+function crossSite(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).host !== request.headers.get("host");
+  } catch {
+    return true;
+  }
+}
 
 const schema = z.object({
   name: z.string().trim().min(2, "Please enter your name.").max(120),
@@ -19,11 +43,22 @@ const schema = z.object({
     .trim()
     .max(40)
     .default("")
-    .refine((value) => value === "" || /^\+?[\d\s().-]{7,20}$/.test(value), {
+    .refine((value) => value === "" || /^\+?[\d ().-]{7,20}$/.test(value), {
       message: "Please enter a valid phone number, or leave it blank.",
     }),
-  projectType: z.string().trim().min(1, "Pick the closest match.").max(120),
-  budget: z.string().trim().max(120).default(""),
+  projectType: z
+    .string()
+    .trim()
+    .max(120)
+    .refine((value) => PROJECT_TYPES.has(value), { message: "Pick the closest match." }),
+  budget: z
+    .string()
+    .trim()
+    .max(120)
+    .default("")
+    .refine((value) => value === "" || BUDGET_RANGES.has(value), {
+      message: "Pick one of the listed ranges.",
+    }),
   details: z
     .string()
     .trim()
@@ -34,7 +69,12 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  // 1. Rate limit before doing any work.
+  // 1. Reject anything a browser only sends from someone else's page.
+  if (crossSite(request)) {
+    return NextResponse.json({ ok: false, message: "Cross-origin request." }, { status: 403 });
+  }
+
+  // 2. Rate limit before doing any work.
   const key = clientKey(request.headers);
   const limit = check(key, { limit: 5, windowMs: 10 * 60 * 1000 });
 
@@ -45,10 +85,32 @@ export async function POST(request: Request) {
     );
   }
 
-  // 2. Parse.
+  // 3. A ceiling that does not depend on identifying the caller. Whoever gets
+  //    past the per-IP limit by rotating headers still cannot burn the mail
+  //    quota — the site as a whole sends at most this many enquiries an hour.
+  const global = check(GLOBAL_KEY, { limit: 60, windowMs: 60 * 60 * 1000 });
+
+  if (!global.ok) {
+    return NextResponse.json(
+      { ok: false, message: "The form is busy right now. Please email me directly." },
+      { status: 429, headers: { "Retry-After": String(global.retryAfterSeconds) } },
+    );
+  }
+
+  // 4. Read with a cap, so an oversized body is dropped rather than parsed.
+  const declared = Number(request.headers.get("content-length"));
+  let raw: string;
+  try {
+    if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) throw new Error("too large");
+    raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) throw new Error("too large");
+  } catch {
+    return NextResponse.json({ ok: false, message: "That request was too large." }, { status: 413 });
+  }
+
   let body: unknown;
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
     return NextResponse.json({ ok: false, message: "Malformed request." }, { status: 400 });
   }
@@ -67,12 +129,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // 3. Honeypot. Answer 200 so bots learn nothing from the response.
+  // 5. Honeypot. Answer 200 so bots learn nothing from the response.
   if (parsed.data.company.trim().length > 0) {
     return NextResponse.json({ ok: true });
   }
 
-  // 4. Deliver.
+  // 6. Deliver.
   const result = await deliver({
     name: parsed.data.name,
     email: parsed.data.email,

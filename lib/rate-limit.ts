@@ -47,9 +47,43 @@ export function check(
   return { ok: true, remaining: limit - entry.count, retryAfterSeconds: 0 };
 }
 
-/** Best-effort client IP. Vercel sits behind a proxy, so trust x-forwarded-for. */
+/**
+ * Headers only the hosting proxy can set. Render, Vercel and Cloudflare all
+ * overwrite these on the way in, so a client cannot forge them.
+ */
+const TRUSTED_IP_HEADERS = [
+  "cf-connecting-ip",
+  "true-client-ip",
+  "x-vercel-forwarded-for",
+  "x-real-ip",
+];
+
+/**
+ * Best-effort client IP.
+ *
+ * `x-forwarded-for` is a *client-supplied* header that proxies append to. Taking
+ * the leftmost entry — the usual shortcut — hands the attacker the key: send a
+ * different fake IP each request and every request lands in its own bucket, so
+ * the limit never trips. The rightmost entry is the one our own proxy appended,
+ * which is the only part of that header we did not let the caller write.
+ *
+ * A deployment with no proxy in front of it has no trustworthy header at all,
+ * which is why `check()` is also called with a global key in the route: that
+ * ceiling holds no matter what the caller sends.
+ */
 export function clientKey(headers: Headers): string {
-  const forwarded = headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]!.trim();
-  return headers.get("x-real-ip") ?? "unknown";
+  for (const name of TRUSTED_IP_HEADERS) {
+    const value = headers.get(name)?.split(",")[0]?.trim();
+    if (value) return value;
+  }
+
+  const hops = (headers.get("x-forwarded-for") ?? "")
+    .split(",")
+    .map((hop) => hop.trim())
+    .filter(Boolean);
+
+  return hops.at(-1) ?? "unknown";
 }
+
+/** Key for the site-wide ceiling. No IP can collide with it. */
+export const GLOBAL_KEY = "*all*";

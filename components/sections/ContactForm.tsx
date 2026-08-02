@@ -44,7 +44,7 @@ export default function ContactForm({ onDone }: { onDone?: () => void }) {
       next.email = "Please enter a valid email address.";
     // Optional — only checked when something was actually typed.
     const phone = values.phone.trim();
-    if (phone && !/^\+?[\d\s().-]{7,20}$/.test(phone))
+    if (phone && !/^\+?[\d ().-]{7,20}$/.test(phone))
       next.phone = "Please enter a valid phone number, or leave it blank.";
     if (!values.projectType) next.projectType = "Pick the closest match.";
     if (values.details.trim().length < 20)

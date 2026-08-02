@@ -33,7 +33,17 @@ function escapeHtml(value: string) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Anything interpolated into a mail header has to be a single line. Resend
+ * takes JSON rather than raw SMTP, so this is belt-and-braces — but a subject
+ * is a header, and headers end at a newline.
+ */
+function oneLine(value: string) {
+  return value.replace(/[\r\n\t]+/g, " ").slice(0, 120);
 }
 
 function asText(enquiry: Enquiry) {
@@ -92,7 +102,7 @@ async function sendViaResend(enquiry: Enquiry): Promise<void> {
       from,
       to: [to],
       reply_to: enquiry.email,
-      subject: `New enquiry — ${enquiry.name} (${enquiry.projectType})`,
+      subject: `New enquiry — ${oneLine(enquiry.name)} (${oneLine(enquiry.projectType)})`,
       text: asText(enquiry),
       html: asHtml(enquiry),
     }),
