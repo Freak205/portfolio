@@ -304,6 +304,84 @@
   background-size: 32px 32px;
 }
 
+/* =============================================================================
+   HERO HUD
+   The hero is a heads-up display the size of the window rather than a card.
+   These rules are the display surface; components/motion/Hud.tsx draws the
+   instrument on it and components/sections/Hero.tsx sets type over it.
+   ========================================================================== */
+
+/*
+   Minor 40px grid over a major 200px one, both as gradient pairs so the whole
+   field is one element instead of a few thousand SVG nodes. Tinted cyan rather
+   than white — a neutral grid reads as graph paper, a tinted one as a screen.
+   The mask keeps it off the window edges.
+*/
+.hud-grid {
+  background-image:
+    linear-gradient(to right, rgb(34 211 238 / 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(34 211 238 / 0.028) 1px, transparent 1px),
+    linear-gradient(to right, rgb(34 211 238 / 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(34 211 238 / 0.055) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    200px 200px,
+    200px 200px;
+  -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, #000 25%, transparent 100%);
+  mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, #000 25%, transparent 100%);
+}
+
+/*
+   Scan lines. 4px period at 1.6% — enough to read as a display surface when you
+   look for it, low enough that it never moirés with the type or greys the page
+   down. It drifts 8px on a loop, which is two full periods, so the loop has no
+   visible seam.
+*/
+.hud-scan {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.016) 0 1px,
+    transparent 1px 4px
+  );
+  pointer-events: none;
+}
+
+/* The square lock brackets, drawn as four corners of a border. */
+.hud-bracket {
+  background-image:
+    linear-gradient(var(--color-cyan), var(--color-cyan)),
+    linear-gradient(var(--color-cyan), var(--color-cyan)),
+    linear-gradient(var(--color-cyan), var(--color-cyan)),
+    linear-gradient(var(--color-cyan), var(--color-cyan));
+  background-repeat: no-repeat;
+  background-size:
+    32% 1px,
+    1px 32%,
+    32% 1px,
+    1px 32%;
+  background-position:
+    left top,
+    right top,
+    right bottom,
+    left bottom;
+  opacity: 0.55;
+}
+
+/*
+   The frame the display is drawn inside. Both the chrome and the type are
+   anchored to this one box, so every annotation lines up with the edges.
+   The top inset clears the fixed header; the bottom clears the home indicator.
+*/
+.hud-inset {
+  position: absolute;
+  left: clamp(0.9rem, 3.5vw, 3rem);
+  right: clamp(0.9rem, 3.5vw, 3rem);
+  top: clamp(5rem, 11svh, 7.5rem);
+  bottom: max(clamp(1.5rem, 5svh, 3rem), env(safe-area-inset-bottom));
+}
+
+
 /* Glow under the primary pill button. */
 .glow-brand {
   box-shadow:

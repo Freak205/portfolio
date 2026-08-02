@@ -119,33 +119,57 @@ export const ticker = {
 /* -----------------------------------------------------------------------------
    4. HERO
    -----------------------------------------------------------------------------
-   No photograph. The centrepiece is a drawn artefact — three isometric planes
-   for interface, logic and data, with a pulse running between them — which says
-   "full stack" without a paragraph and without a headshot.
+   No photograph, and no card. The whole window is a heads-up display: a ring
+   assembly turning behind the name, a radar sweep, telemetry down both margins
+   and a reticle that locks to the pointer, with the name set edge to edge
+   across the middle of it.
 
-   Everything about it is data-driven from `sigil` below, so changing the layer
-   names or colours re-draws it.
+   Everything on the display is data-driven from `hud` and `layers` below, so
+   changing a label or a colour re-draws it. Keep the telemetry values true —
+   they read off your real profile, and a HUD full of invented numbers is a
+   screensaver.
    -------------------------------------------------------------------------- */
 
 export const hero = {
-  /** HIRING — the status strip above the artefact. */
+  /** HIRING — the status chips in the top-right of the display. */
   status: {
     roles: "Open to roles",
     freelance: "Freelance available",
   },
-  sigil: {
-    /** Top to bottom. Three is the number the composition is drawn for. */
-    layers: [
-      { label: "Interface", color: "#22D3EE" },
-      { label: "Logic", color: "#7B7BF5" },
-      { label: "Data", color: "#5B5BF0" },
-    ],
-    /** Set in mono across the top of the plate. */
-    heading: "Full-stack",
-    /** Machine-output line under the layers. */
+  /** The display's chrome. Short machine-set strings — keep them that way. */
+  hud: {
+    /** Top-left of the frame. */
+    code: "SYS · Anirudh — Online",
+    /** Set vertically up the frame's left edge. */
+    edge: profile.locationShort,
+    /** Runs through the scale line above the name. */
+    dimension: "Full-stack",
+    /** Bottom-left, under the layer rail. */
     readout: "One owner · idea → production",
+    /** Bottom-right stamp. */
+    stamp: "Rev. 2026.1",
+    /**
+     * The readout groups down both margins. Two words each at most — they are
+     * set at 10px, and the column is only as wide as the frame's padding.
+     * Every value here is true and comes from the profile above.
+     */
+    telemetry: [
+      { label: "Stack", value: "3 layers" },
+      { label: "Base", value: profile.locationShort },
+      { label: "Roles", value: profile.openToRoles ? "Open" : "Closed" },
+      { label: "Reply", value: "< 24 h" },
+    ],
   },
-  /** Revealed over the artefact as it scales away. Two lines. */
+  /**
+   * The three layers, spread along the rail under the name. Three is the
+   * number the rail is drawn for; the colours also tint their own tick.
+   */
+  layers: [
+    { label: "Interface", color: "#22D3EE" },
+    { label: "Logic", color: "#7B7BF5" },
+    { label: "Data", color: "#5B5BF0" },
+  ],
+  /** Revealed over the sheet as it fades away. Two lines. */
   scrollHeadline: ["I build every layer —", "idea to deployment."],
   scrollTag: "Client platforms in production, plus AI, vision and research projects of my own.",
   scrollHint: "Scroll",

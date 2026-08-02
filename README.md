@@ -263,7 +263,7 @@ components/
   sections/             Hero, Services, Arsenal, Work, Lab, Awards, About,
                         Experience, Testimonials, Contact (+ ContactForm)
   layout/               Header (+ mobile nav), Footer, back-to-top
-  motion/               StackSigil, Kinetic, ScrubText, Tilt, Assemble, Spine,
+  motion/               Hud, Kinetic, ScrubText, Tilt, Assemble, Spine,
                         Aurora, Reveal, Parallax, Magnetic, Marquee, Counter,
                         Cursor, ScrollProgress, Intro, SmoothScroll
   ui/                   Headline, Pill, Preview, Field, Modal, Glyph
@@ -274,24 +274,41 @@ lib/                    motion tokens, brand icons, scroll, rate limit,
 
 ### How the hero works
 
-The section is `200svh` tall with a sticky visual inside it, so the plate scale,
-the name fade and the positioning line are all driven by scroll position rather
-than a timer. Under `prefers-reduced-motion` the section collapses to a single
-static screen with the positioning line already visible.
+The section is `200svh` tall with a sticky visual inside it, so the fade, the
+drift and the positioning line are all driven by scroll position rather than a
+timer. Under `prefers-reduced-motion` the section collapses to a single static
+screen with the positioning line already visible.
 
-Inside the plate is
-[`StackSigil`](components/motion/StackSigil.tsx) — one inline SVG on a 400×500
-field drawing three isometric planes (interface, logic, data) with a pulse
-running the spine between them. It replaced a portrait photograph on purpose: it
-makes the site's actual claim in the first second, ships no image bytes, is
-correct before any font or asset has loaded, and leans toward the pointer.
+The visual is a **heads-up display the size of the window** — not a card, and
+not a photograph. [`Hud`](components/motion/Hud.tsx) draws the field: a cyan
+gradient grid, a reactor of counter-rotating rings on a 400×400 SVG with a tick
+scale and a radar wedge, drifting scan lines, and a reticle that locks to the
+pointer with a live coordinate readout. [`Hero`](components/sections/Hero.tsx)
+sets the chrome and the type over it: corner lock brackets, a tick ruler, margin
+annotations, telemetry columns and the name at full width.
 
-Two numbers in it are load-bearing. The planes sit at `y = 126 / 204 / 282`
-because the plate's lower **30%** is under the gradient the name is set across —
-move the layers down or lengthen that gradient and the bottom plane draws into a
-fade. And the labels are anchored at `x = 392` with `HALF_W = 88`, which leaves
-just enough room for the longest of them (`INTERFACE`) at 8.5px mono; widen the
-planes and it clips.
+Four things in it are load-bearing:
+
+- **`Hud` must not sit inside a transformed ancestor.** The reticle tracks raw
+  `clientX/Y`; a scaled parent slides the hairlines off the real cursor by a few
+  percent at the edges. Hero keeps it in its own untransformed layer, and only
+  the blooms get the scroll scale.
+- **Pointer state lives in motion values, never React state.** A `pointermove`
+  that re-rendered the hero every frame would be the most expensive thing on the
+  page. The coordinate readouts are `MotionValue`s passed as the *only* child of
+  a `motion.span`, which is the form framer-motion renders without a re-render.
+- **The name is sized `clamp(2.75rem, min(21vw, 36svh), 18rem)`.** "Anirudh." is
+  3.95em wide in Space Grotesk, less 0.045em of negative tracking per gap ≈
+  3.70em, and the frame leaves ~82vw of usable width on a phone. 21 × 3.70 ≈
+  78vw — full width with air. The `36svh` cap is what stops a short laptop from
+  cropping it.
+- **The negative tracking is a margin, not `letter-spacing`.** Each letter rises
+  out of its own `overflow-hidden` mask; `letter-spacing` shrinks the mask below
+  the glyph's advance and clips the right edge of every letter.
+
+Everything on the display reads from `hero.hud` and `hero.layers` in
+[`content/site.ts`](content/site.ts) — labels, colours and the telemetry values.
+Keep the telemetry true; a HUD full of invented numbers is a screensaver.
 
 The About panel is the same idea at a different job — a drawn spec plate listing
 the kinds of site I build, rather than a face.
