@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { lab, profile, siteUrl } from "@/content/site";
 import { rgbChannels } from "@/lib/color";
@@ -67,6 +68,9 @@ export default async function LabCaseStudy({ params }: { params: Promise<Params>
   const project = cases.find((item) => item.slug === slug);
   if (!project) notFound();
 
+  // CSP nonce from proxy.ts — the JSON-LD blocks below need it.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   const next = cases.filter((item) => item.slug !== project.slug)[0];
 
   const accent = project.accent;
@@ -102,10 +106,12 @@ export default async function LabCaseStudy({ params }: { params: Promise<Params>
   return (
     <article className="overflow-x-clip pt-[64px] md:pt-[72px]">
       <script
+        nonce={nonce}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <script
+        nonce={nonce}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
       />

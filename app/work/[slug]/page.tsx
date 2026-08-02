@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { profile, projects, siteUrl } from "@/content/site";
 import { rgbChannels } from "@/lib/color";
@@ -55,6 +56,9 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   const project = projects.find((item) => item.slug === slug);
   if (!project) notFound();
 
+  // CSP nonce from proxy.ts — the JSON-LD blocks below need it.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   const next = projects.filter((item) => item.slug !== project.slug)[0];
 
   // One accent per project, threaded through every rule, glow and active state
@@ -90,10 +94,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   return (
     <article className="overflow-x-clip pt-[64px] md:pt-[72px]">
       <script
+        nonce={nonce}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <script
+        nonce={nonce}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
       />
