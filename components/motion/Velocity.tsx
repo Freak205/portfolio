@@ -3,6 +3,7 @@
 import {
   motion,
   useAnimationFrame,
+  useInView,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -52,6 +53,15 @@ export default function Velocity({
 }: Props) {
   const reduced = useReducedMotion();
 
+  /*
+     The strip only advances while it is on screen. Without this the drift runs
+     for the entire life of the page — a skewed, four-copy, full-width track
+     being re-composited every frame while the visitor is reading a section
+     several screens away from it.
+  */
+  const band = useRef<HTMLDivElement>(null);
+  const onScreen = useInView(band, { margin: "200px 0px 200px 0px" });
+
   const baseX = useMotionValue(0);
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
@@ -66,7 +76,7 @@ export default function Velocity({
   const direction = useRef(reverse ? -1 : 1);
 
   useAnimationFrame((_, delta) => {
-    if (reduced) return;
+    if (reduced || !onScreen) return;
 
     let moveBy = direction.current * baseVelocity * (delta / 1000);
 
@@ -88,7 +98,7 @@ export default function Velocity({
   }
 
   return (
-    <div aria-hidden="true" className={`overflow-hidden ${className}`}>
+    <div ref={band} aria-hidden="true" className={`overflow-hidden ${className}`}>
       <motion.div className="flex w-max will-change-transform" style={{ x, skewX }}>
         {/* Four copies: the wrap period is one quarter of the track, so -50%
             lands exactly on a repeat and the seam is never visible. */}

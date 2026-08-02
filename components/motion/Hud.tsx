@@ -1,7 +1,14 @@
 "use client";
 
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
-import { useEffect } from "react";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { useEffect, useRef } from "react";
 import { hero } from "@/content/site";
 
 /**
@@ -38,10 +45,19 @@ import { hero } from "@/content/site";
  *
  * Under `prefers-reduced-motion` the grid and rings stay and everything that
  * moves is dropped, including the pointer listener.
+ *
+ * The same switch is thrown once the hero scrolls away. Nothing here stops on
+ * its own: the coils, the tick ring and the core all repeat forever, and
+ * `strokeOpacity` on ten SVG paths is a repaint of the whole instrument on
+ * every frame. Fading the layer out does not stop any of it — an element at
+ * `opacity: 0` still animates — so a visitor reading the contact section at the
+ * bottom of the page was paying for a reactor turning two screens above them.
  */
 export default function Hud() {
   const reduced = useReducedMotion();
-  const still = Boolean(reduced);
+  const root = useRef<HTMLDivElement>(null);
+  const onScreen = useInView(root);
+  const still = Boolean(reduced) || !onScreen;
 
   /** Raw pointer position, in viewport pixels. */
   const px = useMotionValue(0);
@@ -91,7 +107,7 @@ export default function Hud() {
   }, [still, px, py, driftX, driftY, seen]);
 
   return (
-    <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+    <div ref={root} aria-hidden="true" className="absolute inset-0 overflow-hidden">
       {/* ---------- Field ----------
           Oversized so the parallax never exposes an edge. */}
       <motion.div className="hud-grid absolute -inset-16" style={still ? undefined : { x: gx, y: gy }} />
@@ -142,20 +158,19 @@ export default function Hud() {
 
 /* -----------------------------------------------------------------------------
    REACTOR
-   The chest-piece arc reactor, drawn as one inline SVG on a 400×400 field:
-   an outer housing with a tick scale, a ring of ten trapezoidal coils, an inner
-   housing, and the triangular core inside it. That triangle is the whole point
-   of the silhouette — Stark's Mark II reads as a triangle in a circle from
-   across a room, and without it a ring assembly is just orbits.
+   The chest-piece arc reactor, drawn on a 400×400 field: an outer housing with
+   a tick scale, a ring of ten trapezoidal coils, an inner housing, and the
+   triangular core inside it. That triangle is the whole point of the
+   silhouette — Stark's Mark II reads as a triangle in a circle from across a
+   room, and without it a ring assembly is just orbits.
 
    Sizes are chosen against the type, not for their own sake. The triangle's
    vertices sit at r=118, which puts its apex clear above the name while its
    base runs behind it, so the shape is legible without competing with the H1.
 
-   Everything is centred on 200,200 and the rotating groups declare
-   `transform-box: view-box` with that as their origin — `fill-box` would spin
-   each group around its own bounding box, which for a coil is nowhere near the
-   centre of the assembly.
+   Everything is centred on 200,200. The moving parts rotate and fade as HTML
+   layers stacked over that field rather than as groups inside it — see the note
+   on the Reactor component below.
 
    Motion is deliberately thin: the housing scale turns once every four minutes,
    the coils energise in sequence, the core breathes. Nothing else moves. An
@@ -171,9 +186,6 @@ function point(radius: number, degrees: number) {
   const radians = ((degrees - 90) * Math.PI) / 180;
   return [CENTER + radius * Math.cos(radians), CENTER + radius * Math.sin(radians)] as const;
 }
-
-/** Spin about the centre of the assembly rather than about a bounding box. */
-const spin = { transformBox: "view-box", transformOrigin: `${CENTER}px ${CENTER}px` } as const;
 
 const TICKS = Array.from({ length: 72 }, (_, i) => i);
 
@@ -211,61 +223,87 @@ const TRIANGLE = [0, 120, 240]
   .map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`)
   .join(" ");
 
+/**
+ * The core glow, as a CSS gradient rather than an SVG `<radialGradient>`. Same
+ * three stops, same geometry — `closest-side` on a square box is the r="50%"
+ * the SVG version used. It is kept well under the brightness it would have on
+ * its own: it sits directly behind the H1, and a hot white centre here eats the
+ * counters of the type in front of it.
+ */
+const CORE_GLOW = [
+  "radial-gradient(circle closest-side",
+  "rgb(255 255 255 / 0.26) 0%",
+  `rgb(34 211 238 / 0.14) 35%`,
+  `rgb(34 211 238 / 0) 100%)`,
+].join(", ");
+
+/**
+ * The instrument, drawn as four stacked layers rather than one SVG.
+ *
+ * The split is entirely about paint. SVG transforms and SVG opacity are not
+ * composited — animating either one repaints the whole `<svg>`, every node of
+ * it, on every frame. As one element this meant a ~900px surface being
+ * re-rasterised sixty times a second, permanently, to advance a tick ring by
+ * 0.025° and breathe a glow. Both of those now live on HTML layers the
+ * compositor can transform and fade for free, and the two static layers are
+ * rasterised once and never touched again.
+ *
+ * The layer order reproduces the old paint order exactly: halo and housing,
+ * then the tick scale, then the coils and the core triangle, then the glow.
+ * The ticks and the coils overlap by four units, so that ordering matters.
+ *
+ * What is left in SVG is the coil pulse, which has to be there — it is
+ * `stroke-opacity` on ten separate paths. It runs as one CSS keyframe with a
+ * per-coil delay instead of ten JavaScript animations writing styles each
+ * frame, and it stops entirely when `still`.
+ */
 function Reactor({ still }: { still: boolean }) {
   return (
-    <svg viewBox="0 0 400 400" className="size-full overflow-visible">
-      <defs>
-        {/* The core sits directly behind the H1, so it is kept well under the
-            brightness it would have on its own — a hot white centre here eats
-            the counters of the type in front of it. */}
-        <radialGradient id="hud-core" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#fff" stopOpacity={0.26} />
-          <stop offset="35%" stopColor={CYAN} stopOpacity={0.14} />
-          <stop offset="100%" stopColor={CYAN} stopOpacity={0} />
-        </radialGradient>
-        <radialGradient id="hud-halo" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor={CYAN} stopOpacity={0.1} />
-          <stop offset="60%" stopColor={CYAN} stopOpacity={0.03} />
-          <stop offset="100%" stopColor={CYAN} stopOpacity={0} />
-        </radialGradient>
-      </defs>
+    <div className="relative size-full">
+      {/* ---------- 1. Halo and housing. Static. ---------- */}
+      <svg viewBox="0 0 400 400" className="absolute inset-0 size-full overflow-visible">
+        <defs>
+          <radialGradient id="hud-halo" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor={CYAN} stopOpacity={0.1} />
+            <stop offset="60%" stopColor={CYAN} stopOpacity={0.03} />
+            <stop offset="100%" stopColor={CYAN} stopOpacity={0} />
+          </radialGradient>
+        </defs>
 
-      {/* Halo. Without it the assembly reads as a flat wireframe. */}
-      <circle cx={CENTER} cy={CENTER} r={182} fill="url(#hud-halo)" />
+        {/* Without the halo the assembly reads as a flat wireframe. */}
+        <circle cx={CENTER} cy={CENTER} r={182} fill="url(#hud-halo)" />
+        <circle cx={CENTER} cy={CENTER} r={192} fill="none" stroke="#fff" strokeOpacity={0.06} />
+        <circle cx={CENTER} cy={CENTER} r={186} fill="none" stroke={CYAN} strokeOpacity={0.12} />
+      </svg>
 
-      {/* ---------- Housing ---------- */}
-      <circle cx={CENTER} cy={CENTER} r={192} fill="none" stroke="#fff" strokeOpacity={0.06} />
-      <circle cx={CENTER} cy={CENTER} r={186} fill="none" stroke={CYAN} strokeOpacity={0.12} />
+      {/* ---------- 2. Tick scale, turning once every four minutes ---------- */}
+      <div className={`absolute inset-0 ${still ? "" : "animate-reactor-spin"}`}>
+        <svg viewBox="0 0 400 400" className="size-full overflow-visible">
+          {TICKS.map((i) => {
+            const major = i % 6 === 0;
+            return (
+              <line
+                key={i}
+                x1={CENTER}
+                y1={CENTER - 186}
+                x2={CENTER}
+                y2={CENTER - (major ? 176 : 181)}
+                stroke="#fff"
+                strokeOpacity={major ? 0.2 : 0.08}
+                strokeWidth={major ? 1.1 : 0.7}
+                transform={`rotate(${i * 5} ${CENTER} ${CENTER})`}
+              />
+            );
+          })}
+        </svg>
+      </div>
 
-      <motion.g
-        style={spin}
-        animate={still ? undefined : { rotate: 360 }}
-        transition={{ duration: 240, repeat: Infinity, ease: "linear" }}
-      >
-        {TICKS.map((i) => {
-          const major = i % 6 === 0;
-          return (
-            <line
-              key={i}
-              x1={CENTER}
-              y1={CENTER - 186}
-              x2={CENTER}
-              y2={CENTER - (major ? 176 : 181)}
-              stroke="#fff"
-              strokeOpacity={major ? 0.2 : 0.08}
-              strokeWidth={major ? 1.1 : 0.7}
-              transform={`rotate(${i * 5} ${CENTER} ${CENTER})`}
-            />
-          );
-        })}
-      </motion.g>
-
-      {/* ---------- Coil ring ----------
-          The coils energise one after another around the ring, which is the
-          reactor's only real animation and the reason it reads as powered. */}
-      <g>
+      {/* ---------- 3. Coil ring, inner housing, core triangle ---------- */}
+      <svg viewBox="0 0 400 400" className="absolute inset-0 size-full overflow-visible">
+        {/* The coils energise one after another around the ring, which is the
+            reactor's only real animation and the reason it reads as powered. */}
         {COILS.map((i) => (
-          <motion.path
+          <path
             key={i}
             d={coil(i)}
             fill={CYAN}
@@ -273,42 +311,34 @@ function Reactor({ still }: { still: boolean }) {
             stroke={CYAN}
             strokeWidth={1}
             strokeLinejoin="round"
-            initial={still ? undefined : { strokeOpacity: 0.18 }}
-            animate={still ? undefined : { strokeOpacity: [0.18, 0.6, 0.18] }}
-            transition={{
-              duration: 4.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.18,
-            }}
+            strokeOpacity={0.18}
+            className={still ? undefined : "animate-reactor-coil"}
+            style={still ? undefined : { animationDelay: `${(i * 0.18).toFixed(2)}s` }}
           />
         ))}
-      </g>
 
-      {/* ---------- Inner housing ---------- */}
-      <circle cx={CENTER} cy={CENTER} r={138} fill="none" stroke={CYAN} strokeOpacity={0.22} />
-      <circle cx={CENTER} cy={CENTER} r={132} fill="none" stroke="#fff" strokeOpacity={0.06} />
+        <circle cx={CENTER} cy={CENTER} r={138} fill="none" stroke={CYAN} strokeOpacity={0.22} />
+        <circle cx={CENTER} cy={CENTER} r={132} fill="none" stroke="#fff" strokeOpacity={0.06} />
 
-      {/* ---------- Core ---------- */}
-      <polygon
-        points={TRIANGLE}
-        fill="none"
-        stroke={CYAN}
-        strokeOpacity={0.5}
-        strokeWidth={2}
-        strokeLinejoin="round"
+        <polygon
+          points={TRIANGLE}
+          fill="none"
+          stroke={CYAN}
+          strokeOpacity={0.5}
+          strokeWidth={2}
+          strokeLinejoin="round"
+        />
+        <polygon points={TRIANGLE} fill={CYAN} fillOpacity={0.03} />
+      </svg>
+
+      {/* ---------- 4. Core glow, breathing ---------- */}
+      <div
+        style={{ background: CORE_GLOW }}
+        className={`absolute left-1/2 top-1/2 size-[27%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 ${
+          still ? "" : "animate-reactor-core"
+        }`}
       />
-      <polygon points={TRIANGLE} fill={CYAN} fillOpacity={0.03} />
-      <motion.circle
-        cx={CENTER}
-        cy={CENTER}
-        r={54}
-        fill="url(#hud-core)"
-        initial={still ? undefined : { opacity: 0.6 }}
-        animate={still ? undefined : { opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-      />
-    </svg>
+    </div>
   );
 }
 

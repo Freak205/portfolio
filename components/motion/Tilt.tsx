@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { REVEAL_VIEWPORT, tumbleIn } from "@/lib/motion";
 
@@ -48,11 +42,11 @@ export default function Tilt({
   const spring = { stiffness: 150, damping: 18, mass: 0.6 };
   const rotateX = useSpring(useMotionValue(0), spring);
   const rotateY = useSpring(useMotionValue(0), spring);
-  // Pointer position in percent, for the sheen highlight.
-  const px = useSpring(useMotionValue(50), { stiffness: 90, damping: 20 });
-  const py = useSpring(useMotionValue(50), { stiffness: 90, damping: 20 });
-
-  const sheenBackground = useMotionTemplate`radial-gradient(38rem circle at ${px}% ${py}%, rgb(255 255 255 / 0.07), transparent 42%)`;
+  // Pointer position in pixels, for the sheen highlight. Pixels rather than
+  // percentages because the sheen is a translated layer, not a re-centred
+  // gradient — see the note where it is rendered.
+  const px = useSpring(useMotionValue(0), { stiffness: 90, damping: 20 });
+  const py = useSpring(useMotionValue(0), { stiffness: 90, damping: 20 });
 
   if (reduced) {
     return <div className={className}>{children}</div>;
@@ -73,15 +67,13 @@ export default function Tilt({
     // Centre of the card is 0°; edges reach ±strength.
     rotateY.set((relX - 0.5) * 2 * strength);
     rotateX.set((0.5 - relY) * 2 * strength);
-    px.set(relX * 100);
-    py.set(relY * 100);
+    px.set(event.clientX - rect.left);
+    py.set(event.clientY - rect.top);
   }
 
   function handleLeave() {
     rotateX.set(0);
     rotateY.set(0);
-    px.set(50);
-    py.set(50);
   }
 
   return (
@@ -102,12 +94,27 @@ export default function Tilt({
       >
         {children}
 
+        {/*
+           The light sweep. Like Spotlight's, this is one fixed gradient that
+           gets translated — never a `radial-gradient(… at X% Y% …)` string
+           reinterpolated into `background`, which repaints the entire card on
+           every spring frame while it is also being rotated in 3D.
+        */}
         {sheen && (
-          <motion.span
+          <span
             aria-hidden="true"
-            style={{ background: sheenBackground }}
-            className="pointer-events-none absolute inset-0 rounded-[1.25rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          />
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.25rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          >
+            <motion.span
+              style={{
+                x: px,
+                y: py,
+                background:
+                  "radial-gradient(circle closest-side, rgb(255 255 255 / 0.07), transparent 42%)",
+              }}
+              className="absolute left-0 top-0 -ml-[38rem] -mt-[38rem] size-[76rem] will-change-transform"
+            />
+          </span>
         )}
       </motion.div>
     </motion.div>

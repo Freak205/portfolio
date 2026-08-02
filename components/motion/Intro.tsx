@@ -1,6 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useState } from "react";
 import { EASE_EXPO } from "@/lib/motion";
 import { profile } from "@/content/site";
@@ -19,7 +25,17 @@ const DURATION_MS = 1400;
 export default function Intro() {
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState<"idle" | "playing" | "done">("idle");
-  const [count, setCount] = useState(0);
+
+  /*
+     The percentage readout is a motion value, not React state. This counter
+     ticks every frame for the whole 1.4s of the curtain — which is precisely
+     the window in which the app is hydrating, Lenis is initialising and the
+     hero's own entrance is running. Re-rendering this component sixty times a
+     second through that was competing with all of it for the main thread.
+     framer-motion writes a motion value straight into the text node.
+  */
+  const count = useMotionValue(0);
+  const readout = useTransform(count, (v) => String(Math.round(v)).padStart(3, "0"));
 
   useEffect(() => {
     if (document.documentElement.classList.contains("intro-done") || reduced) {
@@ -34,7 +50,7 @@ export default function Intro() {
     const start = performance.now();
     let frame = requestAnimationFrame(function tick(now) {
       const p = Math.min(1, (now - start) / DURATION_MS);
-      setCount(Math.round((1 - Math.pow(1 - p, 3)) * 100));
+      count.set((1 - Math.pow(1 - p, 3)) * 100);
       if (p < 1) frame = requestAnimationFrame(tick);
     });
 
@@ -54,7 +70,7 @@ export default function Intro() {
       clearTimeout(timer);
       document.body.style.overflow = "";
     };
-  }, [reduced]);
+  }, [reduced, count]);
 
   return (
     <AnimatePresence>
@@ -92,9 +108,9 @@ export default function Intro() {
                 transition={{ duration: DURATION_MS / 1000, ease: [0.33, 1, 0.68, 1] }}
               />
             </div>
-            <span className="text-sm tabular-nums text-white/40">
-              {String(count).padStart(3, "0")}
-            </span>
+            <motion.span className="text-sm tabular-nums text-white/40">
+              {readout}
+            </motion.span>
           </div>
         </motion.div>
       )}

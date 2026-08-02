@@ -91,9 +91,14 @@
     font-synthesis-weight: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
     /* Entrance animations start off-screen; without this a phone can scroll
-       sideways to the gap they came from before they land. */
+       sideways to the gap they came from before they land.
+
+       `clip`, not `hidden`: `overflow-x: hidden` makes <body> a scroll
+       container, which propagates to the viewport and can drop the page off
+       the compositor's fast scroll path. `clip` cuts the overflow without
+       creating a scroll port, so scrolling stays on the compositor. */
+    overflow-x: clip;
     overscroll-behavior-x: none;
     /* iOS paints a grey flash over every tap target otherwise, which fights the
        transitions the elements already have. */
@@ -288,14 +293,35 @@
    ATMOSPHERE
    ========================================================================== */
 
-/* Soft indigo bloom behind hero and contact. */
+/*
+   Soft indigo bloom behind hero and contact.
+
+   The falloff is painted, not filtered. This used to be a hard-edged gradient
+   under `filter: blur(120px)`, which looked the same and cost a great deal
+   more: the hero scales its bloom on scroll, and a blur filter inside a scaled
+   subtree is re-rasterised at the new radius on every single frame — a ~1000px
+   surface at a 120px radius, sixty times a second. A multi-stop gradient is a
+   Gaussian curve the compositor already knows how to draw, so scaling it is
+   free. Keep it that way: no `filter` in this rule.
+*/
 .bloom {
   position: absolute;
   border-radius: 9999px;
-  filter: blur(120px);
   pointer-events: none;
   opacity: 0.28;
-  background: radial-gradient(circle, var(--color-brand) 0%, transparent 70%);
+  /* The tail runs all the way to 100% — i.e. out to the farthest corner, about
+     1.4× the box's half-width — because that is the reach the old blur had
+     beyond the element's own edges, and a bloom that stops short of it reads as
+     a disc rather than as light. */
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-brand) 60%, transparent) 0%,
+    color-mix(in srgb, var(--color-brand) 42%, transparent) 20%,
+    color-mix(in srgb, var(--color-brand) 22%, transparent) 40%,
+    color-mix(in srgb, var(--color-brand) 9%, transparent) 62%,
+    color-mix(in srgb, var(--color-brand) 3%, transparent) 80%,
+    transparent 100%
+  );
 }
 
 /* Faint dot grid, used behind dark sections. */
@@ -330,6 +356,11 @@
     200px 200px;
   -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, #000 25%, transparent 100%);
   mask-image: radial-gradient(ellipse 78% 70% at 50% 48%, #000 25%, transparent 100%);
+  /* Pointer parallax translates this every frame. Four tiled gradients under a
+     mask, repainted at viewport size, is not something to do sixty times a
+     second — promote it once and let the compositor move the texture. */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /*
@@ -345,6 +376,10 @@
     transparent 1px 4px
   );
   pointer-events: none;
+  /* Same reasoning as .hud-grid: this drifts on a permanent loop across the
+     full viewport, so it has to live on its own layer. */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* The square lock brackets, drawn as four corners of a border. */
@@ -463,6 +498,39 @@ html.intro-done .intro-curtain {
   }
 }
 
+/*
+   The reactor's three loops. CSS rather than framer-motion because none of them
+   need to know anything about React: they are fixed, endless, and the browser
+   can run the two transform/opacity ones off the main thread entirely. See the
+   note on Reactor in components/motion/Hud.tsx for why the tick scale and the
+   core glow had to leave the SVG to get that.
+*/
+@keyframes reactor-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes reactor-core {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes reactor-coil {
+  0%,
+  100% {
+    stroke-opacity: 0.18;
+  }
+  50% {
+    stroke-opacity: 0.6;
+  }
+}
+
 .animate-marquee {
   animation: marquee-x 44s linear infinite;
 }
@@ -483,6 +551,16 @@ html.intro-done .intro-curtain {
 }
 .animate-bob {
   animation: bob 2.2s var(--ease-swift) infinite;
+}
+.animate-reactor-spin {
+  animation: reactor-spin 240s linear infinite;
+  will-change: transform;
+}
+.animate-reactor-core {
+  animation: reactor-core 4.5s ease-in-out infinite;
+}
+.animate-reactor-coil {
+  animation: reactor-coil 4.5s ease-in-out infinite;
 }
 
 /* Pause decorative loops on hover. */
@@ -511,6 +589,7 @@ html.intro-done .intro-curtain {
   }
 
   [class*="animate-marquee"],
+  [class*="animate-reactor"],
   .animate-ring-out,
   .animate-bob {
     animation: none !important;

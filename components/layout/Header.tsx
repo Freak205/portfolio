@@ -66,8 +66,14 @@ export default function Header() {
 
   return (
     <>
+      {/* `backdrop-filter` is deliberately absent from the transition list.
+          Leaving it there animated the blur radius from 0 to 24px over half a
+          second, and an interpolating backdrop blur re-reads the backdrop
+          behind the bar on every frame — while the page underneath is
+          scrolling, which is the only time it ever runs. Snapping the blur on
+          under a fading background is indistinguishable and costs nothing. */}
       <header
-        className={`fixed inset-x-0 top-0 transition-[background-color,backdrop-filter,border-color] duration-500 ${
+        className={`fixed inset-x-0 top-0 transition-[background-color,border-color] duration-500 ${
           open ? "z-[82]" : "z-50"
         } ${
           scrolled && !open

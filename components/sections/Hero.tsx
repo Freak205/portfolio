@@ -68,9 +68,14 @@ export default function Hero() {
         {/* ---------- Ground ---------- */}
         <div aria-hidden="true" className="absolute inset-0 bg-base" />
 
+        {/* Scaled on every scroll frame, so it is promoted once and composited
+            from then on. It holds a bloom and a full-viewport vignette; without
+            a layer of its own both gradients repaint at a new size each frame.
+            The bloom is a painted falloff rather than a `filter: blur()` for
+            the same reason — see .bloom in globals.css. */}
         <motion.div
           aria-hidden="true"
-          className="absolute inset-0"
+          className="absolute inset-0 will-change-transform"
           style={reduced ? undefined : { scale: bloomScale, opacity: bloomOpacity }}
         >
           {/* One bloom, under the reactor. A second one low-left just made the

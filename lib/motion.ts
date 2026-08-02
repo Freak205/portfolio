@@ -51,8 +51,24 @@ export const drawLine: Variants = {
    KINETIC LAYER
    The motion language of a title sequence rather than a web page: type arrives
    out of focus and resolves, cards tumble in on a perspective, surfaces catch a
-   light sweep. Every variant here animates `filter`, so keep them on short-lived
-   entrances — a permanently blurred element is a permanent compositing cost.
+   light sweep.
+
+   ⚠ On `filter: blur()` in these variants.
+
+   Every one of them fires from a scroll trigger, which means the blur pass runs
+   on the same frames the visitor is scrolling — the worst possible moment to
+   ask for one. The cost scales with the blurred area, so it is allowed only
+   where that area is small:
+
+     - kineticWord, popIn — a word, a chip. Each box is a couple of hundred
+       pixels across. Cheap enough, and the defocus *is* the effect.
+     - tumbleIn, assemble — whole cards, several per grid, entering together.
+       These no longer blur. A 10px blur over six 400×300 surfaces at once was
+       measurably dropping frames, and the tumble and the scatter already carry
+       the motion without it.
+
+   Anything new that animates `filter` over a large surface belongs in the
+   second group.
    -------------------------------------------------------------------------- */
 
 /** Overshoot curve. Used where something should feel thrown rather than eased. */
@@ -63,7 +79,7 @@ export const EASE_KINETIC = [0.22, 1.4, 0.36, 1] as const;
  * skewed, then snaps into register. The blur is what reads as motion blur.
  */
 export const kineticWord: Variants = {
-  hidden: { opacity: 0, y: "90%", skewY: 6, filter: "blur(14px)" },
+  hidden: { opacity: 0, y: "90%", skewY: 6, filter: "blur(7px)" },
   show: ({ i, delay }: { i: number; delay: number }) => ({
     opacity: 1,
     y: "0%",
@@ -75,13 +91,12 @@ export const kineticWord: Variants = {
 
 /** Card entrance on a perspective — the tumble, not the fade. */
 export const tumbleIn: Variants = {
-  hidden: { opacity: 0, y: 64, rotateX: 22, scale: 0.94, filter: "blur(10px)" },
+  hidden: { opacity: 0, y: 64, rotateX: 22, scale: 0.94 },
   show: (i: number = 0) => ({
     opacity: 1,
     y: 0,
     rotateX: 0,
     scale: 1,
-    filter: "blur(0px)",
     transition: { duration: 1.05, ease: EASE_EXPO, delay: i * 0.09 },
   }),
 };
@@ -108,7 +123,6 @@ export const assemble: Variants = {
     y: c.y,
     rotate: c.r,
     scale: 0.86,
-    filter: "blur(12px)",
   }),
   show: (c: { i: number }) => ({
     opacity: 1,
@@ -116,7 +130,6 @@ export const assemble: Variants = {
     y: 0,
     rotate: 0,
     scale: 1,
-    filter: "blur(0px)",
     transition: { duration: 1.15, ease: EASE_EXPO, delay: 0.05 + c.i * 0.1 },
   }),
 };

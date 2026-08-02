@@ -66,8 +66,12 @@ export default function Kinetic({
             // knocking the line off its baseline.
             className="inline-flex overflow-hidden pb-[0.12em] align-bottom"
           >
+            {/* No `will-change` here on purpose. framer-motion sets it for the
+                duration of the animation and clears it afterwards; hard-coding
+                it in the class left every word of every headline on the page
+                holding its own compositor layer for good. */}
             <motion.span
-              className={`inline-block will-change-[transform,filter] ${wordClassName}`}
+              className={`inline-block ${wordClassName}`}
               variants={kineticWord}
               custom={{ i: offset + i, delay }}
             >

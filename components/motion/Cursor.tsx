@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 
 /**
@@ -24,6 +24,18 @@ export default function Cursor() {
   const sx = useSpring(x, { stiffness: 400, damping: 34, mass: 0.35 });
   const sy = useSpring(y, { stiffness: 400, damping: 34, mass: 0.35 });
 
+  /*
+     Mirrors of the three state values, plus the element the pointer was last
+     over. Position rides motion values and never re-renders, but the ring's
+     size and label are real React state — and a raw `setState` per
+     `pointermove` puts a render on every frame of every mouse movement across
+     the whole page, plus a `closest()` walk up the DOM each time. Both only
+     ever change when the pointer crosses from one element to another, so that
+     is the only thing worth reacting to.
+  */
+  const over = useRef<EventTarget | null>(null);
+  const shown = useRef({ active: false, visible: false, label: null as string | null });
+
   useEffect(() => {
     if (!enabled) return;
 
@@ -31,16 +43,37 @@ export default function Cursor() {
       if (event.pointerType !== "mouse") return;
       x.set(event.clientX);
       y.set(event.clientY);
-      setVisible(true);
+
+      if (!shown.current.visible) {
+        shown.current.visible = true;
+        setVisible(true);
+      }
+
+      // Still over the same node — the hit-test result cannot have changed.
+      if (event.target === over.current) return;
+      over.current = event.target;
 
       const el = (event.target as HTMLElement | null)?.closest<HTMLElement>(
         "a, button, [role='button'], input, textarea, select, summary, [data-cursor]",
       );
-      setActive(Boolean(el));
-      setLabel(el?.dataset.cursor ?? null);
+      const nextActive = Boolean(el);
+      const nextLabel = el?.dataset.cursor ?? null;
+
+      if (nextActive !== shown.current.active) {
+        shown.current.active = nextActive;
+        setActive(nextActive);
+      }
+      if (nextLabel !== shown.current.label) {
+        shown.current.label = nextLabel;
+        setLabel(nextLabel);
+      }
     };
 
-    const onLeave = () => setVisible(false);
+    const onLeave = () => {
+      over.current = null;
+      shown.current.visible = false;
+      setVisible(false);
+    };
 
     window.addEventListener("pointermove", onMove, { passive: true });
     document.addEventListener("pointerleave", onLeave);
