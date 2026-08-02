@@ -16,6 +16,7 @@
 export type Enquiry = {
   name: string;
   email: string;
+  phone: string;
   projectType: string;
   budget: string;
   details: string;
@@ -41,6 +42,7 @@ function asText(enquiry: Enquiry) {
     ``,
     `Name:        ${enquiry.name}`,
     `Email:       ${enquiry.email}`,
+    `Phone:       ${enquiry.phone || "Not given"}`,
     `Project:     ${enquiry.projectType}`,
     `Budget:      ${enquiry.budget || "Not specified"}`,
     `Submitted:   ${enquiry.submittedAt}`,
@@ -59,6 +61,7 @@ function asHtml(enquiry: Enquiry) {
   <table style="border-collapse:collapse;width:100%">
     ${row("Name", enquiry.name)}
     ${row("Email", enquiry.email)}
+    ${row("Phone", enquiry.phone || "Not given")}
     ${row("Project type", enquiry.projectType)}
     ${row("Budget", enquiry.budget || "Not specified")}
     ${row("Submitted", enquiry.submittedAt)}

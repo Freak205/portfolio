@@ -9,11 +9,14 @@ import { IconCheck } from "@/components/ui/Glyph";
 import { FieldWrap, Select, TextArea, TextInput } from "@/components/ui/Field";
 
 type Status = "idle" | "sending" | "success" | "error";
-type Errors = Partial<Record<"name" | "email" | "projectType" | "budget" | "details", string>>;
+type Errors = Partial<
+  Record<"name" | "email" | "phone" | "projectType" | "budget" | "details", string>
+>;
 
 const EMPTY = {
   name: "",
   email: "",
+  phone: "",
   projectType: "",
   budget: "",
   details: "",
@@ -39,6 +42,10 @@ export default function ContactForm({ onDone }: { onDone?: () => void }) {
     if (values.name.trim().length < 2) next.name = "Please enter your name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim()))
       next.email = "Please enter a valid email address.";
+    // Optional — only checked when something was actually typed.
+    const phone = values.phone.trim();
+    if (phone && !/^\+?[\d\s().-]{7,20}$/.test(phone))
+      next.phone = "Please enter a valid phone number, or leave it blank.";
     if (!values.projectType) next.projectType = "Pick the closest match.";
     if (values.details.trim().length < 20)
       next.details = "A couple of sentences helps me reply properly.";
@@ -145,7 +152,14 @@ export default function ContactForm({ onDone }: { onDone?: () => void }) {
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
-            <FieldWrap id="contact-name" label="Name" required error={errors.name}>
+            {/* Name spans the row so the five fields still pair off cleanly below. */}
+            <FieldWrap
+              id="contact-name"
+              label="Name"
+              required
+              error={errors.name}
+              className="sm:col-span-2"
+            >
               <TextInput
                 id="contact-name"
                 name="name"
@@ -168,6 +182,20 @@ export default function ContactForm({ onDone }: { onDone?: () => void }) {
                 placeholder="you@company.com"
                 autoComplete="email"
                 error={errors.email}
+                disabled={busy}
+              />
+            </FieldWrap>
+
+            <FieldWrap id="contact-phone" label="Phone" error={errors.phone} hint="Optional">
+              <TextInput
+                id="contact-phone"
+                name="phone"
+                type="tel"
+                value={values.phone}
+                onChange={set("phone")}
+                placeholder="+91 98765 43210"
+                autoComplete="tel"
+                error={errors.phone}
                 disabled={busy}
               />
             </FieldWrap>

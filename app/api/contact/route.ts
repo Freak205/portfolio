@@ -13,6 +13,15 @@ const schema = z.object({
     .trim()
     .max(200)
     .regex(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "Please enter a valid email address."),
+  // Optional. Empty passes; anything typed has to look like a phone number.
+  phone: z
+    .string()
+    .trim()
+    .max(40)
+    .default("")
+    .refine((value) => value === "" || /^\+?[\d\s().-]{7,20}$/.test(value), {
+      message: "Please enter a valid phone number, or leave it blank.",
+    }),
   projectType: z.string().trim().min(1, "Pick the closest match.").max(120),
   budget: z.string().trim().max(120).default(""),
   details: z
@@ -67,6 +76,7 @@ export async function POST(request: Request) {
   const result = await deliver({
     name: parsed.data.name,
     email: parsed.data.email,
+    phone: parsed.data.phone,
     projectType: parsed.data.projectType,
     budget: parsed.data.budget,
     details: parsed.data.details,
