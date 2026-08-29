@@ -56,7 +56,7 @@ export const contact = {
   github: "https://github.com/Freak205",
   // EDIT: your resume lists the display name only, not the URL slug.
   // Open your LinkedIn profile, copy the URL from the address bar, paste it here.
-  linkedin: "https://www.linkedin.com/in/venkata-sai-anirudh-ineedi",
+  linkedin: "https://www.linkedin.com/in/venkata-sai-anirudh-ineedi-20052005m/",
   linkedinLabel: "Venkata Sai Anirudh Ineedi",
   /**
    * EDIT: the file behind the "Resume" and "Download CV" buttons.
