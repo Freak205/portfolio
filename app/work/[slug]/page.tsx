@@ -59,7 +59,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   // CSP nonce from proxy.ts — the JSON-LD blocks below need it.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
-  const next = projects.filter((item) => item.slug !== project.slug)[0];
+  const next = projects[(projects.indexOf(project) + 1) % projects.length];
 
   // One accent per project, threaded through every rule, glow and active state
   // on the page — the two case studies should not read as the same template.
@@ -72,7 +72,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
     name: project.name,
     description: project.overview,
     url: `${siteUrl}/work/${project.slug}`,
-    sameAs: [project.liveUrl],
+    ...(project.liveUrl ? { sameAs: [project.liveUrl] } : {}),
     creator: { "@type": "Person", name: profile.fullName, url: siteUrl },
   };
 
@@ -165,11 +165,13 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:mt-9">
-            <Pill variant="white" size="lg" href={project.liveUrl} external>
-              Visit {project.liveLabel}
-              <IconArrowUpRight className="size-4" />
-            </Pill>
-            <Pill variant="outline" size="lg" href="/#contact">
+            {project.liveUrl && (
+              <Pill variant="white" size="lg" href={project.liveUrl} external>
+                Visit {project.liveLabel}
+                <IconArrowUpRight className="size-4" />
+              </Pill>
+            )}
+            <Pill variant={project.liveUrl ? "outline" : "white"} size="lg" href="/#contact">
               Start a similar project
             </Pill>
           </div>
@@ -398,7 +400,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
             <div>
               <Reveal>
-                <p className="kicker">See it live</p>
+                <p className="kicker">{project.liveUrl ? "See it live" : "In production"}</p>
               </Reveal>
               <Reveal delay={0.06}>
                 <p className="headline headline-lg mt-5 max-w-[16ch] font-light">
@@ -408,11 +410,13 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
               </Reveal>
               <Reveal delay={0.12}>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                  <Pill variant="white" size="lg" href={project.liveUrl} external>
-                    Open {project.liveLabel}
-                    <IconArrowUpRight className="size-4" />
-                  </Pill>
-                  <Pill variant="outline" size="lg" href="/#contact">
+                  {project.liveUrl && (
+                    <Pill variant="white" size="lg" href={project.liveUrl} external>
+                      Open {project.liveLabel}
+                      <IconArrowUpRight className="size-4" />
+                    </Pill>
+                  )}
+                  <Pill variant={project.liveUrl ? "outline" : "white"} size="lg" href="/#contact">
                     Work with me
                   </Pill>
                 </div>

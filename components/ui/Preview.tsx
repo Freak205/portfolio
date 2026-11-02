@@ -63,6 +63,8 @@ export default function Preview({
               priority={priority}
               className="object-cover transition-transform duration-[1.1s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/frame:scale-[1.04]"
             />
+          ) : image.schematic ? (
+            <Schematic spec={image.schematic} seed={seed} />
           ) : (
             <Placeholder label={image.caption} seed={seed} />
           )}
@@ -75,6 +77,50 @@ export default function Preview({
         </figcaption>
       )}
     </figure>
+  );
+}
+
+/**
+ * A drawn cover for work with no public screens: the system's real stages as a
+ * labelled chain, over the same dot grid the placeholder uses.
+ */
+function Schematic({
+  spec,
+  seed,
+}: {
+  spec: { title: string; nodes: string[]; footer: string };
+  seed: number;
+}) {
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-panel">
+      <div aria-hidden="true" className="dotgrid absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="bloom left-[58%] top-[8%] size-[18rem] opacity-25"
+        style={{ transform: `translateX(${(seed % 3) * 8}%)` }}
+      />
+      <div className="absolute inset-0 flex flex-col justify-center gap-[5%] px-[6%]">
+        <span className="mono text-[clamp(0.55rem,1vw,0.7rem)] font-semibold uppercase tracking-[0.18em] text-white/40">
+          {spec.title}
+        </span>
+        <ol className="flex flex-wrap items-center gap-x-[2%] gap-y-3">
+          {spec.nodes.map((node, i) => (
+            <li key={node} className="flex items-center gap-[2vw] lg:gap-3">
+              <span className="mono rounded-md border border-[var(--line-strong)] bg-void/60 px-[0.9em] py-[0.55em] text-[clamp(0.6rem,1.15vw,0.8rem)] text-white/75">
+                <span className="mr-2 text-white/30">{String(i + 1).padStart(2, "0")}</span>
+                {node}
+              </span>
+              {i < spec.nodes.length - 1 && (
+                <span aria-hidden="true" className="h-px w-[2.2vw] max-w-6 bg-white/25 lg:w-5" />
+              )}
+            </li>
+          ))}
+        </ol>
+        <span className="mono text-[clamp(0.55rem,1vw,0.7rem)] uppercase tracking-[0.14em] text-brand-soft">
+          {spec.footer}
+        </span>
+      </div>
+    </div>
   );
 }
 

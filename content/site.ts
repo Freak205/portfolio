@@ -171,7 +171,7 @@ export const hero = {
   ],
   /** Revealed over the sheet as it fades away. Two lines. */
   scrollHeadline: ["I build every layer —", "idea to deployment."],
-  scrollTag: "Client platforms in production, plus AI, vision and research projects of my own.",
+  scrollTag: "Four platforms in production, plus AI, vision and research projects of my own.",
   scrollHint: "Scroll",
 } as const;
 
@@ -298,6 +298,12 @@ export type ProjectImage = {
   caption: string;
   width: number;
   height: number;
+  /**
+   * Drawn in place of a screenshot when `src` is null — for work whose real
+   * screens sit behind a login or a loader. A labelled pipeline of the system's
+   * true stages, not a placeholder.
+   */
+  schematic?: { title: string; nodes: string[]; footer: string };
 };
 
 export type Project = {
@@ -317,8 +323,11 @@ export type Project = {
   timeframe: string;
   role: string;
   status: string;
-  liveUrl: string;
-  liveLabel: string;
+  /** Short label on the card's status chip. */
+  badge: string;
+  /** Leave both out when there is no public site to link to. */
+  liveUrl?: string;
+  liveLabel?: string;
   overview: string;
   need: string;
   responsibilities: string[];
@@ -336,7 +345,7 @@ export const workSection = {
   headingLight: "Selected",
   headingBold: "Work",
   intro:
-    "Two production platforms, each built and operated end to end. Both are live — open them and click around, that's the point.",
+    "Four platforms in production — two flagship builds first, then the two projects from my Southeast Media internship. Each was built end to end; open the live ones and click around, that's the point.",
 } as const;
 
 export const projects: Project[] = [
@@ -352,6 +361,7 @@ export const projects: Project[] = [
     timeframe: "2026 — ongoing",
     role: "Sole developer — design, build, deploy, operate",
     status: "Live in production",
+    badge: "Live",
     liveUrl: "https://www.clinvara.global",
     liveLabel: "clinvara.global",
     overview:
@@ -486,6 +496,7 @@ export const projects: Project[] = [
     timeframe: "2026 — ongoing",
     role: "Sole developer — design, build, deploy",
     status: "Live in production",
+    badge: "Live",
     liveUrl: "https://www.southeastmedia.in",
     liveLabel: "southeastmedia.in",
     overview:
@@ -584,6 +595,211 @@ export const projects: Project[] = [
         height: 900,
       },
     ],
+  },
+  {
+    slug: "raising-voice",
+    index: "03",
+    name: "Raising Voice",
+    subtitle: "Telugu News Platform & Newsroom Pipeline",
+    tagline:
+      "A Telugu-first news platform with an editorial CMS and an automated newsroom that gathers, screens, writes and — inside hard limits — publishes.",
+    accent: "#F2555B",
+    sector: "Media · News · CMS · AI pipeline",
+    timeframe: "2026 — Southeast Media internship",
+    role: "Full-stack developer — site, CMS and newsroom pipeline",
+    status: "In production",
+    badge: "Production",
+    overview:
+      "A digital news platform in three parts: a server-rendered public site, an editorial CMS with twelve roles and server-side permission checks, and a scheduled newsroom pipeline that turns sourced stories into Telugu articles. Automation is bounded — anything it holds, rejects or fails waits for an editor, and every limit it runs under is enforced in code.",
+    need: "A Telugu newsroom that publishes on a steady cadence without a person at the keyboard for every story — while keeping an editor in charge of anything uncertain, and being honest about what the machine did.",
+    context: "Built during my Full-Stack Developer internship at Southeast Media.",
+    responsibilities: [
+      "Public site and article pages",
+      "Editorial CMS and workflow",
+      "Role and permission model",
+      "Newsroom pipeline stages",
+      "Publishing gates and ceilings",
+      "Prisma data model and migrations",
+      "Cloud deployment and operations",
+      "Unit and database test suites",
+    ],
+    features: [
+      {
+        title: "Public site",
+        body: "Server-rendered homepage with editor-configurable sections, category, author and tag pages, article pages with JSON-LD, search, RSS and news sitemaps, and a Telugu/English switcher that works without JavaScript.",
+      },
+      {
+        title: "Editorial CMS",
+        body: "Articles with revisions, autosave and preview; a review, approve, publish and schedule workflow; media, videos, galleries, web stories, homepage sections, ads and analytics — behind twelve roles.",
+      },
+      {
+        title: "Newsroom pipeline",
+        body: "Collect, de-duplicate, screen, generate in Telugu, validate, decide. Gemini with Google Search grounding finds stories; every one ends as published, held, rejected or failed, with a reason recorded.",
+      },
+      {
+        title: "Controlled auto-publishing",
+        body: "Only the scheduled cycle can publish, only stories that clear every automated gate, at most 5 per cycle and 30 per day. A cycle an editor starts from the admin never publishes.",
+      },
+      {
+        title: "Human review path",
+        body: "Everything held or rejected stays visible in a queue where an editor can approve it into a real draft or reject it with a reason. Article transitions are compare-and-set, so a double click publishes once.",
+      },
+      {
+        title: "Lead-story policy",
+        body: "The homepage hero follows a written editorial order as a pure, unit-tested module — never cinema, sport or other soft news, whatever its flags.",
+      },
+    ],
+    implementation: [
+      {
+        title: "Automation that is bounded in code, not by convention",
+        body: "Auto-publishing returns no publisher unless explicitly enabled with a byline author. Per-cycle and per-day ceilings can only be lowered by configuration — a zero or blank value falls back to the ceiling — and the daily count is read from audit rows, so it holds across instances and restarts.",
+      },
+      {
+        title: "Idempotent, atomic publishing",
+        body: "A story, its revision, its audit row and the candidate's conversion are written in one transaction, keyed per candidate. Overlapping cycles are prevented by a database lock, and each candidate attempt is claimed by compare-and-set, so humans always win a race with the pipeline.",
+      },
+      {
+        title: "Budgets that fail closed",
+        body: "Provider calls are counted before they are made, against per-run ceilings and a durable daily ledger across all instances. If the ledger can't be read, the pipeline stops rather than guessing. De-duplication runs before any model call, so a repeat story costs nothing.",
+      },
+      {
+        title: "Source images treated as a risk",
+        body: "The newsroom never generates or searches for images. A source's own image is fetched through an SSRF-checked downloader, must decode as a real hero-sized image, and is used on an automatic story only after Cloud Vision SafeSearch passes it — otherwise the story goes out without one.",
+      },
+      {
+        title: "Tested against a real database",
+        body: "Many suites run in-process against PGlite with every committed migration applied, and an end-to-end test drives the real gather route through the publisher with the network, storage and Google clients faked. Nothing in the suite calls Google.",
+      },
+    ],
+    stack: [
+      {
+        group: "Frontend",
+        items: ["Next.js 16 App Router", "React 19", "TypeScript (strict)", "Tailwind CSS v4"],
+      },
+      { group: "Data", items: ["PostgreSQL", "Prisma 7", "Cloud SQL", "Compare-and-set transitions"] },
+      {
+        group: "AI & vision",
+        items: ["Gemini on Vertex AI", "Google Search grounding", "Cloud Vision SafeSearch", "Zod-validated outputs"],
+      },
+      { group: "Auth & access", items: ["DB-backed cookie sessions", "scrypt hashing", "12-role permission map", "Audit log"] },
+      { group: "Cloud & delivery", items: ["Firebase App Hosting", "Secret Manager", "Cloud Scheduler", "GCS media storage"] },
+      { group: "Quality", items: ["Vitest", "PGlite", "ESLint", "Docs-consistency test"] },
+    ],
+    facts: [
+      { label: "Status", value: "In production" },
+      { label: "Admin roles", value: "12" },
+      { label: "Publish ceiling", value: "30 / day" },
+      { label: "Test files", value: "183" },
+    ],
+    cover: {
+      src: null,
+      alt: "Diagram of the Raising Voice newsroom pipeline stages",
+      caption: "Raising Voice — newsroom pipeline",
+      width: 1600,
+      height: 1000,
+      schematic: {
+        title: "Newsroom cycle",
+        nodes: ["Collect", "De-duplicate", "Screen", "Generate", "Validate", "Decide"],
+        footer: "Published · Held · Rejected · Failed",
+      },
+    },
+    gallery: [],
+  },
+  {
+    slug: "playbox",
+    index: "04",
+    name: "PLAYBOX",
+    subtitle: "Browser Mini-Games Platform",
+    tagline:
+      "One site, 21 playable games, no install — a shared engine and shell, with every game a few kilobytes of lazy-loaded code.",
+    accent: "#A3E635",
+    sector: "Games · Platform · PWA",
+    timeframe: "2026 — Southeast Media internship",
+    role: "Full-stack developer — engine, shell and games",
+    status: "Live",
+    badge: "Live",
+    liveUrl: "https://chillbox.co.in",
+    liveLabel: "chillbox.co.in",
+    overview:
+      "Not 21 HTML files in a folder, but one platform: a custom fixed-timestep Canvas2D engine, a shared shell, and 21 game modules that implement one interface and are discovered from a single registry. Adding a game is one registry entry and one file. It runs on desktop, Android, iPhone and tablet, and offline after the first visit.",
+    need: "A games site that opens instantly on a phone, needs nothing installed, and can keep growing without each new game adding weight or touching the screens around it.",
+    context: "Built during my Full-Stack Developer internship at Southeast Media.",
+    responsibilities: [
+      "Fixed-timestep game engine",
+      "Shared shell and design tokens",
+      "Game module interface and registry",
+      "Procedural art and Web Audio",
+      "Firestore leaderboards and rules",
+      "Auth lifecycle (built, not yet enabled)",
+      "Offline support and PWA manifest",
+      "Test and release pipeline",
+    ],
+    features: [
+      {
+        title: "21 games, one interface",
+        body: "Arcade, racing and puzzle games — Sky Runner, Street Rush, Bike Rush, Fruit Slice, Memory Match and more — each a module implementing the same contract and found through one registry.",
+      },
+      {
+        title: "A real simulation core",
+        body: "Gravity with coyote time and jump buffering, drag proportional to v² for the cars, suspension forces applied at contact points for the bike, segment-versus-circle blade collision for Fruit Slice.",
+      },
+      {
+        title: "Zero asset files",
+        body: "All art is drawn procedurally and all audio is synthesised with Web Audio — there are no image or audio files anywhere in the project.",
+      },
+      {
+        title: "Installable and offline",
+        body: "A service worker and web app manifest make it an installable PWA that keeps working after the first visit.",
+      },
+      {
+        title: "Leaderboards, optional accounts",
+        body: "With no configuration the app runs local-only: guest play, per-browser progress, a per-device leaderboard. Firestore leaderboards and the full account lifecycle are implemented; Firebase Auth is not switched on in production yet.",
+      },
+    ],
+    implementation: [
+      {
+        title: "Games as lazy chunks",
+        body: "The home page downloads no game logic. The shell is about 25 KB gzipped plus 46 KB of React, and each game is its own 1.5–4.3 KB gzipped chunk, fetched only when it is opened.",
+      },
+      {
+        title: "Fixed timestep, shared by every game",
+        body: "One engine of roughly 1,800 lines owns the loop, input and rendering, so simulation behaves the same on a 60 Hz phone and a 144 Hz monitor, and a new game only writes its rules.",
+      },
+      {
+        title: "Validated before it ships",
+        body: "A single verify command runs typecheck, the unit suite, a smoke test that boots all 21 games, a production build and prerender. Firestore rules, queries and the score-submission function are tested against local emulators, with no project and no cost.",
+      },
+      {
+        title: "Honest about what is switched on",
+        body: "Sign-up, sign-in, password reset and account deletion with re-authentication are implemented and tested, but Firebase Auth is not enabled on the production project — so the live site is guest-and-local, and the documentation says so.",
+      },
+    ],
+    stack: [
+      { group: "Shell", items: ["React 18", "TypeScript", "Vite 6"] },
+      { group: "Engine", items: ["Custom Canvas2D engine", "Fixed timestep", "Procedural art", "Web Audio synthesis"] },
+      { group: "Backend", items: ["Firebase Hosting", "Cloud Firestore", "Firebase Functions", "Firebase Auth (not yet enabled)"] },
+      { group: "Offline", items: ["Service worker", "Web app manifest"] },
+      { group: "Quality", items: ["Vitest", "Firebase emulators", "21-game smoke test", "Prerender check"] },
+    ],
+    facts: [
+      { label: "Status", value: "Live" },
+      { label: "Games", value: "21" },
+      { label: "Automated tests", value: "1,328" },
+      { label: "Game chunk", value: "1.5–4.3 KB" },
+    ],
+    cover: {
+      src: null,
+      alt: "Diagram of the PLAYBOX architecture from registry to lazy game chunk",
+      caption: "PLAYBOX — platform architecture",
+      width: 1600,
+      height: 1000,
+      schematic: {
+        title: "One platform, 21 games",
+        nodes: ["Registry", "Shell", "Lazy chunk", "Engine", "Game"],
+        footer: "25 KB shell · 1.5–4.3 KB per game",
+      },
+    },
+    gallery: [],
   },
 ];
 
@@ -950,14 +1166,14 @@ export const about = {
   },
   paragraphs: [
     "Full-stack developer in Hyderabad. I build websites and web platforms of every kind — storefronts, studio sites, product and SaaS front ends, content platforms, internal tools — and I take each one the whole way: architecture, interface, data, backend, deployment, and the unglamorous work of keeping it running.",
-    "Two of those are live client platforms I still operate. Three more are mine: an AI analytics app, a computer-vision game controller, and deep-learning research into document forensics.",
+    "Four of those are platforms in production — two flagship builds and two from my Southeast Media internship. Three more are mine: an AI analytics app, a computer-vision game controller, and deep-learning research into document forensics.",
     "Different problems, one habit — I don't hand off at the halfway mark. A storefront the owner can't update isn't finished. Neither is a beautiful site nobody can find.",
   ],
   /** Three counters. Every number here is verifiable from the projects listed. */
   stats: [
-    { value: "02", label: "Live client platforms in production" },
+    { value: "04", label: "Platforms in production" },
     { value: "03", label: "Personal engineering projects" },
-    { value: "176", label: "Automated tests across my own projects" },
+    { value: "176", label: "Automated tests across my personal projects" },
   ],
   /** Compact supporting facts. Education sits here, not at the centre. */
   credentials: [
@@ -1009,6 +1225,8 @@ export const experience: ExperienceEntry[] = [
       "Owned end-to-end delivery of a live CGI/VFX studio platform spanning seven art-directed business verticals, translating brand direction into a production-ready, responsive web experience.",
       "Engineered a modular motion and media system using GSAP ScrollTrigger, Lenis, Framer Motion, CSS 3D, canvas noise and matter.js while preserving reduced-motion accessibility.",
       "Hardened deployment with Zod validation, rate limiting, honeypot protection, security headers, environment-aware SEO, AVIF/WebP delivery, lazy video playback, caching and dynamic imports.",
+      "Built Raising Voice, a Telugu news platform with an editorial CMS and a newsroom pipeline whose automatic publishing is capped in code and falls back to human review.",
+      "Built PLAYBOX, a 21-game browser platform on a custom Canvas2D engine, shipping each game as a lazy chunk of a few kilobytes and covered by 1,328 automated tests.",
     ],
   },
   {
@@ -1145,7 +1363,7 @@ export const seo = {
   title: `${profile.fullName} — ${profile.title}`,
   titleSuffix: `${profile.firstName} · ${profile.title}`,
   description:
-    "Full-stack developer in Hyderabad building websites and web platforms of every kind — commerce, brand, product, SaaS, content and internal tools — from design through deployment and operation. Two live client platforms, plus AI, computer-vision and deep-learning projects of my own. Open to roles and freelance work.",
+    "Full-stack developer in Hyderabad building websites and web platforms of every kind — commerce, brand, product, SaaS, content and internal tools — from design through deployment and operation. Four platforms in production, plus AI, computer-vision and deep-learning projects of my own. Open to roles and freelance work.",
   keywords: [
     "full-stack developer",
     "hire full-stack developer",
@@ -1166,6 +1384,6 @@ export const seo = {
    */
   og: {
     headline: "I build websites and web platforms of every kind.",
-    sub: "Live client platforms, plus AI, computer-vision and deep-learning projects of my own.",
+    sub: "Platforms in production, plus AI, computer-vision and deep-learning projects of my own.",
   },
 } as const;

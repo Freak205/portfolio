@@ -8,9 +8,9 @@ import Preview from "@/components/ui/Preview";
 import { IconArrowUpRight } from "@/components/ui/Glyph";
 
 /**
- * The two flagships, and only the two. Personal projects live in <Lab /> below
- * so that this section stays the strongest claim on the page rather than a list
- * everything gets added to.
+ * Client and internship platforms, flagships first. Personal projects live in
+ * <Lab /> below so that this section stays the strongest claim on the page
+ * rather than a list everything gets added to.
  */
 export default function Work() {
   return (
@@ -53,7 +53,7 @@ export default function Work() {
                           className="animate-pulse-dot size-1.5 rounded-full"
                           style={{ backgroundColor: project.accent }}
                         />
-                        Live
+                        {project.badge}
                       </span>
                     </div>
 
