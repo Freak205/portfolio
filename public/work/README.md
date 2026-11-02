@@ -2,7 +2,8 @@
 
 Real captures of the two live platforms, taken from the production sites and
 saved as WebP at the dimensions the frames expect. `content/site.ts` already
-points at every one of them.
+points at every one of them. The Raising Voice CMS is behind a login, so only
+public pages are shown.
 
 | File                       | Source page                                        |
 | -------------------------- | -------------------------------------------------- |
@@ -14,6 +15,14 @@ points at every one of them.
 | `southeast-verticals.webp` | `/verticals`                                       |
 | `southeast-films.webp`     | `/films`                                           |
 | `southeast-contact.webp`   | `/contact`                                         |
+| `raisingvoice-home.webp`   | <https://raisingvoice.in>                          |
+| `raisingvoice-article.webp`  | an article page                                  |
+| `raisingvoice-latest.webp` | `/latest-news`                                     |
+| `raisingvoice-category.webp` | `/telangana`                                     |
+| `playbox-home.webp`        | <https://chillbox.co.in>                           |
+| `playbox-library.webp`     | library, 1200×900                                  |
+| `playbox-street-rush.webp` | `/play/street-rush`, after Start                   |
+| `playbox-bike-rush.webp`   | `/play/bike-rush`, after Start                     |
 
 Both sites are live, so these go stale when the sites change. Re-shoot at the
 same viewport sizes (1600×1000 for covers, 1200×900 for gallery frames) and

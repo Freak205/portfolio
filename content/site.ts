@@ -298,12 +298,6 @@ export type ProjectImage = {
   caption: string;
   width: number;
   height: number;
-  /**
-   * Drawn in place of a screenshot when `src` is null — for work whose real
-   * screens sit behind a login or a loader. A labelled pipeline of the system's
-   * true stages, not a placeholder.
-   */
-  schematic?: { title: string; nodes: string[]; footer: string };
 };
 
 export type Project = {
@@ -607,8 +601,10 @@ export const projects: Project[] = [
     sector: "Media · News · CMS · AI pipeline",
     timeframe: "2026 — Southeast Media internship",
     role: "Full-stack developer — site, CMS and newsroom pipeline",
-    status: "In production",
-    badge: "Production",
+    status: "Live in production",
+    badge: "Live",
+    liveUrl: "https://raisingvoice.in",
+    liveLabel: "raisingvoice.in",
     overview:
       "A digital news platform in three parts: a server-rendered public site, an editorial CMS with twelve roles and server-side permission checks, and a scheduled newsroom pipeline that turns sourced stories into Telugu articles. Automation is bounded — anything it holds, rejects or fails waits for an editor, and every limit it runs under is enforced in code.",
     need: "A Telugu newsroom that publishes on a steady cadence without a person at the keyboard for every story — while keeping an editor in charge of anything uncertain, and being honest about what the machine did.",
@@ -686,24 +682,43 @@ export const projects: Project[] = [
       { group: "Quality", items: ["Vitest", "PGlite", "ESLint", "Docs-consistency test"] },
     ],
     facts: [
-      { label: "Status", value: "In production" },
+      { label: "Status", value: "Live in production" },
       { label: "Admin roles", value: "12" },
       { label: "Publish ceiling", value: "30 / day" },
       { label: "Test files", value: "183" },
     ],
     cover: {
-      src: null,
-      alt: "Diagram of the Raising Voice newsroom pipeline stages",
-      caption: "Raising Voice — newsroom pipeline",
+      src: "/work/raisingvoice-home.webp",
+      alt: "Raising Voice homepage with the lead story, top stories and latest videos in Telugu",
+      caption: "Raising Voice — homepage",
       width: 1600,
       height: 1000,
-      schematic: {
-        title: "Newsroom cycle",
-        nodes: ["Collect", "De-duplicate", "Screen", "Generate", "Validate", "Decide"],
-        footer: "Published · Held · Rejected · Failed",
-      },
     },
-    gallery: [],
+    // Captured from the live public site. The CMS and newsroom queue sit behind
+    // a login, so every frame here is a page anyone can open.
+    gallery: [
+      {
+        src: "/work/raisingvoice-article.webp",
+        alt: "Raising Voice article page showing byline, source attribution and the AI-assisted notice",
+        caption: "Article — source credit and AI notice",
+        width: 1200,
+        height: 900,
+      },
+      {
+        src: "/work/raisingvoice-latest.webp",
+        alt: "Raising Voice latest news listing with a most-read sidebar",
+        caption: "Latest news",
+        width: 1200,
+        height: 900,
+      },
+      {
+        src: "/work/raisingvoice-category.webp",
+        alt: "Raising Voice Telangana category page",
+        caption: "Category page",
+        width: 1200,
+        height: 900,
+      },
+    ],
   },
   {
     slug: "playbox",
@@ -788,18 +803,35 @@ export const projects: Project[] = [
       { label: "Game chunk", value: "1.5–4.3 KB" },
     ],
     cover: {
-      src: null,
-      alt: "Diagram of the PLAYBOX architecture from registry to lazy game chunk",
-      caption: "PLAYBOX — platform architecture",
+      src: "/work/playbox-home.webp",
+      alt: "PLAYBOX library with the featured Sky Runner game and the daily challenge",
+      caption: "PLAYBOX — game library",
       width: 1600,
       height: 1000,
-      schematic: {
-        title: "One platform, 21 games",
-        nodes: ["Registry", "Shell", "Lazy chunk", "Engine", "Game"],
-        footer: "25 KB shell · 1.5–4.3 KB per game",
-      },
     },
-    gallery: [],
+    gallery: [
+      {
+        src: "/work/playbox-library.webp",
+        alt: "PLAYBOX library with the featured game, daily challenge and category filters",
+        caption: "Library and daily challenge",
+        width: 1200,
+        height: 900,
+      },
+      {
+        src: "/work/playbox-street-rush.webp",
+        alt: "Street Rush mid-run with score, speed and a boost meter",
+        caption: "Street Rush — in play",
+        width: 1200,
+        height: 900,
+      },
+      {
+        src: "/work/playbox-bike-rush.webp",
+        alt: "Bike Rush two-wheel physics on rolling terrain",
+        caption: "Bike Rush — in play",
+        width: 1200,
+        height: 900,
+      },
+    ],
   },
 ];
 
