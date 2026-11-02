@@ -1142,6 +1142,103 @@ export const lab: LabProject[] = [
     metrics: [],
     caseStudy: false,
   },
+  {
+    slug: "friday",
+    index: "04",
+    name: "FRIDAY",
+    subtitle: "Local Desktop Assistant",
+    tagline:
+      "A Windows assistant that runs on your machine, carries out typed or spoken requests through audited skills, and checks the result instead of trusting the model.",
+    accent: "#22D3EE",
+    discipline: "Agents · Local AI · Desktop systems",
+    release: "~100 phases · Windows · Experimental",
+    role: "Sole developer",
+    status: "Experimental",
+    repoUrl: "https://github.com/Freak205/FRIDAY",
+    repoLabel: "Freak205/FRIDAY",
+    summary:
+      "A local-first desktop assistant for Windows. Requests, typed or spoken, are matched to a registry of about 107 skills — files, apps, windows, browser, shell, settings, memory, scheduling — and a small local language model plans multi-step goals. Every action passes a permission tier, is written to an audit log, and where a read-back check exists is verified against the real state of the machine.",
+    tags: ["Python", "Ollama", "PySide6", "FastAPI", "SQLite", "faster-whisper", "Agents"],
+    metrics: [
+      { label: "Registered skills", value: "~107" },
+      { label: "Permission tiers", value: "4" },
+      { label: "Read-back verified", value: "~32" },
+      { label: "Development phases", value: "~100" },
+    ],
+    caseStudy: true,
+    overview:
+      "FRIDAY is a personal project exploring what a desktop agent looks like when it runs entirely on your own machine and is honest about what it did. It takes a typed or spoken request, matches it locally to a skill or hands a multi-step goal to a small local planner, and carries it out — with a permission tier on every action, an audit row written before it runs and closed after, and a read-back check wherever one exists. Its README opens by calling it experimental and not production-ready, and I've kept that framing here.",
+    problem:
+      "Agent demos are easy; trustworthy agents are not. A model that says it moved a file hasn't necessarily moved it, a destructive action needs a human in the loop, and a crash halfway through a task shouldn't be recorded as success. I wanted an assistant with no cloud dependency in its core loop, where the difference between failed, succeeded and unknown is a first-class part of the design.",
+    approach:
+      "Skills are the unit of capability, and each carries a permission tier. A local embedding match routes simple requests; a local language model plans the multi-step ones. Around that sits the part I care about most: audit-before-act, outcome states that distinguish failure from unknown, read-back verification, and snapshots that make file changes reversible.",
+    highlights: [
+      {
+        title: "Four permission tiers",
+        body: "Read (L0) and reversible write (L1) run automatically; destructive (L2) and external (L3) actions ask for confirmation. Scheduled and trigger-driven jobs are capped at L1, so nothing unattended can delete or reach outside.",
+      },
+      {
+        title: "Audit before action, outcome after",
+        body: "A row is written before a skill runs and closed afterwards as success, failure, not started, cancelled, timeout or unknown outcome. Work interrupted by a crash is reconciled at the next start — and an unknown is never quietly promoted to success.",
+      },
+      {
+        title: "Verified, not trusted",
+        body: "About 32 skills read the machine's real state back after acting. The roughly 35 that can't be verified — shell, UI automation, browser and WhatsApp among them — are known and counted, not hidden.",
+      },
+      {
+        title: "Reversible file operations",
+        body: "Deletes and overwrites keep a snapshot, restorable through operator-only recovery commands that still run through the normal permission, confirmation and audit path.",
+      },
+      {
+        title: "Local end to end",
+        body: "The language model (via Ollama), embeddings, speech-to-text, wake word and voice-activity detection all run on the machine. Voice covers a wake word, push-to-talk in the GUI and spoken replies.",
+      },
+      {
+        title: "Four ways in",
+        body: "A PySide6 desktop GUI with a tray icon, a text console, a one-shot say command for scripting, and a local HTTP/WebSocket daemon.",
+      },
+    ],
+    engineering: [
+      {
+        title: "Failed is not the same as unknown",
+        body: "If the process dies mid-action, nobody can say whether the action happened. The audit model has an explicit unknown-outcome state and reconciles interrupted work on restart, so the log never claims more certainty than it has.",
+      },
+      {
+        title: "Stopping a shell command for real",
+        body: "Shell commands run inside a Windows job object, so a stopped command's whole process tree can be ended rather than leaving orphaned children behind.",
+      },
+      {
+        title: "Unattended work is capped",
+        body: "Scheduled jobs and triggers can't exceed the reversible-write tier. The riskiest actions always have a person at the confirmation prompt.",
+      },
+      {
+        title: "Credential scrubbing, honestly scoped",
+        body: "Secrets are scrubbed from audit views, logs and several output paths — pattern-based, and documented as not a guarantee that every output is credential-safe.",
+      },
+    ],
+    stack: [
+      { group: "Language & runtime", items: ["Python 3.12", "asyncio"] },
+      { group: "Local AI", items: ["Ollama (qwen2.5:3b)", "fastembed (bge-small)", "Embedding intent matcher"] },
+      { group: "Voice", items: ["faster-whisper", "openWakeWord", "Silero VAD", "pyttsx3 / SAPI"] },
+      { group: "Interface", items: ["PySide6 GUI + tray", "Console", "FastAPI + uvicorn daemon"] },
+      { group: "Storage & security", items: ["SQLite (WAL)", "Windows DPAPI key store", "Snapshot recovery store"] },
+      { group: "Automation", items: ["Playwright", "Windows UI automation", "Optional Tesseract OCR"] },
+    ],
+    limitations: [
+      "Experimental — not production-ready, and not claimed to be safe. Run it only on a machine and data you can afford to experiment on.",
+      "STOP only interrupts a running multi-step goal or a pending confirmation; a directly requested shell command or a scheduled job isn't interrupted.",
+      "Credential redaction is pattern-based and incomplete.",
+      "The local daemon has no authentication on loopback, and remote mode has a token but no TLS.",
+      "Not tested on a clean machine, and there is no recorded human validation pass of the GUI or voice features.",
+      "Windows-only, with Python 3.12 the only tested version.",
+    ],
+    next: [
+      "Make STOP interrupt every kind of running work",
+      "A clean-machine install and a recorded validation pass",
+      "Authentication and TLS for the daemon",
+      "A refreshed agent benchmark",
+    ],
+  },
 ];
 
 /* -----------------------------------------------------------------------------
@@ -1198,13 +1295,13 @@ export const about = {
   },
   paragraphs: [
     "Full-stack developer in Hyderabad. I build websites and web platforms of every kind — storefronts, studio sites, product and SaaS front ends, content platforms, internal tools — and I take each one the whole way: architecture, interface, data, backend, deployment, and the unglamorous work of keeping it running.",
-    "Four of those are platforms in production — two flagship builds and two from my Southeast Media internship. Three more are mine: an AI analytics app, a computer-vision game controller, and deep-learning research into document forensics.",
+    "Four of those are platforms in production — two flagship builds and two from my Southeast Media internship. Four more are mine: an AI analytics app, a computer-vision game controller, a local desktop assistant, and deep-learning research into document forensics.",
     "Different problems, one habit — I don't hand off at the halfway mark. A storefront the owner can't update isn't finished. Neither is a beautiful site nobody can find.",
   ],
   /** Three counters. Every number here is verifiable from the projects listed. */
   stats: [
     { value: "04", label: "Platforms in production" },
-    { value: "03", label: "Personal engineering projects" },
+    { value: "04", label: "Personal engineering projects" },
     { value: "176", label: "Automated tests across my personal projects" },
   ],
   /** Compact supporting facts. Education sits here, not at the centre. */
@@ -1395,7 +1492,7 @@ export const seo = {
   title: `${profile.fullName} — ${profile.title}`,
   titleSuffix: `${profile.firstName} · ${profile.title}`,
   description:
-    "Full-stack developer in Hyderabad building websites and web platforms of every kind — commerce, brand, product, SaaS, content and internal tools — from design through deployment and operation. Four platforms in production, plus AI, computer-vision and deep-learning projects of my own. Open to roles and freelance work.",
+    "Full-stack developer in Hyderabad building websites and web platforms of every kind — commerce, brand, product, SaaS, content and internal tools — from design through deployment and operation. Four platforms in production, plus AI, computer-vision, local-agent and deep-learning projects of my own. Open to roles and freelance work.",
   keywords: [
     "full-stack developer",
     "hire full-stack developer",
