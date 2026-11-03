@@ -206,8 +206,8 @@ export const services: {
     icon: "browser",
     color: "#4ADE80",
     title: "Websites & Web Platforms",
-    body: "Whatever the site needs to be — brand, studio, product, SaaS, content, internal tool.",
-    points: ["Art direction", "Responsive build", "Dashboards & tools"],
+    body: "Whatever the site needs to be — brand, studio, newsroom, games, product, SaaS, internal tool.",
+    points: ["Art direction", "CMS & editorial", "Dashboards & tools"],
   },
   {
     icon: "commerce",
@@ -220,8 +220,8 @@ export const services: {
     icon: "spark",
     color: "#A78BFA",
     title: "AI & Data Features",
-    body: "AI and analytics that earn their place in the product, not a bolted-on demo.",
-    points: ["Grounded answers", "Analytics & reporting", "Computer vision"],
+    body: "AI, agents and analytics that earn their place in the product, not a bolted-on demo.",
+    points: ["Capped AI pipelines", "Analytics & reporting", "Local agents"],
   },
   {
     icon: "gauge",
@@ -1288,6 +1288,7 @@ export const about = {
       "Brand & studio",
       "Product & SaaS",
       "Content & editorial",
+      "Games & interactive",
       "Internal tools",
       "AI & data apps",
     ],
@@ -1408,7 +1409,7 @@ export const testimonialsSection = {
 
 export const testimonials: Testimonial[] = [
   { quote: null, name: null, role: null, meta: null, reservedFor: "Internship guide — CLINVARA engagement" },
-  { quote: null, name: null, role: null, meta: null, reservedFor: "Southeast Media — studio lead" },
+  { quote: null, name: null, role: null, meta: null, reservedFor: "Southeast Media — studio lead (site, Raising Voice, PLAYBOX)" },
   { quote: null, name: null, role: null, meta: null, reservedFor: "Freelance client" },
 ];
 
