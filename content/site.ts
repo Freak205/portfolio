@@ -7,8 +7,8 @@
    before you publish.
 
    Nothing here is invented. Every claim traces back to your resume, the CLINVARA
-   handover document, the Southeast Media README, or the project case studies for
-   InsightFlow AI, Project Steer and ForgeLens.
+   handover document, the Southeast Media, Raising Voice and PLAYBOX READMEs, or
+   the project docs for InsightFlow AI, FRIDAY, Project Steer and ForgeLens.
 
    The site speaks to two audiences at once — hiring teams and clients — so most
    sections carry both. Search for "HIRING" to find the parts aimed at recruiters.
@@ -110,7 +110,7 @@ export const ticker = {
   items: [
     "Open to roles",
     "Building CLINVARA",
-    "Shipping Southeast Media",
+    "Shipping Raising Voice & PLAYBOX",
     "Available for freelance",
     "Based in Hyderabad",
   ],
@@ -282,9 +282,9 @@ export const arsenal: { slug: string; label: string }[][] = [
 ];
 
 /* -----------------------------------------------------------------------------
-   7. SELECTED WORK — the two flagships
+   7. SELECTED WORK — client & internship platforms, ranked by engineering depth
    -----------------------------------------------------------------------------
-   These are the headline builds and they get the whole top of the page plus a
+   These are the four production platforms and they get the whole top of the page plus a
    full case study each at /work/[slug]. Personal projects live in section 8 and
    are deliberately presented below these, not beside them.
 
@@ -309,7 +309,7 @@ export type Project = {
   tagline: string;
   /**
    * Hex colour that art-directs this case study — rules, glows, active states
-   * and the running title all pick it up, so the two projects don't feel like
+   * and the running title all pick it up, so the projects don't feel like
    * the same page with the words swapped.
    */
   accent: string;
@@ -335,11 +335,11 @@ export type Project = {
 };
 
 export const workSection = {
-  label: "Flagship Projects",
+  label: "Production Platforms",
   headingLight: "Selected",
   headingBold: "Work",
   intro:
-    "Four platforms in production — two flagship builds first, then the two projects from my Southeast Media internship. Each was built end to end; open the live ones and click around, that's the point.",
+    "Four platforms in production, ranked by engineering depth: a commerce platform, a newsroom with a capped AI pipeline, a games platform on a custom engine, and a motion-led studio site. Each was built end to end — open them and click around, that's the point.",
 } as const;
 
 export const projects: Project[] = [
@@ -479,120 +479,8 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "southeast-media",
-    index: "02",
-    name: "Southeast Media",
-    subtitle: "CGI & VFX Studio Site",
-    tagline: "The public site for a CGI and VFX studio — seven art-directed verticals, one motion system.",
-    accent: "#22D3EE",
-    sector: "Media · Studio · Brand site",
-    // CONFIRM: your resume dates this engagement "June 2026 – Present".
-    timeframe: "2026 — ongoing",
-    role: "Sole developer — design, build, deploy",
-    status: "Live in production",
-    badge: "Live",
-    liveUrl: "https://www.southeastmedia.in",
-    liveLabel: "southeastmedia.in",
-    overview:
-      "Seven business verticals — pharma, real estate, films, VFX, animation, SaaS, enterprise — each art-directed on its own terms and each carrying a lot of in-house film. I built all of it, scroll choreography through deployment.",
-    need: "A studio that sells visual craft can't ship an ordinary website. Roughly 127 MB of film and stills that never feels slow, seven verticals with their own identity, one brand holding it together.",
-    responsibilities: [
-      "Brand direction to build",
-      "Seven vertical compositions",
-      "Shared motion system",
-      "Media pipeline",
-      "AVIF/WebP delivery",
-      "Enquiry form & validation",
-      "SEO & canonical routing",
-      "Deployment & DNS cutover",
-    ],
-    features: [
-      {
-        title: "Seven art-directed verticals",
-        body: "Pharma, real estate, films, VFX, animation, SaaS and enterprise each get their own composition, built from one shared vocabulary so the brand holds.",
-      },
-      {
-        title: "Scroll choreography",
-        body: "GSAP ScrollTrigger over Lenis smooth scrolling, with Framer Motion, CSS 3D, canvas noise and matter.js each used where it's actually the right tool.",
-      },
-      {
-        title: "A media system, not a folder",
-        body: "~127 MB of in-house film served from a manifest — stable filenames, AVIF/WebP, lazy video and a deliberate cache policy.",
-      },
-      {
-        title: "Enquiry pipeline",
-        body: "Zod on both sides, rate limiting and honeypot on the server, delivery over Resend or a webhook depending on the environment.",
-      },
-      {
-        title: "Reduced motion respected",
-        body: "Every scroll-driven scene has a static equivalent. The site is fully usable with prefers-reduced-motion set.",
-      },
-    ],
-    implementation: [
-      {
-        title: "Motion as a shared system",
-        body: "Scroll behaviour lives in a handful of primitives every scene composes, instead of being hand-animated per page. Timing stays consistent across seven very different pages and the reduced-motion path lives in one place.",
-      },
-      {
-        title: "Deliberate cache headers",
-        body: "Media filenames are stable and overwritten in place, so the cache header is deliberately not immutable — one day of cache with a week of stale-while-revalidate lets the studio swap assets without renaming anything.",
-      },
-      {
-        title: "App Hosting over static hosting",
-        body: "Static hosting would have forced an export build and dropped both the enquiry route handler and image optimization. App Hosting keeps them, and pushes to main roll out on their own.",
-      },
-      {
-        title: "Hardened by default",
-        body: "Zod validation, rate limiting, honeypot fields, security headers, environment-aware SEO and dynamic imports for the heavy scenes.",
-      },
-    ],
-    stack: [
-      { group: "Frontend", items: ["Next.js 16 App Router", "React 19", "TypeScript", "Tailwind CSS v4"] },
-      { group: "Motion", items: ["GSAP + ScrollTrigger", "Lenis", "Framer Motion", "matter.js", "Canvas"] },
-      { group: "Forms & validation", items: ["React Hook Form", "Zod", "Rate limiting", "Honeypot"] },
-      { group: "Cloud & delivery", items: ["Firebase App Hosting", "Resend / webhook transport", "AVIF & WebP"] },
-      { group: "Quality", items: ["ESLint", "Prettier", "Husky + lint-staged", "TypeScript strict"] },
-    ],
-    facts: [
-      { label: "Status", value: "Live in production" },
-      { label: "Role", value: "Sole developer" },
-      { label: "Vertical pages", value: "7" },
-      { label: "In-house media", value: "~127 MB" },
-    ],
-    cover: {
-      src: "/work/southeast-home.webp",
-      alt: "Southeast Media homepage with the in-house CGI hero film playing",
-      caption: "Southeast Media — homepage",
-      width: 1600,
-      height: 1000,
-    },
-    gallery: [
-      {
-        src: "/work/southeast-verticals.webp",
-        alt: "Southeast Media verticals index showing the seven disciplines as a media grid",
-        caption: "Verticals index — seven disciplines",
-        width: 1200,
-        height: 900,
-      },
-      {
-        src: "/work/southeast-films.webp",
-        alt: "Southeast Media films vertical with the in-house reel and shot selector",
-        caption: "Films vertical — in-house reel",
-        width: 1200,
-        height: 900,
-      },
-      {
-        src: "/work/southeast-contact.webp",
-        alt: "Southeast Media enquiry form with validated fields",
-        caption: "Enquiry form",
-        width: 1200,
-        height: 900,
-      },
-    ],
-  },
-  {
     slug: "raising-voice",
-    index: "03",
+    index: "02",
     name: "Raising Voice",
     subtitle: "Telugu News Platform & Newsroom Pipeline",
     tagline:
@@ -722,7 +610,7 @@ export const projects: Project[] = [
   },
   {
     slug: "playbox",
-    index: "04",
+    index: "03",
     name: "PLAYBOX",
     subtitle: "Browser Mini-Games Platform",
     tagline:
@@ -833,13 +721,125 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: "southeast-media",
+    index: "04",
+    name: "Southeast Media",
+    subtitle: "CGI & VFX Studio Site",
+    tagline: "The public site for a CGI and VFX studio — seven art-directed verticals, one motion system.",
+    accent: "#22D3EE",
+    sector: "Media · Studio · Brand site",
+    // CONFIRM: your resume dates this engagement "June 2026 – Present".
+    timeframe: "2026 — ongoing",
+    role: "Sole developer — design, build, deploy",
+    status: "Live in production",
+    badge: "Live",
+    liveUrl: "https://www.southeastmedia.in",
+    liveLabel: "southeastmedia.in",
+    overview:
+      "Seven business verticals — pharma, real estate, films, VFX, animation, SaaS, enterprise — each art-directed on its own terms and each carrying a lot of in-house film. I built all of it, scroll choreography through deployment.",
+    need: "A studio that sells visual craft can't ship an ordinary website. Roughly 127 MB of film and stills that never feels slow, seven verticals with their own identity, one brand holding it together.",
+    responsibilities: [
+      "Brand direction to build",
+      "Seven vertical compositions",
+      "Shared motion system",
+      "Media pipeline",
+      "AVIF/WebP delivery",
+      "Enquiry form & validation",
+      "SEO & canonical routing",
+      "Deployment & DNS cutover",
+    ],
+    features: [
+      {
+        title: "Seven art-directed verticals",
+        body: "Pharma, real estate, films, VFX, animation, SaaS and enterprise each get their own composition, built from one shared vocabulary so the brand holds.",
+      },
+      {
+        title: "Scroll choreography",
+        body: "GSAP ScrollTrigger over Lenis smooth scrolling, with Framer Motion, CSS 3D, canvas noise and matter.js each used where it's actually the right tool.",
+      },
+      {
+        title: "A media system, not a folder",
+        body: "~127 MB of in-house film served from a manifest — stable filenames, AVIF/WebP, lazy video and a deliberate cache policy.",
+      },
+      {
+        title: "Enquiry pipeline",
+        body: "Zod on both sides, rate limiting and honeypot on the server, delivery over Resend or a webhook depending on the environment.",
+      },
+      {
+        title: "Reduced motion respected",
+        body: "Every scroll-driven scene has a static equivalent. The site is fully usable with prefers-reduced-motion set.",
+      },
+    ],
+    implementation: [
+      {
+        title: "Motion as a shared system",
+        body: "Scroll behaviour lives in a handful of primitives every scene composes, instead of being hand-animated per page. Timing stays consistent across seven very different pages and the reduced-motion path lives in one place.",
+      },
+      {
+        title: "Deliberate cache headers",
+        body: "Media filenames are stable and overwritten in place, so the cache header is deliberately not immutable — one day of cache with a week of stale-while-revalidate lets the studio swap assets without renaming anything.",
+      },
+      {
+        title: "App Hosting over static hosting",
+        body: "Static hosting would have forced an export build and dropped both the enquiry route handler and image optimization. App Hosting keeps them, and pushes to main roll out on their own.",
+      },
+      {
+        title: "Hardened by default",
+        body: "Zod validation, rate limiting, honeypot fields, security headers, environment-aware SEO and dynamic imports for the heavy scenes.",
+      },
+    ],
+    stack: [
+      { group: "Frontend", items: ["Next.js 16 App Router", "React 19", "TypeScript", "Tailwind CSS v4"] },
+      { group: "Motion", items: ["GSAP + ScrollTrigger", "Lenis", "Framer Motion", "matter.js", "Canvas"] },
+      { group: "Forms & validation", items: ["React Hook Form", "Zod", "Rate limiting", "Honeypot"] },
+      { group: "Cloud & delivery", items: ["Firebase App Hosting", "Resend / webhook transport", "AVIF & WebP"] },
+      { group: "Quality", items: ["ESLint", "Prettier", "Husky + lint-staged", "TypeScript strict"] },
+    ],
+    facts: [
+      { label: "Status", value: "Live in production" },
+      { label: "Role", value: "Sole developer" },
+      { label: "Vertical pages", value: "7" },
+      { label: "In-house media", value: "~127 MB" },
+    ],
+    cover: {
+      src: "/work/southeast-home.webp",
+      alt: "Southeast Media homepage with the in-house CGI hero film playing",
+      caption: "Southeast Media — homepage",
+      width: 1600,
+      height: 1000,
+    },
+    gallery: [
+      {
+        src: "/work/southeast-verticals.webp",
+        alt: "Southeast Media verticals index showing the seven disciplines as a media grid",
+        caption: "Verticals index — seven disciplines",
+        width: 1200,
+        height: 900,
+      },
+      {
+        src: "/work/southeast-films.webp",
+        alt: "Southeast Media films vertical with the in-house reel and shot selector",
+        caption: "Films vertical — in-house reel",
+        width: 1200,
+        height: 900,
+      },
+      {
+        src: "/work/southeast-contact.webp",
+        alt: "Southeast Media enquiry form with validated fields",
+        caption: "Enquiry form",
+        width: 1200,
+        height: 900,
+      },
+    ],
+  },
 ];
 
 /* -----------------------------------------------------------------------------
    8. THE LAB — personal projects
    -----------------------------------------------------------------------------
-   Built for their own sake, not for a client. They carry the range the two
-   flagships can't: Python, data, generative AI, computer vision, real-time
+   Built for their own sake, not for a client. They carry the range the client
+   platforms can't: Python, data, generative AI, computer vision, real-time
    systems, test suites and CI.
 
    `caseStudy: true` gives a project its own page at /lab/[slug] and needs every
@@ -1022,8 +1022,105 @@ export const lab: LabProject[] = [
     ],
   },
   {
-    slug: "project-steer",
+    slug: "friday",
     index: "02",
+    name: "FRIDAY",
+    subtitle: "Local Desktop Assistant",
+    tagline:
+      "A Windows assistant that runs on your machine, carries out typed or spoken requests through audited skills, and checks the result instead of trusting the model.",
+    accent: "#22D3EE",
+    discipline: "Agents · Local AI · Desktop systems",
+    release: "~100 phases · Windows · Experimental",
+    role: "Sole developer",
+    status: "Experimental",
+    repoUrl: "https://github.com/Freak205/FRIDAY",
+    repoLabel: "Freak205/FRIDAY",
+    summary:
+      "A local-first desktop assistant for Windows. Requests, typed or spoken, are matched to a registry of about 107 skills — files, apps, windows, browser, shell, settings, memory, scheduling — and a small local language model plans multi-step goals. Every action passes a permission tier, is written to an audit log, and where a read-back check exists is verified against the real state of the machine.",
+    tags: ["Python", "Ollama", "PySide6", "FastAPI", "SQLite", "faster-whisper", "Agents"],
+    metrics: [
+      { label: "Registered skills", value: "~107" },
+      { label: "Permission tiers", value: "4" },
+      { label: "Read-back verified", value: "~32" },
+      { label: "Development phases", value: "~100" },
+    ],
+    caseStudy: true,
+    overview:
+      "FRIDAY is a personal project exploring what a desktop agent looks like when it runs entirely on your own machine and is honest about what it did. It takes a typed or spoken request, matches it locally to a skill or hands a multi-step goal to a small local planner, and carries it out — with a permission tier on every action, an audit row written before it runs and closed after, and a read-back check wherever one exists. Its README opens by calling it experimental and not production-ready, and I've kept that framing here.",
+    problem:
+      "Agent demos are easy; trustworthy agents are not. A model that says it moved a file hasn't necessarily moved it, a destructive action needs a human in the loop, and a crash halfway through a task shouldn't be recorded as success. I wanted an assistant with no cloud dependency in its core loop, where the difference between failed, succeeded and unknown is a first-class part of the design.",
+    approach:
+      "Skills are the unit of capability, and each carries a permission tier. A local embedding match routes simple requests; a local language model plans the multi-step ones. Around that sits the part I care about most: audit-before-act, outcome states that distinguish failure from unknown, read-back verification, and snapshots that make file changes reversible.",
+    highlights: [
+      {
+        title: "Four permission tiers",
+        body: "Read (L0) and reversible write (L1) run automatically; destructive (L2) and external (L3) actions ask for confirmation. Scheduled and trigger-driven jobs are capped at L1, so nothing unattended can delete or reach outside.",
+      },
+      {
+        title: "Audit before action, outcome after",
+        body: "A row is written before a skill runs and closed afterwards as success, failure, not started, cancelled, timeout or unknown outcome. Work interrupted by a crash is reconciled at the next start — and an unknown is never quietly promoted to success.",
+      },
+      {
+        title: "Verified, not trusted",
+        body: "About 32 skills read the machine's real state back after acting. The roughly 35 that can't be verified — shell, UI automation, browser and WhatsApp among them — are known and counted, not hidden.",
+      },
+      {
+        title: "Reversible file operations",
+        body: "Deletes and overwrites keep a snapshot, restorable through operator-only recovery commands that still run through the normal permission, confirmation and audit path.",
+      },
+      {
+        title: "Local end to end",
+        body: "The language model (via Ollama), embeddings, speech-to-text, wake word and voice-activity detection all run on the machine. Voice covers a wake word, push-to-talk in the GUI and spoken replies.",
+      },
+      {
+        title: "Four ways in",
+        body: "A PySide6 desktop GUI with a tray icon, a text console, a one-shot say command for scripting, and a local HTTP/WebSocket daemon.",
+      },
+    ],
+    engineering: [
+      {
+        title: "Failed is not the same as unknown",
+        body: "If the process dies mid-action, nobody can say whether the action happened. The audit model has an explicit unknown-outcome state and reconciles interrupted work on restart, so the log never claims more certainty than it has.",
+      },
+      {
+        title: "Stopping a shell command for real",
+        body: "Shell commands run inside a Windows job object, so a stopped command's whole process tree can be ended rather than leaving orphaned children behind.",
+      },
+      {
+        title: "Unattended work is capped",
+        body: "Scheduled jobs and triggers can't exceed the reversible-write tier. The riskiest actions always have a person at the confirmation prompt.",
+      },
+      {
+        title: "Credential scrubbing, honestly scoped",
+        body: "Secrets are scrubbed from audit views, logs and several output paths — pattern-based, and documented as not a guarantee that every output is credential-safe.",
+      },
+    ],
+    stack: [
+      { group: "Language & runtime", items: ["Python 3.12", "asyncio"] },
+      { group: "Local AI", items: ["Ollama (qwen2.5:3b)", "fastembed (bge-small)", "Embedding intent matcher"] },
+      { group: "Voice", items: ["faster-whisper", "openWakeWord", "Silero VAD", "pyttsx3 / SAPI"] },
+      { group: "Interface", items: ["PySide6 GUI + tray", "Console", "FastAPI + uvicorn daemon"] },
+      { group: "Storage & security", items: ["SQLite (WAL)", "Windows DPAPI key store", "Snapshot recovery store"] },
+      { group: "Automation", items: ["Playwright", "Windows UI automation", "Optional Tesseract OCR"] },
+    ],
+    limitations: [
+      "Experimental — not production-ready, and not claimed to be safe. Run it only on a machine and data you can afford to experiment on.",
+      "STOP only interrupts a running multi-step goal or a pending confirmation; a directly requested shell command or a scheduled job isn't interrupted.",
+      "Credential redaction is pattern-based and incomplete.",
+      "The local daemon has no authentication on loopback, and remote mode has a token but no TLS.",
+      "Not tested on a clean machine, and there is no recorded human validation pass of the GUI or voice features.",
+      "Windows-only, with Python 3.12 the only tested version.",
+    ],
+    next: [
+      "Make STOP interrupt every kind of running work",
+      "A clean-machine install and a recorded validation pass",
+      "Authentication and TLS for the daemon",
+      "A refreshed agent benchmark",
+    ],
+  },
+  {
+    slug: "project-steer",
+    index: "03",
     name: "Project Steer",
     subtitle: "Webcam Gesture Driving Controller",
     tagline: "Drive Windows racing games with your hands and a webcam — no controller, no keyboard, no wheel.",
@@ -1125,7 +1222,7 @@ export const lab: LabProject[] = [
   },
   {
     slug: "forgelens",
-    index: "03",
+    index: "04",
     name: "ForgeLens",
     subtitle: "Document Forensics Research",
     tagline: "Calibrated multimodal detection and pixel-level localization of document forgery.",
@@ -1141,103 +1238,6 @@ export const lab: LabProject[] = [
     tags: ["PyTorch", "Computer vision", "VLM fine-tuning", "LoRA", "Research engineering"],
     metrics: [],
     caseStudy: false,
-  },
-  {
-    slug: "friday",
-    index: "04",
-    name: "FRIDAY",
-    subtitle: "Local Desktop Assistant",
-    tagline:
-      "A Windows assistant that runs on your machine, carries out typed or spoken requests through audited skills, and checks the result instead of trusting the model.",
-    accent: "#22D3EE",
-    discipline: "Agents · Local AI · Desktop systems",
-    release: "~100 phases · Windows · Experimental",
-    role: "Sole developer",
-    status: "Experimental",
-    repoUrl: "https://github.com/Freak205/FRIDAY",
-    repoLabel: "Freak205/FRIDAY",
-    summary:
-      "A local-first desktop assistant for Windows. Requests, typed or spoken, are matched to a registry of about 107 skills — files, apps, windows, browser, shell, settings, memory, scheduling — and a small local language model plans multi-step goals. Every action passes a permission tier, is written to an audit log, and where a read-back check exists is verified against the real state of the machine.",
-    tags: ["Python", "Ollama", "PySide6", "FastAPI", "SQLite", "faster-whisper", "Agents"],
-    metrics: [
-      { label: "Registered skills", value: "~107" },
-      { label: "Permission tiers", value: "4" },
-      { label: "Read-back verified", value: "~32" },
-      { label: "Development phases", value: "~100" },
-    ],
-    caseStudy: true,
-    overview:
-      "FRIDAY is a personal project exploring what a desktop agent looks like when it runs entirely on your own machine and is honest about what it did. It takes a typed or spoken request, matches it locally to a skill or hands a multi-step goal to a small local planner, and carries it out — with a permission tier on every action, an audit row written before it runs and closed after, and a read-back check wherever one exists. Its README opens by calling it experimental and not production-ready, and I've kept that framing here.",
-    problem:
-      "Agent demos are easy; trustworthy agents are not. A model that says it moved a file hasn't necessarily moved it, a destructive action needs a human in the loop, and a crash halfway through a task shouldn't be recorded as success. I wanted an assistant with no cloud dependency in its core loop, where the difference between failed, succeeded and unknown is a first-class part of the design.",
-    approach:
-      "Skills are the unit of capability, and each carries a permission tier. A local embedding match routes simple requests; a local language model plans the multi-step ones. Around that sits the part I care about most: audit-before-act, outcome states that distinguish failure from unknown, read-back verification, and snapshots that make file changes reversible.",
-    highlights: [
-      {
-        title: "Four permission tiers",
-        body: "Read (L0) and reversible write (L1) run automatically; destructive (L2) and external (L3) actions ask for confirmation. Scheduled and trigger-driven jobs are capped at L1, so nothing unattended can delete or reach outside.",
-      },
-      {
-        title: "Audit before action, outcome after",
-        body: "A row is written before a skill runs and closed afterwards as success, failure, not started, cancelled, timeout or unknown outcome. Work interrupted by a crash is reconciled at the next start — and an unknown is never quietly promoted to success.",
-      },
-      {
-        title: "Verified, not trusted",
-        body: "About 32 skills read the machine's real state back after acting. The roughly 35 that can't be verified — shell, UI automation, browser and WhatsApp among them — are known and counted, not hidden.",
-      },
-      {
-        title: "Reversible file operations",
-        body: "Deletes and overwrites keep a snapshot, restorable through operator-only recovery commands that still run through the normal permission, confirmation and audit path.",
-      },
-      {
-        title: "Local end to end",
-        body: "The language model (via Ollama), embeddings, speech-to-text, wake word and voice-activity detection all run on the machine. Voice covers a wake word, push-to-talk in the GUI and spoken replies.",
-      },
-      {
-        title: "Four ways in",
-        body: "A PySide6 desktop GUI with a tray icon, a text console, a one-shot say command for scripting, and a local HTTP/WebSocket daemon.",
-      },
-    ],
-    engineering: [
-      {
-        title: "Failed is not the same as unknown",
-        body: "If the process dies mid-action, nobody can say whether the action happened. The audit model has an explicit unknown-outcome state and reconciles interrupted work on restart, so the log never claims more certainty than it has.",
-      },
-      {
-        title: "Stopping a shell command for real",
-        body: "Shell commands run inside a Windows job object, so a stopped command's whole process tree can be ended rather than leaving orphaned children behind.",
-      },
-      {
-        title: "Unattended work is capped",
-        body: "Scheduled jobs and triggers can't exceed the reversible-write tier. The riskiest actions always have a person at the confirmation prompt.",
-      },
-      {
-        title: "Credential scrubbing, honestly scoped",
-        body: "Secrets are scrubbed from audit views, logs and several output paths — pattern-based, and documented as not a guarantee that every output is credential-safe.",
-      },
-    ],
-    stack: [
-      { group: "Language & runtime", items: ["Python 3.12", "asyncio"] },
-      { group: "Local AI", items: ["Ollama (qwen2.5:3b)", "fastembed (bge-small)", "Embedding intent matcher"] },
-      { group: "Voice", items: ["faster-whisper", "openWakeWord", "Silero VAD", "pyttsx3 / SAPI"] },
-      { group: "Interface", items: ["PySide6 GUI + tray", "Console", "FastAPI + uvicorn daemon"] },
-      { group: "Storage & security", items: ["SQLite (WAL)", "Windows DPAPI key store", "Snapshot recovery store"] },
-      { group: "Automation", items: ["Playwright", "Windows UI automation", "Optional Tesseract OCR"] },
-    ],
-    limitations: [
-      "Experimental — not production-ready, and not claimed to be safe. Run it only on a machine and data you can afford to experiment on.",
-      "STOP only interrupts a running multi-step goal or a pending confirmation; a directly requested shell command or a scheduled job isn't interrupted.",
-      "Credential redaction is pattern-based and incomplete.",
-      "The local daemon has no authentication on loopback, and remote mode has a token but no TLS.",
-      "Not tested on a clean machine, and there is no recorded human validation pass of the GUI or voice features.",
-      "Windows-only, with Python 3.12 the only tested version.",
-    ],
-    next: [
-      "Make STOP interrupt every kind of running work",
-      "A clean-machine install and a recorded validation pass",
-      "Authentication and TLS for the daemon",
-      "A refreshed agent benchmark",
-    ],
   },
 ];
 
@@ -1295,7 +1295,7 @@ export const about = {
   },
   paragraphs: [
     "Full-stack developer in Hyderabad. I build websites and web platforms of every kind — storefronts, studio sites, product and SaaS front ends, content platforms, internal tools — and I take each one the whole way: architecture, interface, data, backend, deployment, and the unglamorous work of keeping it running.",
-    "Four of those are platforms in production — two flagship builds and two from my Southeast Media internship. Four more are mine: an AI analytics app, a computer-vision game controller, a local desktop assistant, and deep-learning research into document forensics.",
+    "Four of those are platforms in production — CLINVARA, from my RADIENT AI internship, and three from my Southeast Media internship: Raising Voice, PLAYBOX and the studio's own site. Four more are mine: an AI analytics app, a computer-vision game controller, a local desktop assistant, and deep-learning research into document forensics.",
     "Different problems, one habit — I don't hand off at the halfway mark. A storefront the owner can't update isn't finished. Neither is a beautiful site nobody can find.",
   ],
   /** Three counters. Every number here is verifiable from the projects listed. */
@@ -1351,7 +1351,7 @@ export const experience: ExperienceEntry[] = [
     period: "Jun 2026 — Present",
     location: "Hyderabad, Telangana, India",
     bullets: [
-      "Owned end-to-end delivery of a live CGI/VFX studio platform spanning seven art-directed business verticals, translating brand direction into a production-ready, responsive web experience.",
+      "Owned end-to-end delivery of the Southeast Media site, a live CGI/VFX studio platform spanning seven art-directed business verticals, translating brand direction into a production-ready, responsive web experience.",
       "Engineered a modular motion and media system using GSAP ScrollTrigger, Lenis, Framer Motion, CSS 3D, canvas noise and matter.js while preserving reduced-motion accessibility.",
       "Hardened deployment with Zod validation, rate limiting, honeypot protection, security headers, environment-aware SEO, AVIF/WebP delivery, lazy video playback, caching and dynamic imports.",
       "Built Raising Voice, a Telugu news platform with an editorial CMS and a newsroom pipeline whose automatic publishing is capped in code and falls back to human review.",

@@ -62,7 +62,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
 
   // One accent per project, threaded through every rule, glow and active state
-  // on the page — the two case studies should not read as the same template.
+  // on the page — the four case studies should not read as the same template.
   const accent = project.accent;
   const channels = rgbChannels(accent);
 

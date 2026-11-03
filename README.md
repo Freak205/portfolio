@@ -2,7 +2,7 @@
 
 A personal portfolio written for two audiences at once — **hiring teams and
 clients**. A drawn hero that scales on scroll, services, a technology marquee,
-two full case studies for the live client platforms, a Lab section for personal
+four full case studies for the live client and internship platforms, a Lab section for personal
 engineering projects (with case studies of their own), an experience timeline,
 and a working contact form with a lane for each audience.
 
@@ -46,14 +46,14 @@ No copy is hard-coded in components. Open it and search for:
 
 | Where                    | What                                                                                                                                        |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lab[1].repoUrl`         | **`undefined`.** Project Steer has no public repository URL yet, so its card shows `linkNote` instead of a link. Set `repoUrl` + `repoLabel` and the buttons appear on the card *and* the case study automatically. |
+| `lab[2].repoUrl`         | **`undefined`.** Project Steer has no public repository URL yet, so its card shows `linkNote` instead of a link. Set `repoUrl` + `repoLabel` and the buttons appear on the card *and* the case study automatically. |
 | `contact.linkedin`       | **Placeholder URL.** Copy your real profile URL from the address bar. Everything else in `contact` came from your resume.                      |
 | `siteUrl`                | Your production domain. Override with `NEXT_PUBLIC_SITE_URL` on Vercel rather than editing the file. Unset, it falls back to your `.vercel.app` domain. |
 | `projects[0].context` + `experience[1].company` | Both say **RADIENT AI PVT LTD**. Your resume lists **Boltzmann Labs** for the CLINVARA engagement. Pick the one that is correct for public use. |
 | `profile.openToRoles` / `openToFreelance` | Both **`true`.** These two switches drive the hero status chips, the About plate, the two Contact lanes, the `seeks` JSON-LD and the OG card badge. Flip either off and every one of those updates. |
 | `awardsSection.show`     | **`false`.** Your resume lists no awards, so nothing was invented. The section is fully built — add real entries to `awards` and flip this to `true`. |
 | `testimonials`           | Three empty slots. They render as clearly-reserved cards until you add a real quote. It is no longer in the header nav — six items was the ceiling and Lab earned the slot. |
-| `projects[*].cover`      | **Done.** Real captures of both live sites are in `/public/work/`. See below to re-shoot them.                                                 |
+| `projects[*].cover`      | **Done.** Real captures of all four live sites are in `/public/work/`. See below to re-shoot them.                                                 |
 | `/public/resume.pdf`     | A copy of `Anirudh_Resume_PL.pdf`, behind the **Resume** and **Download CV** buttons. Note it currently leads with ML/research positioning while the site leads with full-stack — replace the file if you want them aligned. Set `contact.resumeUrl = null` to hide both buttons. |
 
 ### Adding a testimonial
@@ -89,14 +89,14 @@ engineering rather than marketing. `caseStudy: false` exists so a project with
 no verified detail (ForgeLens, currently) can still appear without a page padded
 out to fill the template.
 
-The section order is deliberate: **Selected Work** carries the two client
-platforms and stays the strongest claim on the page; **Lab** sits below it. Add
+The section order is deliberate: **Selected Work** carries the four production
+platforms (CLINVARA, Raising Voice, PLAYBOX, Southeast Media), ranked by engineering depth, and stays the strongest claim on the page; **Lab** sits below it. Add
 a personal project to `lab`, never to `projects`.
 
 ### Screenshots
 
-Eight captures of the two live platforms already ship in
-[`public/work/`](public/work/) — WebP, ~470 KB in total, at the exact
+Sixteen captures of the four live platforms already ship in
+[`public/work/`](public/work/) — WebP, under 1 MB in total, at the exact
 dimensions the frames expect:
 
 | File                        | Page                                     |
@@ -109,9 +109,17 @@ dimensions the frames expect:
 | `southeast-verticals.webp`  | Verticals index — the seven disciplines  |
 | `southeast-films.webp`      | Films vertical — in-house reel           |
 | `southeast-contact.webp`    | Enquiry form                             |
+| `raisingvoice-home.webp`    | raisingvoice.in — homepage (cover)       |
+| `raisingvoice-article.webp` | Article page with source credit and AI notice |
+| `raisingvoice-latest.webp`  | Latest news listing                      |
+| `raisingvoice-category.webp`| Category page                            |
+| `playbox-home.webp`         | chillbox.co.in — library (cover)        |
+| `playbox-library.webp`      | Library and daily challenge              |
+| `playbox-street-rush.webp`  | Street Rush in play                      |
+| `playbox-bike-rush.webp`    | Bike Rush in play                        |
 
 Everything here is a page anyone can open, which is the point — the CLINVARA
-admin console is behind auth, so no frame claims to show it.
+admin console and the Raising Voice CMS are behind a login, so no frame claims to show them.
 
 To replace or add one:
 

@@ -71,7 +71,7 @@ export default async function LabCaseStudy({ params }: { params: Promise<Params>
   // CSP nonce from proxy.ts — the JSON-LD blocks below need it.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
 
-  const next = cases.filter((item) => item.slug !== project.slug)[0];
+  const next = cases[(cases.indexOf(project) + 1) % cases.length];
 
   const accent = project.accent;
   const channels = rgbChannels(accent);

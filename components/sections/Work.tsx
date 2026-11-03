@@ -8,7 +8,7 @@ import Preview from "@/components/ui/Preview";
 import { IconArrowUpRight } from "@/components/ui/Glyph";
 
 /**
- * Client and internship platforms, flagships first. Personal projects live in
+ * Client and internship platforms, ranked by engineering depth. Personal projects live in
  * <Lab /> below so that this section stays the strongest claim on the page
  * rather than a list everything gets added to.
  */
@@ -23,7 +23,7 @@ export default function Work() {
           intro={workSection.intro}
         />
 
-        <div className="mt-12 grid gap-4 md:mt-18 md:gap-5 lg:grid-cols-2">
+        <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-4 md:mt-18 md:gap-5 lg:grid-cols-2">
           {projects.map((project, i) => {
             const channels = rgbChannels(project.accent);
 

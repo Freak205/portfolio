@@ -12,7 +12,7 @@ import { IconArrowUpRight, IconGithub } from "@/components/ui/Glyph";
  * Personal projects, deliberately below Selected Work and deliberately shaped
  * differently from it.
  *
- * The flagship cards up the page are image-led, because those two platforms are
+ * The Selected Work cards up the page are image-led, because those four platforms are
  * things you look at. These are things you read about — a Python analytics app,
  * a computer-vision controller, a research repo — and none of them has a
  * screenshot that would mean anything at card size. So each gets a full-width

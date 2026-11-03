@@ -1,6 +1,6 @@
 # Project screenshots
 
-Real captures of the two live platforms, taken from the production sites and
+Real captures of the four live platforms, taken from the production sites and
 saved as WebP at the dimensions the frames expect. `content/site.ts` already
 points at every one of them. The Raising Voice CMS is behind a login, so only
 public pages are shown.
@@ -24,7 +24,7 @@ public pages are shown.
 | `playbox-street-rush.webp` | `/play/street-rush`, after Start                   |
 | `playbox-bike-rush.webp`   | `/play/bike-rush`, after Start                     |
 
-Both sites are live, so these go stale when the sites change. Re-shoot at the
+All four sites are live, so these go stale when the sites change. Re-shoot at the
 same viewport sizes (1600×1000 for covers, 1200×900 for gallery frames) and
 overwrite in place — no content change needed.
 
@@ -53,10 +53,3 @@ instead. Nothing breaks either way.
 
 `.webp` or `.avif` give the smallest files; `.png` and `.jpg` are fine too —
 Next.js re-encodes and resizes them at request time. Keep sources under ~1 MB.
-
-## Profile photo
-
-The portrait is not in this folder and is still a placeholder. Put a photo
-anywhere in `/public` (e.g. `public/anirudh.jpg`), then set `hero.image.src`
-for the full-bleed hero and `about.image.src` for the About section in
-`content/site.ts`.
